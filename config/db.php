@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=vegetable-base',
+    'dsn' => 'mysql:host=localhost;dbname=vegetable-storage',
     'username' => 'root',
     'password' => '6grkyxnt',
     'charset' => 'utf8',

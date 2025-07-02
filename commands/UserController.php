@@ -4,7 +4,7 @@ namespace app\commands;
 
 use Yii;
 use yii\console\Controller;
-use app\models\User;
+use app\models\User\User;
 
 class UserController extends Controller
 {
