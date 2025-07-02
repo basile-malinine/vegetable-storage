@@ -1,0 +1,38 @@
+/*
+ * Стили для блочного списка
+ */
+
+.set-container {
+    padding: 3px 3px 0 4px;
+    border: 1px solid #9ca2a6;
+    border-radius: 3px;
+}
+
+.set-item-none {
+    margin-right: 4px;
+    margin-bottom: 4px;
+    padding-top: 1px;
+    padding-left: 5px;
+    font-size: 14px;
+    color: gray;
+}
+
+.set-item {
+    margin-right: 4px;
+    margin-bottom: 3px;
+    padding: 0 5px;
+    font-size: 14px;
+    border: 1px solid #9ca2a6;
+    border-radius: 3px;
+}
+
+.btn-item-edit {
+    height: 23px;
+    margin-left: auto;
+    padding: 0 4px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    border: 1px solid gray;
+    border-radius: 3px;
+    cursor: pointer;
+}

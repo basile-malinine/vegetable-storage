@@ -1,0 +1,330 @@
+a {
+    color: #315d76;
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: #3d75f3;
+}
+
+.navbar-brand {
+    padding: 0;
+}
+
+.navbar-brand > img {
+    height: 40px;
+}
+
+label {
+    font-size: 12px;
+}
+
+.help-block {
+    font-size: 12px;
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+
+.close {
+    font-size: 20px;
+    color: #8e8e8e;
+    text-shadow: none;
+    opacity: 1;
+}
+
+.navbar {
+    border-bottom: 1px solid #E1E3E1;
+}
+
+.nav-pills > li > a {
+    font-size: 13px;
+    border-radius: 0;
+}
+
+.panel-title {
+    font-size: 14px;
+}
+
+.dropdown-menu > .dropdown-item{
+    font-size: 14px;
+}
+
+.select2-results {
+    font-size: 12px;
+}
+
+.modal-title {
+    margin: 0;
+    line-height: 1.42857143;
+    font-weight: bold;
+}
+
+.table {
+    font-size: 12px;
+    border-top: 1px solid #a3a3a3;
+    border-bottom: 1px solid #a3a3a3;
+}
+
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > th {
+    text-align: center;
+}
+
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+    vertical-align: middle !important;
+    padding: 5px 7px 5px 7px;
+}
+
+.table > thead > tr > th {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.table > thead > tr > th {
+    color: #505050;
+}
+
+.table > thead > tr > th > a {
+    color: #3b36e6;
+}
+
+.table > thead > tr > th > a:hover,
+.table > thead > tr > th > a:focus {
+    color: #00bad6;
+}
+
+/* выпадающее меню -------------------------------------------------------------------------------------------- */
+
+.dropdown-item {
+    font-size: 14px;
+}
+
+.dropdown-item.active {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #eaeaea;
+    color: #212529;
+}
+
+.dropdown-menu {
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.navbar-nav.ms-auto > li > .dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    width: 152px;
+    padding: 5px 5px 5px 15px;
+    color: #333333;
+    text-decoration: none;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+
+    color: #ffffff;
+    background-color: #315d76;
+}
+
+.dropdown-menu > li > a:hover > span,
+.dropdown-menu > li > a:focus > span {
+    color: #fff;
+}
+
+.dropdown-menu > li > a .fa,
+.dropdown-menu > li > a .fas,
+.dropdown-menu > li > a .far {
+    margin-right: 10px;
+}
+
+.dropdown-menu .divider {
+    margin: 5px 0;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+}
+
+.dropdown-submenu > a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 4px 0 4px 4px;
+    border-left-color: #333;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover > a:after {
+    border-left-color: white;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+}
+
+.form-control {
+    border-color: #9ca2a6;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #3161f6;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.form-select {
+    height: 31px;
+    padding: 0 0 3px 15px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.form-check-input.form-check-input {  /* Почему-то срабатывает, когда два раза ???*/
+    width: 21px;
+    height: 21px;
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+}
+
+.col-form-label,
+.form-check-label {
+    font-size: 14px;
+}
+
+.form-check-label {
+    padding: 4px 0 0 7px;
+}
+
+/*
+*     Фон меняется, картинка - нет (!important не помогает...)!!!
+*/
+.form-check-input:checked {
+    background-color: gray;
+    /*background-image: url("/web/images/bootstrap-settings/checkbox-checked.png");*/
+}
+/*
+*/
+
+/* widget krajee-bs5 select-2 ------------------------------------------------------------------------------------- */
+
+.select2-container > .selection > .select2-selection--single,
+/*.select2-container > .selection > .select2-selection--multiple,*/
+.select2-search__field {
+    height: 31px;
+    padding-top: 4px;
+    border-radius: 3px;
+    font-size: 14px;
+    border-color: #9ca2a6;
+    box-shadow: none !important;
+}
+
+.select2-container > .selection > .select2-selection:focus {
+    border-color: #3161f6;
+    box-shadow: none !important;
+}
+
+.select2-container > .select2-dropdown {
+    box-shadow: none !important;
+}
+
+.select2-results {
+    font-size: 14px;
+}
+
+.select2-selection__clear {
+    margin-right: 8px;
+}
+
+/*
+
+.select2-container--krajee-bs5 .select2-selection__clear {
+    color: #315d76;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.select2-container--krajee-bs5 .select2-selection {
+    border-color: #a0a0a0;
+}
+
+.select2-dropdown {
+    border-radius: 0;
+}
+
+.s2-togall-button {
+    color: #315d76;
+}
+
+.select2-container--krajee-bs5 .select2-dropdown {
+    border-color: #315d76;
+}
+
+.select2-container--krajee-bs5 .select2-results__option--highlighted[aria-selected] {
+    background-color: #315d76;
+}
+
+.select2-container--krajee-bs5 .select2-results__option[aria-selected=true] {
+    color: #333333;
+    background-color: #eaeaea;
+}
+
+.select2-container--krajee-bs5.select2-container--open .select2-selection,
+.select2-container--krajee-bs5 .select2-selection:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: none;
+    -o-transition: none;
+    transition: none;
+    border-color: #315d76;
+}
+
+.has-success .select2-container--open .select2-selection,
+.has-success .select2-container--krajee-bs5.select2-container--focus .select2-selection {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-color: #3c763d;
+}
+
+.input-sm.select2-container--krajee-bs5 .select2-selection--single,
+.input-group-sm .select2-container--krajee-bs5 .select2-selection--single {
+    border-radius: 0;
+}
+
+.select2-container--krajee-bs5 .select2-selection--single .select2-selection__placeholder {
+    color: #555;
+}
+
+*/

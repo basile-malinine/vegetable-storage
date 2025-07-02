@@ -65,31 +65,69 @@ a.desc:after {
     margin: 0 0 15px 0;
 }
 
-/* align the logout "link" (button in form) of the navbar */
-.nav li > form > button.logout {
-    padding-top: 7px;
-    color: rgba(255, 255, 255, 0.5);
-}
-
-@media(max-width:767px) {
-    .nav li > form > button.logout {
-        display:block;
-        text-align: left;
-        width: 100%;
-        padding: 10px 0;
-    }
-}
-
-.nav > li > form > button.logout:focus,
-.nav > li > form > button.logout:hover {
-    text-decoration: none;
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.nav > li > form > button.logout:focus {
-    outline: none;
-}
-
 .form-group {
     margin-bottom: 1rem;
+}
+
+/* -------------------------------------- */
+
+.page-top-panel
+{
+    padding: 0 0 18px 0;
+    border-bottom: 1px solid #E1E3E1;
+}
+
+.page-top-panel-header {
+    font-size: x-large;
+}
+
+.page-top-panel-header a {
+    margin-top: -4px;
+}
+
+.page-top-panel-subheader {
+    margin-top: 5px;
+    text-align: center;
+    font-size: large;
+}
+
+.page-content-form-filters {
+    margin-bottom: 10px;
+    background-color: #F8F9FA;
+    border-bottom: 1px solid #e1e3e1;
+}
+
+.form-filters-header {
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 10px;
+    background-color: #F2F2F2;
+    border-bottom: 1px solid #e1e3e1;
+}
+
+.form-filters-body {
+    padding-left: 15px;
+}
+
+/* -------------------------------------- */
+
+.contextMenuRow {
+    cursor: pointer;
+}
+
+.form-row {
+    margin-bottom: -5px;
+}
+
+.form-last-row {
+    margin-bottom: 29px;
+    border-bottom: 1px solid #e1e3e1;
+}
+
+.form-filters-last-row {
+    margin-bottom: 10px;
+}
+
+/* Кнопка возврата ---------------------- */
+.btn-return {
+    border-radius: 100%;
 }

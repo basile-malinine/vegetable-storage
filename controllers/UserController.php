@@ -2,11 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\User\LoginForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-
-use app\models\LoginForm;
 
 class UserController extends Controller
 {
@@ -30,5 +29,12 @@ class UserController extends Controller
         return $this->render('login', [
             'model' => $model,
         ]);
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 }
