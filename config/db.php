@@ -4,7 +4,7 @@ return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=vegetable-storage',
     'username' => 'root',
-    'password' => '1243',
+    'password' => '6grkyxnt',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
