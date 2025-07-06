@@ -1,21 +1,21 @@
 <?php
 
-namespace app\models\Unit;
+namespace app\models\Product;
 
 use yii\data\ActiveDataProvider;
 
-class UnitSearch extends Unit
+class ProductSearch extends Product
 {
     public function rules()
     {
         return [
-            [['name'], 'safe'],
+            [['name', 'comment'], 'safe'],
         ];
     }
 
     public function search($params)
     {
-        $query = Unit::find();
+        $query = Product::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -25,7 +25,7 @@ class UnitSearch extends Unit
             return $dataProvider;
         }
 
-        if (!isset($params['sort'])) {
+        if (!isset($parms['sort'])) {
             $query->orderBy('name');
         }
 
