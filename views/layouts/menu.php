@@ -23,6 +23,11 @@ echo Nav::widget([
                     'url' => ['/product'],
                 ],
 
+                [
+                    'label' => 'Номенклатура',
+                    'url' => ['/assortment'],
+                ],
+
             ],
         ],
     ]

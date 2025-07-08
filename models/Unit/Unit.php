@@ -36,4 +36,23 @@ class Unit extends ActiveRecord
             'weight' => 'Вес (кг)',
         ];
     }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        $this->weight = str_replace(',', '.', $this->weight);
+
+        return true;
+    }
+
+    public static function getList()
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
 }

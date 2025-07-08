@@ -48,4 +48,12 @@ class Product extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getList()
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
 }
