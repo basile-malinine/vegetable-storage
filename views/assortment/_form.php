@@ -13,8 +13,6 @@ use app\models\Assortment\Assortment;
 use app\models\Product\Product;
 use app\models\Unit\Unit;
 
-// 'create' или 'edit'
-$action = Yii::$app->controller->action->id;
 // Список Ед. изм. для формы
 $unitList = Unit::getList();
 // Вычисляем значение по умолчанию в списке
@@ -57,7 +55,7 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
         <div class="row form-row">
             <!-- Ед. изм. -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'unit_id')->dropDownList(Unit::getList(), [
+                <?= $form->field($model, 'unit_id')->dropDownList($unitList, [
                     'onchange' => '
                         let weights = ' . json_encode(
                             Unit::find()
@@ -77,12 +75,10 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
             <!-- Вес -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'weight')->textInput([
-                    'readonly' => $action === 'create' && count($model->errors) === 0
+                    'readonly' => !isset($model->unit_id)
                         ? (bool)$weightDefault
                         : (bool)$model->unit->is_weight,
-                    'value' => $action === 'create' && count($model->errors) === 0
-                        ? $weightDefault
-                        : $model->unit->weight,
+                    'value' => $model->weight ?? $weightDefault,
                 ]) ?>
             </div>
         </div>
