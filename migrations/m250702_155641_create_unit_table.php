@@ -18,6 +18,18 @@ class m250702_155641_create_unit_table extends Migration
             'is_weight' => $this->smallInteger(1)->notNull()->defaultValue(0)->comment('Весовая'),
             'weight' => $this->decimal(10,3)->null()->comment('Вес'),
         ]);
+
+        $this->insert('{{%unit}}', [
+            'name' => 'кг',
+            'is_weight' => 1,
+            'weight' => 1.0,
+        ]);
+
+        $this->insert('{{%unit}}', [
+            'name' => 'шт',
+            'is_weight' => 0,
+            'weight' => null,
+        ]);
     }
 
     /**
