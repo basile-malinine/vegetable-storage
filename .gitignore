@@ -6,6 +6,9 @@ composer.lock
 # windows thumbnail cache
 Thumbs.db
 
+#vagrant folder
+/vagrant
+
 # composer vendor dir
 /vendor
 
