@@ -18,6 +18,8 @@ echo Nav::widget([
                     'url' => ['/unit'],
                 ],
 
+                '<hr class="dropdown-divider">',
+
                 [
                     'label' => 'Продукты',
                     'url' => ['/product'],
@@ -28,6 +30,12 @@ echo Nav::widget([
                     'url' => ['/assortment'],
                 ],
 
+                '<hr class="dropdown-divider">',
+
+                [
+                    'label' => 'Страны',
+                    'url' => ['/country'],
+                ],
             ],
         ],
     ]
