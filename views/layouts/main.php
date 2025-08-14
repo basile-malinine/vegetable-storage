@@ -33,37 +33,39 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 <header id="header">
     <?php
-    NavBar::begin([
-        'brandLabel' => 'АПК Технологии',
-        'brandImage' => Url::to("/images/logo.png", true),
-        'brandUrl' => Yii::$app->homeUrl,
-
-        'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-light fixed-top']
-    ]);
-
     if (!Yii::$app->user->isGuest) {
-        echo $this->render('menu');
-    }
+        NavBar::begin([
+            'brandLabel' => 'АПК Технологии',
+            'brandImage' => Url::to("/images/logo.png", true),
+            'brandUrl' => Yii::$app->homeUrl,
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav ms-auto'],
-        'items' => [
-            Yii::$app->user->isGuest
-                ? ['label' => 'Вход', 'url' => ['/user/login'],]
-                :
-                [
-                    'label' => \Yii::$app->user->identity->name,
-                    'items' => [
-                        [
-                            'label' => 'Выйти',
-                            'url' => ['/user/logout']
-                            /*, 'linkOptions' => ['data-method' => 'post']*/
+            'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-light fixed-top']
+        ]);
+
+        echo '<div class="ms-1 fs-2 fw-medium app-name">Склад</div>';
+
+        echo $this->render('menu');
+
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav ms-auto'],
+            'items' => [
+                Yii::$app->user->isGuest
+                    ? ['label' => 'Вход', 'url' => ['/user/login'],]
+                    :
+                    [
+                        'label' => \Yii::$app->user->identity->name,
+                        'items' => [
+                            [
+                                'label' => 'Выйти',
+                                'url' => ['/user/logout']
+                                /*, 'linkOptions' => ['data-method' => 'post']*/
+                            ],
                         ],
-                    ],
-                ]
-        ],
-    ]);
-    NavBar::end();
+                    ]
+            ],
+        ]);
+        NavBar::end();
+    }
     ?>
 </header>
 
@@ -77,7 +79,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; Basile's <?= date('Y') ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; ООО &laquo;АПК-Технологии&raquo; <?= date('Y') ?></div>
         </div>
     </div>
 </footer>

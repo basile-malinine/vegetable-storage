@@ -10,13 +10,8 @@ use yii\bootstrap5\Html;
 
 ?>
 
-<div class="page-content">
-    <div class="page-top-panel">
-        <div class="page-top-panel-header d-inline">
-            Вход в систему
-        </div>
-    </div>
-    <div class="page-content-form">
+<div class="page-content d-flex justify-content-center align-items-center">
+    <div class="page-content-form form-login">
         <?php $form = ActiveForm::begin([
             'id' => 'login-form',
             'fieldConfig' => [
@@ -28,36 +23,44 @@ use yii\bootstrap5\Html;
             ],
         ]); ?>
 
-        <div class="row form-row">
-            <!-- Адрес электронной почты -->
-            <div class="form-col col-4">
-                <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+        <div class="form-login-header">
+            Вход
+        </div>
+
+        <div class="form-login-body">
+            <div class="row form-row">
+                <!-- Адрес электронной почты -->
+                <div class="form-col col-12">
+                    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <!-- Пароль-->
+                <div class="form-col col-12">
+                    <?= $form->field($model, 'password')->passwordInput() ?>
+                </div>
+            </div>
+
+            <div class="row form-row mt-5">
+                <div class="form-col col-12 d-flex justify-content-between align-items-center">
+                    <!-- Запомнить-->
+                    <?= $form->field($model, 'rememberMe')->checkbox() ?>
+
+                    <!-- Войти -->
+                    <?= Html::submitButton(
+                        'Войти',
+                        [
+                            'class' => 'btn btn-light btn-outline-primary btn-sm mb-3',
+                            'name' => 'login-button',
+                            'style' => 'width: 100px'
+                        ]) ?>
+                </div>
             </div>
         </div>
 
-        <div class="row form-row">
-            <!-- Пароль-->
-            <div class="form-col col-4">
-                <?= $form->field($model, 'password')->passwordInput() ?>
-            </div>
-        </div>
-
-        <div class="row form-last-row mt-3">
-            <!-- Запомнить-->
-            <div class="form-col col-4">
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <?= Html::submitButton(
-                'Войти',
-                [
-                    'class' => 'btn btn-light btn-outline-primary btn-sm',
-                    'name' => 'login-button',
-                    'style' => 'width: 100px'
-                ]) ?>
-        </div>
+        <!--        <div class="form-login-bottom">-->
+        <!--        </div>-->
 
         <?php ActiveForm::end(); ?>
 

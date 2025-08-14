@@ -35,13 +35,15 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
         },
 
         'columns' => [
-            // ID
+            // #
             [
-                'attribute' => 'id',
-                'enableSorting' => false,
-                'contentOptions' => [
-                    'style' => 'text-align: right; width: 50px;'
+                'class' => 'yii\grid\SerialColumn',
+                'headerOptions' => [
+                    'style' => 'width: 40px;'
                 ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;',
+                ]
             ],
 
             // Название
