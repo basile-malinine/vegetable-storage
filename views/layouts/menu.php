@@ -33,6 +33,11 @@ echo Nav::widget([
                 '<hr class="dropdown-divider">',
 
                 [
+                    'label' => 'Сотрудники',
+                    'url' => ['/employee'],
+                ],
+
+                [
                     'label' => 'Страны',
                     'url' => ['/country'],
                 ],
