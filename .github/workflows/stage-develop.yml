@@ -21,6 +21,7 @@ jobs:
       - name: Update files and packages in app`s directory
         env:
           COMPOSER_ALLOW_SUPERUSER: 1
+          COMPOSER_HOME: '/root/.composer'
         run: |
           cd /apps/vegetable-storage
           git fetch origin
