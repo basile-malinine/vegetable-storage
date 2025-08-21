@@ -73,51 +73,11 @@ $config = [
                 // AssortmentController Номенклатура
                 'assortment/<action:(edit|delete)>/<id:\d+>' => 'assortment/<action>',
 
-                // LegalSubjectController Юридические / физические лица
-                'legal-subject/<action:(edit|delete)>/<id:\d+>' => 'legal-subject/<action>',
-
-                // CompanyController Контрагенты
-                'company/<action:(edit|delete)>/<id:\d+>' => 'company/<action>',
-
-                // CompanyAliasController Псевдонимы контрагентов
-                'company-alias/<action:(index|create)>/<company_id:\d+>' => 'company-alias/<action>',
-                'company-alias/<action:(edit|delete)>/<id:\d+>' => 'company-alias/<action>',
-                'company-alias/<action:(edit|delete)>/<id:\d+>/<company_id:\d+>' => 'company-alias/<action>',
-
-                // CompanyLegalSubjectController Доверенные лица контрагентов
-                'company-legal-subject/<action:(index|create)>/<company_id:\d+>' => 'company-legal-subject/<action>',
-                'company-legal-subject/<action:(edit|delete)>/<id:\d+>' => 'company-legal-subject/<action>',
-                'company-legal-subject/<action:(edit|delete)>/<id:\d+>/<company_id:\d+>' => 'company-legal-subject/<action>',
-
-                // ColorController Цвета
-                'color/<action:(edit|delete)>/<id:\d+>' => 'color/<action>',
-
-                // ProductColorController Цвета продуктов
-                'product-color/<action:(index|create)>/<product_id:\d+>' => 'product-color/<action>',
-                'product-color/<action:(edit|delete)>/<id:\d+>' => 'product-color/<action>',
-                'product-color/<action:(edit|delete)>/<id:\d+>/<product_id:\d+>' => 'product-color/<action>',
-
                 // CountryController Страны
                 'country/<action:(edit|delete)>/<id:\d+>' => 'country/<action>',
 
-                // InfoSourceGroupController Группы источников информации
-                'info-source-group/<action:(edit|delete)>/<id:\d+>' => 'info-source-group/<action>',
-
-                // InfoSourceController Источники информации
-                'info-source/<action:(edit|delete)>/<id:\d+>' => 'info-source/<action>',
-
-                // TypeCompanyController Типы контрагентов
-                'type-company/<action:(edit|delete)>/<id:\d+>' => 'type-company/<action>',
-
-                // TypeClassCompanyController Типы и Классы контрагентов
-                'type-class-company/<action:(index|create)>/<type_company_id:\d+>' => 'type-class-company/<action>',
-                'type-class-company/<action:(edit|delete)>/<id:\d+>' => 'type-class-company/<action>',
-                'type-class-company/<action:(edit|delete)>/<id:\d+>/<type_company_id:\d+>' => 'type-class-company/<action>',
-
-                // CompanyTypeClassCompanyController свойства Тип и Класс для контрагентов
-                'company-type-class-company/<action:(index|create)>/<company_id:\d+>' => 'company-type-class-company/<action>',
-                'company-type-class-company/<action:(edit|delete)>/<id:\d+>' => 'company-type-class-company/<action>',
-                'company-type-class-company/<action:(edit|delete)>/<id:\d+>/<company_id:\d+>' => 'company-type-class-company/<action>',
+                // AcceptanceTypeController Типы приемки
+                'acceptance-type/<action:(edit|delete)>/<id:\d+>' => 'acceptance-type/<action>',
             ],
         ],
     ],

@@ -33,6 +33,13 @@ echo Nav::widget([
                 '<hr class="dropdown-divider">',
 
                 [
+                    'label' => 'Типы приемки',
+                    'url' => ['/acceptance-type'],
+                ],
+
+                '<hr class="dropdown-divider">',
+
+                [
                     'label' => 'Страны',
                     'url' => ['/country'],
                 ],
