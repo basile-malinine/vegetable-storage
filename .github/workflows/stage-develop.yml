@@ -22,7 +22,7 @@ jobs:
         env:
           COMPOSER_ALLOW_SUPERUSER: 1
         run: |
-          cd /apps/vegetable-auction
+          cd /apps/vegetable-storage
           git fetch origin
           git reset --hard origin/main
           composer install --optimize-autoloader
