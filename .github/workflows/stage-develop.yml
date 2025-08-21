@@ -1,0 +1,29 @@
+name: Deploy application on stage develop
+run-name: Pushing a fresh code on stage develop 🚀
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-stage-develop:
+    runs-on: apk-storage
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Setup Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Update files and packages in app`s directory
+        env:
+          COMPOSER_ALLOW_SUPERUSER: 1
+        run: |
+          cd /apps/vegetable-auction
+          git fetch origin
+          git reset --hard origin/main
+          composer install --optimize-autoloader
+          php yii migrate --interactive=0
