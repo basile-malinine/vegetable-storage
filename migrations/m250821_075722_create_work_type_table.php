@@ -14,7 +14,7 @@ class m250821_075722_create_work_type_table extends Migration
     {
         $this->createTable('{{%work_type}}', [
             'id' => $this->primaryKey()->comment('ID'),
-            'name' => $this->string(30)->notNull()->comment('Название'),
+            'name' => $this->string(30)->notNull()->unique()->comment('Название'),
             'comment' => $this->text()->null()->comment('Комментарий'),
         ]);
     }

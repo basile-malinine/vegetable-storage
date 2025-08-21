@@ -14,8 +14,8 @@ class m250815_210635_create_shipment_type_table extends Migration
     {
         $this->createTable('{{%shipment_type}}', [
             'id' => $this->primaryKey()->comment('ID'),
-            'name' => $this->string(30)->notNull()->comment('Название'),
-            'comment' => $this->string()->null()->comment('Комментарий'),
+            'name' => $this->string(30)->notNull()->unique()->comment('Название'),
+            'comment' => $this->text()->null()->comment('Комментарий'),
         ]);
     }
 

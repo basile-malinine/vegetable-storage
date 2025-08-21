@@ -17,12 +17,12 @@ class m250815_203836_create_employee_table extends Migration
             'surname' => $this->string(20)->notNull()->comment('Фамилия'),
             'name' => $this->string(20)->notNull()->comment('Имя'),
             'last_name' => $this->string(20)->null()->comment('Отчество'),
-            'phone' => $this->string(10)->null()->comment('Телефон'),
-            'email' => $this->string(50)->null()->comment('Адрес электронной почты'),
+            'phone' => $this->string(10)->null()->unique()->comment('Телефон'),
+            'email' => $this->string(50)->null()->unique()->comment('Адрес электронной почты'),
             'created_by' => $this->integer()->notNull()->comment('Создатель'),
             'created_at' => $this->timestamp()->notNull()->comment('Время создания'),
             'updated_at' => $this->timestamp()->notNull()->comment('Время обновления'),
-            'comment' => $this->string()->null()->comment('Комментарий'),
+            'comment' => $this->text()->null()->comment('Комментарий'),
         ]);
     }
 

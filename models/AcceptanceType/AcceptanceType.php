@@ -20,6 +20,7 @@ class AcceptanceType extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
+            [['name'], 'unique'],
             [['name'], 'string', 'max' => 30],
             [['comment'], 'default', 'value' => null],
             [['comment'], 'string', 'max' => 255],

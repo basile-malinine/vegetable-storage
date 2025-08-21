@@ -14,7 +14,7 @@ class m250821_075130_create_stock_table extends Migration
     {
         $this->createTable('{{%stock}}', [
             'id' => $this->primaryKey()->comment('ID'),
-            'name' => $this->string(30)->notNull()->comment('Название'),
+            'name' => $this->string(30)->notNull()->unique()->comment('Название'),
             'address' => $this->string(255)->null()->comment('Адрес'),
             'comment' => $this->text()->null()->comment('Комментарий'),
         ]);

@@ -14,7 +14,7 @@ class m250821_080119_create_contractor_table extends Migration
     {
         $this->createTable('{{%contractor}}', [
             'id' => $this->primaryKey()->comment('ID'),
-            'name' => $this->string(30)->notNull()->comment('Название'),
+            'name' => $this->string(30)->notNull()->unique()->comment('Название'),
             'comment' => $this->text()->null()->comment('Комментарий'),
         ]);
     }
