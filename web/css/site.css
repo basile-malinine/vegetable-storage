@@ -70,8 +70,21 @@ a.desc:after {
 }
 
 /* Название приложения ------------------ */
-.app-name {
-    margin-top: -10px;
+
+.app-name-container {
+    height: 38px;
+    margin-left: -6px;
+    margin-right: 30px;
+    padding-top: 2px;
+    border-bottom: 2px solid #b3b3b3;
+}
+
+.app-name-text {
+    transform: scale(1, 1.1);
+    line-height: 0.5;
+    font-size: 36px;
+    font-stretch: 50%;
+    font-weight: normal;
     color: #4F535B;
 }
 

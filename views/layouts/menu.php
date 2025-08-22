@@ -6,7 +6,7 @@ use app\models\LegalSubject\LegalSubject;
 use app\models\Product\Product;
 
 echo Nav::widget([
-    'options' => ['class' => 'navbar-nav ms-5'],
+    'options' => ['class' => 'navbar-nav'],
     'encodeLabels' => false,
 
     'items' => [
