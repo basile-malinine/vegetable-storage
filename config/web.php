@@ -78,6 +78,9 @@ $config = [
 
                 // AcceptanceTypeController Типы приемки
                 'acceptance-type/<action:(edit|delete)>/<id:\d+>' => 'acceptance-type/<action>',
+
+                // ShipmentTypeController Типы отгрузки
+                'shipment-type/<action:(edit|delete)>/<id:\d+>' => 'shipment-type/<action>',
             ],
         ],
     ],
