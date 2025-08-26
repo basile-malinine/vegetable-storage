@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var string $content */
 
 use yii\bootstrap5\Nav;
@@ -33,17 +34,17 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 <header id="header">
     <?php
+    NavBar::begin([
+        'brandLabel' => 'АПК Технологии',
+        'brandImage' => Url::to("/images/logo.png", true),
+        'brandUrl' => Yii::$app->homeUrl,
+
+        'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-light fixed-top']
+    ]);
+
+    echo '<div class="app-name-container"><div class="app-name-text">STORAGE</div></div>';
+
     if (!Yii::$app->user->isGuest) {
-        NavBar::begin([
-            'brandLabel' => 'АПК Технологии',
-            'brandImage' => Url::to("/images/logo.png", true),
-            'brandUrl' => Yii::$app->homeUrl,
-
-            'options' => ['class' => 'navbar navbar-expand-md navbar-light bg-light fixed-top']
-        ]);
-
-        echo '<div class="ms-1 fs-2 fw-medium app-name">Склад</div>';
-
         echo $this->render('menu');
 
         echo Nav::widget([
@@ -64,8 +65,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     ]
             ],
         ]);
-        NavBar::end();
     }
+    NavBar::end();
     ?>
 </header>
 
@@ -79,7 +80,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; ООО &laquo;АПК-Технологии&raquo; <?= date('Y') ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; ООО
+                &laquo;АПК-Технологии&raquo; <?= date('Y') ?></div>
         </div>
     </div>
 </footer>
