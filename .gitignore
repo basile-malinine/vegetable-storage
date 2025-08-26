@@ -1,6 +1,8 @@
 # phpstorm project files
 .idea
 
+.osp
+
 composer.lock
 
 # windows thumbnail cache
