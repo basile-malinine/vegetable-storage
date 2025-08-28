@@ -2,11 +2,21 @@
 
 namespace app\models\User;
 
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $pass_hash
+ */
+
+use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
+    public string $password = '';
+
     public static function tableName()
     {
         return 'user';
@@ -15,10 +25,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'pass_hash'], 'required'],
-            [['name', 'pass_hash'], 'string'],
+            [['name'], 'required'],
+            [['name', 'email', 'password'], 'string'],
             [['email'], 'email'],
             [['email'], 'unique'],
+            [['password'], 'required',
+                'when' => function ($model) {
+                    return !isset($model->pass_hash);
+                }, 'message' => 'Необходимо заполнить Пароль.'
+            ],
         ];
     }
 
@@ -27,10 +42,20 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'name' => 'Имя пользователя',
             'email' => 'Адрес электронной почты',
+            'password' => 'Пароль',
         ];
     }
 
-    public static function findIdentity($id)
+    public function beforeSave($insert)
+    {
+        if ($insert || $this->password) {
+            $this->pass_hash = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+        }
+
+        return true;
+    }
+
+        public static function findIdentity($id)
     {
         return static::findOne($id);
     }

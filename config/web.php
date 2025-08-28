@@ -78,6 +78,9 @@ $config = [
 
                 // AcceptanceTypeController Типы приемки
                 'acceptance-type/<action:(edit|delete)>/<id:\d+>' => 'acceptance-type/<action>',
+
+                // UserController Пользователи
+                'user/<action:(edit|delete)>/<id:\d+>' => 'user/<action>',
             ],
         ],
     ],

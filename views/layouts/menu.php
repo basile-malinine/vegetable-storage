@@ -1,9 +1,6 @@
 <?php
 
 use yii\bootstrap5\Nav;
-use app\models\Company\Company;
-use app\models\LegalSubject\LegalSubject;
-use app\models\Product\Product;
 
 echo Nav::widget([
     'options' => ['class' => 'navbar-nav'],
@@ -42,6 +39,16 @@ echo Nav::widget([
                 [
                     'label' => 'Страны',
                     'url' => ['/country'],
+                ],
+            ],
+        ],
+
+        [
+            'label' => 'Управление',
+            'items' => [
+                [
+                    'label' => 'Пользователи',
+                    'url' => ['/user'],
                 ],
             ],
         ],
