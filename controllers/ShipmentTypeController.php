@@ -2,17 +2,17 @@
 
 namespace app\controllers;
 
-use app\models\AcceptanceType\AcceptanceType;
-use app\models\AcceptanceType\AcceptanceTypeSearch;
+use app\models\ShipmentType\ShipmentType;
+use app\models\ShipmentType\ShipmentTypeSearch;
 use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class AcceptanceTypeController extends Controller
+class ShipmentTypeController extends Controller
 {
     public function actionIndex()
     {
-        $searchModel = new AcceptanceTypeSearch();
+        $searchModel = new ShipmentTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         $header = 'Типы приёмки';
@@ -22,7 +22,7 @@ class AcceptanceTypeController extends Controller
 
     public function actionCreate()
     {
-        $model = new AcceptanceType();
+        $model = new ShipmentType();
 
         $header = 'Тип приемки (новый)';
 
@@ -68,7 +68,7 @@ class AcceptanceTypeController extends Controller
 
     private function findModel($id)
     {
-        if (($model = AcceptanceType::findOne(['id' => $id])) !== null) {
+        if (($model = ShipmentType::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
@@ -84,4 +84,5 @@ class AcceptanceTypeController extends Controller
         }
         return false;
     }
+
 }

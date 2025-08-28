@@ -81,6 +81,9 @@ $config = [
 
                 // UserController Пользователи
                 'user/<action:(edit|delete)>/<id:\d+>' => 'user/<action>',
+
+                // ShipmentTypeController Типы отгрузки
+                'shipment-type/<action:(edit|delete)>/<id:\d+>' => 'shipment-type/<action>',
             ],
         ],
     ],

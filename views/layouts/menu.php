@@ -34,6 +34,12 @@ echo Nav::widget([
                     'url' => ['/acceptance-type'],
                 ],
 
+                [
+                    'label' => 'Типы отгрузки',
+                    'url' => ['/shipment-type'],
+
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [
