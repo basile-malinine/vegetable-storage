@@ -78,7 +78,9 @@ class Assortment extends \yii\db\ActiveRecord
 
     public function beforeValidate()
     {
-        $this->weight = str_replace(',', '.', $this->weight);
+        if (isset($this->weight) && $this->weight) {
+            $this->weight = str_replace(',', '.', $this->weight);
+        }
         return parent::beforeValidate();
     }
 
