@@ -15,10 +15,12 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
     <div class="page-top-panel">
         <div class="page-top-panel-header d-flex">
             <?= $header ?>
-            <a href="/unit/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
-                <i class="fa fa-plus"></i>
-                <span class="ms-2">Добавить</span>
-            </a>
+            <?php if (Yii::$app->user->can('unit::create')): ?>
+                <a href="/unit/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
+                    <i class="fa fa-plus"></i>
+                    <span class="ms-2">Добавить</span>
+                </a>
+            <?php endif ?>
         </div>
     </div>
 

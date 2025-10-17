@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\Unit\Unit;
@@ -10,6 +11,40 @@ use app\models\Unit\UnitSearch;
 
 class UnitController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['unit::list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['unit::create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['unit::edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['unit::delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new UnitSearch();
