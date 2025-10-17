@@ -15,7 +15,7 @@ class ShipmentTypeController extends Controller
         $searchModel = new ShipmentTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Типы приёмки';
+        $header = 'Типы отгрузки';
 
         return $this->render('list', compact('dataProvider', 'header'));
     }
@@ -24,7 +24,7 @@ class ShipmentTypeController extends Controller
     {
         $model = new ShipmentType();
 
-        $header = 'Тип приемки (новый)';
+        $header = 'Тип отгрузки (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -40,7 +40,7 @@ class ShipmentTypeController extends Controller
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Тип приемки [' . $model->name . ']';
+        $header = 'Тип отгрузки [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
