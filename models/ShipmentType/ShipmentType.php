@@ -29,10 +29,11 @@ class ShipmentType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['comment'], 'default', 'value' => null],
             [['name'], 'required'],
             [['name'], 'string', 'max' => 30],
-            [['comment'], 'string', 'max' => 255],
+            [['name'], 'unique'],
+            [['comment'], 'string'],
+            [['comment'], 'default', 'value' => null],
         ];
     }
 
