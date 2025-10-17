@@ -40,6 +40,12 @@ echo Nav::widget([
 
                 ],
 
+                [
+                    'label' => 'Виды работ',
+                    'url' => ['/work-type'],
+
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

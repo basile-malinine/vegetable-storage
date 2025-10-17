@@ -88,6 +88,9 @@ $config = [
 
                 // ShipmentTypeController Типы отгрузки
                 'shipment-type/<action:(edit|delete)>/<id:\d+>' => 'shipment-type/<action>',
+
+                // WorkTypeController Виды работ
+                'work-type/<action:(edit|delete)>/<id:\d+>' => 'work-type/<action>',
             ],
         ],
     ],
