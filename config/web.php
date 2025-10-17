@@ -91,6 +91,9 @@ $config = [
 
                 // WorkTypeController Виды работ
                 'work-type/<action:(edit|delete)>/<id:\d+>' => 'work-type/<action>',
+
+                // ContractorController Исполнители
+                'contractor/<action:(edit|delete)>/<id:\d+>' => 'contractor/<action>',
             ],
         ],
     ],

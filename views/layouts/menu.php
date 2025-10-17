@@ -37,13 +37,18 @@ echo Nav::widget([
                 [
                     'label' => 'Типы отгрузки',
                     'url' => ['/shipment-type'],
-
                 ],
 
                 [
                     'label' => 'Виды работ',
                     'url' => ['/work-type'],
+                ],
 
+                '<hr class="dropdown-divider">',
+
+                [
+                    'label' => 'Исполнители',
+                    'url' => ['/contractor'],
                 ],
 
                 '<hr class="dropdown-divider">',
