@@ -173,6 +173,58 @@ class RbacController extends Controller
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
+        // Разрешения для справочника Виды работ -------------------------------------
+
+        $permission = $authManager->createPermission('work_type::list');      // Просмотр списка
+        $permission->description = 'Виды работ :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('work_type::create');    // Добавление
+        $permission->description = 'Виды работ :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('work_type::edit');      // Редактирование
+        $permission->description = 'Виды работ :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('work_type::delete');    // Удаление
+        $permission->description = 'Виды работ :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        // Разрешения для справочника Исполнители ------------------------------------
+
+        $permission = $authManager->createPermission('contractor::list');      // Просмотр списка
+        $permission->description = 'Исполнители :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('contractor::create');    // Добавление
+        $permission->description = 'Исполнители :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('contractor::edit');      // Редактирование
+        $permission->description = 'Исполнители :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('contractor::delete');    // Удаление
+        $permission->description = 'Исполнители :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
         // Назначение роли Администратор Пользователю с ID === 1 (по умолчанию admin)
         $authManager->assign($admin, 1);
         $authManager->invalidateCache();
