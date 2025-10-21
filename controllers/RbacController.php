@@ -2,12 +2,11 @@
 
 namespace app\controllers;
 
-use app\models\Rbac\Permission;
 use Yii;
 use yii\bootstrap5\ActiveForm;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Response;
+use app\models\Rbac\Permission;
 use app\models\Rbac\Role;
 
 class RbacController extends Controller
@@ -19,7 +18,7 @@ class RbacController extends Controller
 
         $header = 'Настройки ролей';
 
-        return $this->render('form', compact('header', 'roles'));
+        return $this->render('form-role', compact('header', 'roles'));
     }
 
     public function actionAddRole()
@@ -44,12 +43,12 @@ class RbacController extends Controller
                 }
             }
         } elseif ($this->request->isAjax) {
-            return $this->renderAjax('form-role', compact('model', 'header'));
+            return $this->renderAjax('form-role-add', compact('model', 'header'));
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->renderAjax('form-role', compact('model', 'header'));
+        return $this->renderAjax('form-role-add', compact('model', 'header'));
     }
 
     public function actionRemoveRole($name)
