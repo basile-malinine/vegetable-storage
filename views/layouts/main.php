@@ -86,6 +86,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     </div>
 </footer>
 
+<?php include_once Yii::getAlias('@app/views/_modal/_modal-form-lg.php'); ?>
+
 <?php $this->endBody() ?>
 </body>
 </html>
