@@ -20,25 +20,25 @@ class UnitController extends Controller
                     [
                         'allow' => true,
                         'actions' => ['index'],
-                        'roles' => ['unit::list'],
+                        'roles' => ['unit.list'],
                     ],
 
                     [
                         'allow' => true,
                         'actions' => ['create'],
-                        'roles' => ['unit::create'],
+                        'roles' => ['unit.create'],
                     ],
 
                     [
                         'allow' => true,
                         'actions' => ['edit'],
-                        'roles' => ['unit::edit'],
+                        'roles' => ['unit.edit'],
                     ],
 
                     [
                         'allow' => true,
                         'actions' => ['delete'],
-                        'roles' => ['unit::delete'],
+                        'roles' => ['unit.delete'],
                     ],
                 ],
             ],
