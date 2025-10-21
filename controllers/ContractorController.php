@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\Contractor\Contractor;
@@ -10,6 +11,40 @@ use app\models\Contractor\ContractorSearch;
 
 class ContractorController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['contractor.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['contractor.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['contractor.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['contractor.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new ContractorSearch();

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\bootstrap5\ActiveForm;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use app\models\Rbac\Permission;
@@ -12,6 +13,32 @@ use app\models\User\User;
 
 class RbacController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            'index',
+                            'add-role',
+                            'remove-role',
+                            'get-permissions-by-role',
+                            'add-role-permissions',
+                            'remove-role-permissions',
+                            'user',
+                            'add-role-to-user',
+                            'remove-role-from-user',
+                        ],
+                        'roles' => ['role.access'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $auth = Yii::$app->authManager;

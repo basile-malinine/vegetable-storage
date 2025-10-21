@@ -2,14 +2,49 @@
 
 namespace app\controllers;
 
-use app\models\Assortment\Assortment;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\Assortment\Assortment;
 use app\models\Assortment\AssortmentSearch;
 
 class AssortmentController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['assortment.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['assortment.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['assortment.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['assortment.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new AssortmentSearch();

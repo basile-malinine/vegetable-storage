@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\Country\Country;
@@ -10,6 +11,40 @@ use app\models\Country\CountrySearch;
 
 class CountryController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['country.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['country.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['country.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['country.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex(): string
     {
         $searchModel = new CountrySearch();

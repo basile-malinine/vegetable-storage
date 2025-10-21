@@ -2,14 +2,49 @@
 
 namespace app\controllers;
 
-use app\models\Product\Product;
-use app\models\Product\ProductSearch;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\Product\Product;
+use app\models\Product\ProductSearch;
 
 class ProductController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['product.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['product.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['product.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['product.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new ProductSearch();

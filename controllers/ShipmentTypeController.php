@@ -2,14 +2,49 @@
 
 namespace app\controllers;
 
-use app\models\ShipmentType\ShipmentType;
-use app\models\ShipmentType\ShipmentTypeSearch;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\ShipmentType\ShipmentType;
+use app\models\ShipmentType\ShipmentTypeSearch;
 
 class ShipmentTypeController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['shipment_type.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['shipment_type.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['shipment_type.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['shipment_type.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new ShipmentTypeSearch();

@@ -42,8 +42,8 @@ class Contractor extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'comment' => 'Comment',
+            'name' => 'Название',
+            'comment' => 'Комментарий',
         ];
     }
 

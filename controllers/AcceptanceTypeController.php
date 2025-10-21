@@ -2,14 +2,49 @@
 
 namespace app\controllers;
 
-use app\models\AcceptanceType\AcceptanceType;
-use app\models\AcceptanceType\AcceptanceTypeSearch;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\AcceptanceType\AcceptanceType;
+use app\models\AcceptanceType\AcceptanceTypeSearch;
 
 class AcceptanceTypeController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['acceptance_type.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['acceptance_type.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['acceptance_type.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['acceptance_type.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new AcceptanceTypeSearch();
