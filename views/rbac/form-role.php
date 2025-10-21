@@ -8,7 +8,6 @@
 /** @var array $header */
 
 use yii\bootstrap5\Html;
-use app\models\Rbac\Permission;
 use app\models\Rbac\Role;
 
 // Если добавлена новая роль записываем ID в сессию браузера
@@ -18,6 +17,12 @@ if ($nameNewRole) {
     $this->registerJs('sessionStorage.setItem("rbac.currRole", "' . $nameNewRole . '");',
         \yii\web\View::POS_HEAD);
     $session->remove('rbac.newRole');
+}
+$nameDelRole = $session->get('rbac.delRole');
+if ($nameDelRole) {
+    $this->registerJs('sessionStorage.removeItem("rbac.currRole");',
+        \yii\web\View::POS_HEAD);
+    $session->remove('rbac.delRole');
 }
 
 $this->registerJsFile('@web/js/rbac-role.js');

@@ -37,6 +37,7 @@ class RbacController extends Controller
                     if ($model->save()) {
                         // Записываем в сессию ID новой роли для передачи в JS
                         $session = Yii::$app->session;
+                        $session->remove('rbac.delRole');
                         $session->set('rbac.newRole', $model->name);
                         $this->redirect(['/rbac']);
                     }
@@ -75,6 +76,7 @@ class RbacController extends Controller
                     // Удаляем из сессии, чтобы удалить из сессии JS
                     $session = Yii::$app->session;
                     $session->remove('rbac.newRole');
+                    $session->set('rbac.delRole', $role->name);
                     $this->redirect(['/rbac']);
                 }
             }

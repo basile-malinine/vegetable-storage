@@ -17,7 +17,6 @@ $(() => {
     // Удаление роли
     function clickRemoveRole(e) {
         $('#modal').modal('show').find('#modalContent').load('/rbac/remove-role/' + $listRoles.val());
-        sessionStorage.removeItem('rbac.currRole');
     }
     $removeRole.on('click', clickRemoveRole);
 
