@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use app\models\Rbac\Permission;
 use app\models\Rbac\Role;
+use app\models\User\User;
 
 class RbacController extends Controller
 {
@@ -143,5 +144,31 @@ class RbacController extends Controller
             $permission = $auth->getPermission($permissionName);
             $auth->removeChild($role, $permission);
         }
+    }
+
+    // Настройки ролей и разрешений для Пользователя --------------------------------------
+
+    public function actionUser($id)
+    {
+        $model = User::findOne($id);
+        $header = 'Настройка доступа для Пользователя ' . $model->name;
+
+        return $this->render('form-user', compact('model', 'header'));
+    }
+
+    // Добавление роли Пользователю
+    public function actionAddRoleToUser()
+    {
+        $role = Yii::$app->request->post('role');
+        $userId = Yii::$app->request->post('userId');
+        Role::assignRoleToUser($role, $userId);
+    }
+
+    // Удаление роли у Пользователя
+    public function actionRemoveRoleFromUser()
+    {
+        $role = Yii::$app->request->post('role');
+        $userId = Yii::$app->request->post('userId');
+        Role::revokeRoleFromUser($role, $userId);
     }
 }

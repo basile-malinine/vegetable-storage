@@ -99,4 +99,49 @@ class Role extends Model
 
         return $roles;
     }
+
+    // Получить роли Пользователя
+    public static function getListByUser($userId)
+    {
+        $auth = Yii::$app->authManager;
+        $roles = $auth->getRolesByUser($userId);
+        $roles = ArrayHelper::map($roles, 'name', 'description');
+        asort($roles);
+
+        return $roles;
+    }
+
+    // Получить доступные роли для Пользователя
+    public static function getRevertListByUser($userId)
+    {
+        $auth = Yii::$app->authManager;
+        // Все роли
+        $roles = $auth->getRoles($userId);
+        $roles = ArrayHelper::map($roles, 'name', 'description');
+        // Роли у пользователя
+        $rolesByUser = $auth->getRolesByUser($userId);
+        $rolesByUser = ArrayHelper::map($rolesByUser, 'name', 'description');
+
+        // Выбираем незадействованные роли
+        $roles = array_diff_assoc($roles, $rolesByUser);
+        asort($roles);
+
+        return $roles;
+    }
+
+    // Добавить роль Пользователю
+    public static function assignRoleToUser($roleName, $userId)
+    {
+        $auth = Yii::$app->authManager;
+        $role = $auth->getRole($roleName);
+        $auth->assign($role, $userId);
+    }
+
+    // Удалить роль у Пользователя
+    public static function revokeRoleFromUser($roleName, $userId)
+    {
+        $auth = Yii::$app->authManager;
+        $role = $auth->getRole($roleName);
+        $auth->revoke($role, $userId);
+    }
 }

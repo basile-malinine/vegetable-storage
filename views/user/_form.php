@@ -13,24 +13,26 @@ use app\models\User\User;
 ?>
 
 <div class="page-top-panel">
-    <div class="page-top-panel-header d-inline">
+    <div class="page-top-panel-header d-flex">
         <?= $header ?>
+        <?php if (Yii::$app->controller->action->id !== 'create') : ?>
+        <a href="/rbac/user/<?= $model->id ?>" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
+            <i class="fa fa-shield-alt"></i>
+            <span class="ms-2">Настройка доступа</span>
+        </a>
+        <?php endif; ?>
     </div>
 </div>
 
 <div class="page-content">
     <div class="page-content-form">
 
-        <?php $form = ActiveForm::begin([
-            'id' => 'page-content-form',
-            'fieldConfig' => [
-                'template' => "{label}\n{input}\n{error}",
-                'labelOptions' => ['class' => 'col-form-label pt-0'],
-                'inputOptions' => ['class' => 'form-control form-control-sm'],
-                'errorOptions' => ['class' => 'invalid-feedback'],
-                'enableClientValidation' => false,
-            ],
-        ]); ?>
+        <?php $form = ActiveForm::begin(['id' => 'page-content-form',
+        'fieldConfig' => ['template' => "{label}\n{input}\n{error}",
+        'labelOptions' => ['class' => 'col-form-label pt-0'],
+        'inputOptions' => ['class' => 'form-control form-control-sm'],
+        'errorOptions' => ['class' => 'invalid-feedback'],
+        'enableClientValidation' => false,],]); ?>
 
         <div class="row form-row">
             <!-- Имя пользователя -->
