@@ -94,6 +94,9 @@ $config = [
 
                 // ContractorController Исполнители
                 'contractor/<action:(edit|delete)>/<id:\d+>' => 'contractor/<action>',
+
+                // RbacController Исполнители
+                'rbac/<action:(remove-role)>/<name:\w+>' => 'rbac/<action>',
             ],
         ],
     ],

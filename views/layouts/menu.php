@@ -67,6 +67,11 @@ echo Nav::widget([
                     'label' => 'Пользователи',
                     'url' => ['/user'],
                 ],
+
+                [
+                    'label' => 'Роли',
+                    'url' => ['/rbac'],
+                ],
             ],
         ],
     ]
