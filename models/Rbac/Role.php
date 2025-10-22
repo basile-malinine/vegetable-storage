@@ -27,7 +27,7 @@ class Role extends Model
     {
         $auth = Yii::$app->authManager;
         $testRole = $auth->getRole($this->name);
-        if ($testRole) {
+        if (Yii::$app->controller->action->id === 'add-role' && $testRole) {
             $this->addError('name', 'Уже есть.');
         }
     }
@@ -39,7 +39,7 @@ class Role extends Model
         $descriptions = ArrayHelper::getColumn($roles, 'description');
         $isExist = in_array($this->description, $descriptions);
 
-        if ($isExist) {
+        if (Yii::$app->controller->action->id === 'add-role' && $isExist) {
             $this->addError('description', 'Уже есть.');
         }
     }
@@ -55,9 +55,15 @@ class Role extends Model
     public function save()
     {
         $auth = Yii::$app->authManager;
-        $role = $auth->createRole($this->name);
-        $role->description = $this->description;
-        $auth->add($role);
+        if (Yii::$app->controller->action->id === 'add-role') {
+            $role = $auth->createRole($this->name);
+            $role->description = $this->description;
+            $auth->add($role);
+        } elseif (Yii::$app->controller->action->id === 'edit-role') {
+            $role = $auth->getRole($this->name);
+            $role->description = $this->description;
+            $auth->update($this->name, $role);
+        }
 
         return true;
     }

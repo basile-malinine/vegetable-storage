@@ -45,14 +45,21 @@ $this->registerJsFile('@web/js/rbac-role.js');
                     <div>
                         <?= Html::a('<i class="fa fa-plus"></i>', null,
                             [
-                                'id' => 'addRole',
+                                'id' => 'add-role',
+                                'class' => 'btn btn-light btn-outline-secondary btn-sm mt-2 ps-2 pt-0 pb-3',
+                                'style' => 'height: 24px; width: 29px',
+                            ])
+                        ?>
+                        <?= Html::a('<i class="fa fa-edit"></i>', null,
+                            [
+                                'id' => 'edit-role',
                                 'class' => 'btn btn-light btn-outline-secondary btn-sm mt-2 ps-2 pt-0 pb-3',
                                 'style' => 'height: 24px; width: 29px',
                             ])
                         ?>
                         <?= Html::a('<i class="fa fa-minus"></i>', null,
                             [
-                                'id' => 'removeRole',
+                                'id' => 'remove-role',
                                 'class' => 'btn btn-light btn-outline-secondary btn-sm mt-2 ps-2 pt-0 pb-3',
                                 'style' => 'height: 24px; width: 29px',
                             ])
@@ -94,14 +101,14 @@ $this->registerJsFile('@web/js/rbac-role.js');
                 <div class="d-flex flex-column">
                     <?= Html::a('<i class="fa fa-arrow-left me-2"></i><span>Добавить</span>', null,
                         [
-                            'id' => 'addPermissions',
+                            'id' => 'add-permissions',
                             'class' => 'btn btn-light btn-outline-secondary btn-sm mt-2 ps-2 pt-1 pb-1 align-self-center',
                             'style' => 'height: 32px; width: 100px',
                         ])
                     ?>
                     <?= Html::a('<span>Удалить</span><i class="fa fa-arrow-right ms-2"></i>', null,
                         [
-                            'id' => 'removePermissions',
+                            'id' => 'remove-permissions',
                             'class' => 'btn btn-light btn-outline-secondary btn-sm mt-2 ps-2 pt-1 pb-1 align-self-center',
                             'style' => 'height: 32px; width: 100px',
                         ])

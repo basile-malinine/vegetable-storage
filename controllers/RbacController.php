@@ -24,6 +24,7 @@ class RbacController extends Controller
                         'actions' => [
                             'index',
                             'add-role',
+                            'edit-role',
                             'remove-role',
                             'get-permissions-by-role',
                             'add-role-permissions',
@@ -72,12 +73,45 @@ class RbacController extends Controller
                 }
             }
         } elseif ($this->request->isAjax) {
-            return $this->renderAjax('form-role-add', compact('model', 'header'));
+            return $this->renderAjax('form-role-add-edit', compact('model', 'header'));
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->renderAjax('form-role-add', compact('model', 'header'));
+        return $this->renderAjax('form-role-add-edit', compact('model', 'header'));
+    }
+
+    public function actionEditRole($name)
+    {
+        $auth = Yii::$app->authManager;
+        $role = $auth->getRole($name);
+
+        $model = new Role();
+        $model->name = $name;
+        $model->description = $role->description;
+
+        $header = 'Роль [' . $role->description . ']';
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                if ($model->validate()) {
+                    if ($model->save()) {
+                        $this->redirect(['/rbac']);
+                    }
+                }
+            }
+        } elseif ($this->request->isAjax) {
+            return $this->renderAjax('form-role-add-edit', compact('model', 'header'));
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->renderAjax('form-role-add-edit', compact('model', 'header'));
     }
 
     public function actionRemoveRole($name)

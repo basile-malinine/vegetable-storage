@@ -96,7 +96,7 @@ $config = [
                 'contractor/<action:(edit|delete)>/<id:\d+>' => 'contractor/<action>',
 
                 // RbacController Роли и Разрешения
-                'rbac/<action:(remove-role)>/<name:\w+>' => 'rbac/<action>',
+                'rbac/<action:(edit-role|remove-role)>/<name:\w+>' => 'rbac/<action>',
                 'rbac/<action:(user)>/<id:\d+>' => 'rbac/<action>',
             ],
         ],

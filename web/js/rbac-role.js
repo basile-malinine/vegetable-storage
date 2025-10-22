@@ -1,19 +1,27 @@
 $(() => {
     const $listRoles = $('#roles');
-    const $addRole = $('#addRole');
-    const $removeRole = $('#removeRole');
+    const $addRole = $('#add-role');
+    const $editRole = $('#edit-role');
+    const $removeRole = $('#remove-role');
     const $labelRoleName = $('#role-name');
     const $listRolePermissions = $('#role-permissions')
     const $listPermissions = $('#permissions');
-    const $addPermissions = $('#addPermissions');
-    const $removePermissions = $('#removePermissions');
+    const $addPermissions = $('#add-permissions');
+    const $removePermissions = $('#remove-permissions');
 
     // Добавление роли
     function clickAddRole(e) {
         $('#modal').modal('show').find('#modalContent').load('/rbac/add-role');
-        sessionStorage.setItem('rbac.currRole', $('#roles option:selected').val());
+        sessionStorage.setItem('rbac.currRole', $listRoles.val());
     }
     $addRole.on('click', clickAddRole);
+
+    // Изменение названия роли
+    function clickEditRole(e) {
+        $('#modal').modal('show').find('#modalContent').load('/rbac/edit-role/' + $listRoles.val());
+        sessionStorage.setItem('rbac.currRole', $listRoles.val());
+    }
+    $editRole.on('click', clickEditRole);
 
     // Удаление роли
     function clickRemoveRole(e) {

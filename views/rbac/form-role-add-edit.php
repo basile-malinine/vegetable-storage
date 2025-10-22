@@ -33,7 +33,12 @@ use app\models\Rbac\Role;
         <div class="row form-last-row">
             <!-- Идентификатор -->
             <div class="form-col col-4">
-                <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'name')->textInput(
+                    [
+                        'maxlength' => true,
+                        'readonly' => Yii::$app->controller->action->id === 'edit-role',
+                    ]
+                ) ?>
             </div>
 
             <!-- Название -->
