@@ -9,6 +9,7 @@ echo Nav::widget([
     'items' => [
         [
             'label' => 'Справочники',
+            'options' => ['class' => 'ms-4'],
             'items' => [
                 [
                     'label' => 'Единицы измерения',
@@ -62,6 +63,7 @@ echo Nav::widget([
 
         [
             'label' => 'Управление',
+            'options' => ['class' => 'ms-4'],
             'items' => [
                 [
                     'label' => 'Пользователи',

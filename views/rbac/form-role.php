@@ -70,7 +70,15 @@ $this->registerJsFile('@web/js/rbac-role.js');
 
             <!-- Список разрешений для роли -->
             <div class="form-col col-4">
-                <?= Html::label('Разрешения для роли', 'role-permissions', ['class' => 'col-form-label']) ?>
+                <div class="d-flex">
+                    <?= Html::label('Разрешения для роли', 'role-permissions', ['class' => 'col-form-label']) ?>
+                    <?= Html::label('', 'role-permissions',
+                        [
+                            'id' => 'role-name',
+                            'class' => 'col-form-label ms-1',
+                        ]
+                    ) ?>
+                </div>
                 <?= Html::listBox('role-permissions', null, [],
                     [
                         'id' => 'role-permissions',

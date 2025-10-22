@@ -2,6 +2,7 @@ $(() => {
     const $listRoles = $('#roles');
     const $addRole = $('#addRole');
     const $removeRole = $('#removeRole');
+    const $labelRoleName = $('#role-name');
     const $listRolePermissions = $('#role-permissions')
     const $listPermissions = $('#permissions');
     const $addPermissions = $('#addPermissions');
@@ -25,7 +26,7 @@ $(() => {
         $.post(
             '/rbac/get-permissions-by-role',
             {
-                name: $('#roles option:selected').val(),
+                name: $listRoles.val(),
             },
             (data) => {
                 if (data) {
@@ -40,8 +41,10 @@ $(() => {
                 }
             }
         );
+        // Обновляем метку
+        $labelRoleName.text($('#roles option:selected').text());
         // Записываем в сессию браузера выбранную роль.
-        sessionStorage.setItem('rbac.currRole', $('#roles option:selected').val())
+        sessionStorage.setItem('rbac.currRole', $listRoles.val())
     }
     $listRoles.on('change', changeListRoles)
 
