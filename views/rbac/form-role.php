@@ -3,10 +3,9 @@
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
 
-/** @var array $roles */
-
 /** @var array $header */
 
+use yii\web\View;
 use yii\bootstrap5\Html;
 use app\models\Rbac\Role;
 
@@ -15,13 +14,13 @@ $session = Yii::$app->session;
 $nameNewRole = $session->get('rbac.newRole');
 if ($nameNewRole) {
     $this->registerJs('sessionStorage.setItem("rbac.currRole", "' . $nameNewRole . '");',
-        \yii\web\View::POS_HEAD);
+        View::POS_HEAD);
     $session->remove('rbac.newRole');
 }
 $nameDelRole = $session->get('rbac.delRole');
 if ($nameDelRole) {
     $this->registerJs('sessionStorage.removeItem("rbac.currRole");',
-        \yii\web\View::POS_HEAD);
+        View::POS_HEAD);
     $session->remove('rbac.delRole');
 }
 

@@ -42,12 +42,9 @@ class RbacController extends Controller
 
     public function actionIndex()
     {
-        $auth = Yii::$app->authManager;
-        $roles = $auth->getRoles();
-
         $header = 'Настройки ролей';
 
-        return $this->render('form-role', compact('header', 'roles'));
+        return $this->render('form-role', compact('header'));
     }
 
     public function actionAddRole()
