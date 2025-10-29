@@ -33,6 +33,11 @@ echo Nav::widget([
                     'url' => ['/legal-subject-own'],
                 ],
 
+                [
+                    'label' => 'Менеджеры',
+                    'url' => ['/manager'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

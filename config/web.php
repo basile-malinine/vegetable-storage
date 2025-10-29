@@ -104,6 +104,9 @@ $config = [
 
                 // LegalSubjectOwnController Собственные предприятия
                 'legal-subject-own/<action:(edit|delete)>/<id:\d+>' => 'legal-subject-own/<action>',
+
+                // ContractorController Менеджеры
+                'manager/<action:(edit|delete)>/<id:\d+>' => 'manager/<action>',
             ],
         ],
     ],
