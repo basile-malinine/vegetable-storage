@@ -1,0 +1,123 @@
+<?php
+
+namespace app\controllers;
+
+use Yii;
+use yii\db\IntegrityException;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use app\models\LegalSubject\LegalSubject;
+use app\models\LegalSubject\LegalSubjectSearch;
+
+class LegalSubjectController extends Controller
+{
+    public function actionIndex()
+    {
+        $action = yii::$app->session->get('legal-subject.list', 'all');
+        $this->redirect([$action]);
+    }
+
+    public function actionAll(): string
+    {
+        $searchModel = new LegalSubjectSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider->query->andWhere(['is_own' => false]);
+        $header = 'Контрагенты';
+
+        $session = yii::$app->session;
+        $session->set('legal-subject.list', 'all');
+
+        return $this->render('list', compact(['searchModel', 'dataProvider', 'header']));
+    }
+
+    public function actionSupplier(): string
+    {
+        $searchModel = new LegalSubjectSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider->query->andWhere(['is_own' => false, 'is_supplier' => true]);
+        $header = 'Контрагенты';
+
+        $session = yii::$app->session;
+        $session->set('legal-subject.list', 'supplier');
+
+        return $this->render('list', compact(['searchModel', 'dataProvider', 'header']));
+    }
+
+    public function actionBuyer(): string
+    {
+        $searchModel = new LegalSubjectSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider->query->andWhere(['is_own' => false, 'is_buyer' => true]);
+        $header = 'Контрагенты';
+
+        $session = yii::$app->session;
+        $session->set('legal-subject.list', 'buyer');
+
+        return $this->render('list', compact(['searchModel', 'dataProvider', 'header']));
+    }
+
+    public function actionCreate()
+    {
+        $model = new LegalSubject();
+        $model->is_own = false;
+        $header = 'Контрагент (новый)';
+
+        if ($this->request->isPost) {
+            if ($this->postRequestAnalysis($model)) {
+                $this->redirect(['index']);
+            }
+        } else {
+            $model->loadDefaultValues();
+        }
+
+        return $this->render('create', compact('model', 'header'));
+    }
+
+    public function actionEdit($id)
+    {
+        $model = $this->findModel($id);
+        $header = 'Контрагент [' . $model->name . ']';
+
+        if ($this->request->isPost) {
+            if ($this->postRequestAnalysis($model)) {
+                $this->redirect(['index']);
+            }
+        }
+
+        return $this->render('edit', compact('model', 'header'));
+    }
+
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        $dbMessages = \Yii::$app->params['messages']['db'];
+        try {
+            $model->delete();
+        } catch (IntegrityException $e) {
+            \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);
+        } catch (\Exception $e) {
+            \Yii::$app->session->setFlash('error', $dbMessages['delError']);
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = LegalSubject::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function postRequestAnalysis($model): bool
+    {
+        if ($model->load($this->request->post())) {
+            if ($model->validate() && $model->save()) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

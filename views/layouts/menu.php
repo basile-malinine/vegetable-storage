@@ -12,8 +12,25 @@ echo Nav::widget([
             'options' => ['class' => 'ms-4'],
             'items' => [
                 [
+                    'label' => 'Страны',
+                    'url' => ['/country'],
+                ],
+
+                [
                     'label' => 'Единицы измерения',
                     'url' => ['/unit'],
+                ],
+
+                '<hr class="dropdown-divider">',
+
+                [
+                    'label' => 'Контрагенты',
+                    'url' => ['/legal-subject'],
+                ],
+
+                [
+                    'label' => 'Собственные предприятия',
+                    'url' => ['/legal-subject-own'],
                 ],
 
                 '<hr class="dropdown-divider">',
@@ -40,23 +57,16 @@ echo Nav::widget([
                     'url' => ['/shipment-type'],
                 ],
 
+                '<hr class="dropdown-divider">',
+
                 [
                     'label' => 'Виды работ',
                     'url' => ['/work-type'],
                 ],
 
-                '<hr class="dropdown-divider">',
-
                 [
                     'label' => 'Исполнители',
                     'url' => ['/contractor'],
-                ],
-
-                '<hr class="dropdown-divider">',
-
-                [
-                    'label' => 'Страны',
-                    'url' => ['/country'],
                 ],
             ],
         ],

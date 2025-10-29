@@ -98,6 +98,12 @@ $config = [
                 // RbacController Роли и Разрешения
                 'rbac/<action:(edit-role|remove-role)>/<name:\w+>' => 'rbac/<action>',
                 'rbac/<action:(user)>/<id:\d+>' => 'rbac/<action>',
+
+                // LegalSubjectController Контрагенты
+                'legal-subject/<action:(edit|delete)>/<id:\d+>' => 'legal-subject/<action>',
+
+                // LegalSubjectOwnController Собственные предприятия
+                'legal-subject-own/<action:(edit|delete)>/<id:\d+>' => 'legal-subject-own/<action>',
             ],
         ],
     ],
