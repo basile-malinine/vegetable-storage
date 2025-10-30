@@ -303,6 +303,32 @@ class RbacController extends Controller
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
+        // Разрешения для справочника Склады ----------------------------------------
+
+        $permission = $authManager->createPermission('stock.list');      // Просмотр списка
+        $permission->description = 'Справочники :: Склады :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('stock.create');    // Добавление
+        $permission->description = 'Справочники :: Склады :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('stock.edit');      // Редактирование
+        $permission->description = 'Справочники :: Склады :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('stock.delete');    // Удаление
+        $permission->description = 'Справочники :: Склады :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
         // Разрешения для управления Пользователями ----------------------------------
 
         $permission = $authManager->createPermission('user.list');      // Просмотр списка

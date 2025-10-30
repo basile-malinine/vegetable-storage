@@ -107,6 +107,9 @@ $config = [
 
                 // ContractorController Менеджеры
                 'manager/<action:(edit|delete)>/<id:\d+>' => 'manager/<action>',
+
+                // ContractorController Склады
+                'stock/<action:(edit|delete)>/<id:\d+>' => 'stock/<action>',
             ],
         ],
     ],

@@ -34,6 +34,11 @@ echo Nav::widget([
                 ],
 
                 [
+                    'label' => 'Склады',
+                    'url' => ['/stock'],
+                ],
+
+                [
                     'label' => 'Менеджеры',
                     'url' => ['/manager'],
                 ],
