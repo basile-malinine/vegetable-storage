@@ -225,6 +225,84 @@ class RbacController extends Controller
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
+        // Разрешения для справочника Менеджеры -------------------------------------
+
+        $permission = $authManager->createPermission('manager.list');      // Просмотр списка
+        $permission->description = 'Справочники :: Менеджеры :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('manager.create');    // Добавление
+        $permission->description = 'Справочники :: Менеджеры :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('manager.edit');      // Редактирование
+        $permission->description = 'Справочники :: Менеджеры :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('manager.delete');    // Удаление
+        $permission->description = 'Справочники :: Менеджеры :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        // Разрешения для справочника Контрагенты ------------------------------------
+
+        $permission = $authManager->createPermission('legal_subject.list');      // Просмотр списка
+        $permission->description = 'Справочники :: Контрагенты :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject.create');    // Добавление
+        $permission->description = 'Справочники :: Контрагенты :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject.edit');      // Редактирование
+        $permission->description = 'Справочники :: Контрагенты :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject.delete');    // Удаление
+        $permission->description = 'Справочники :: Контрагенты :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        // Разрешения для справочника Собственные предприятия -----------------------
+
+        $permission = $authManager->createPermission('legal_subject_own.list');      // Просмотр списка
+        $permission->description = 'Справочники :: Собственные предприятия :: Просмотр списка';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject_own.create');    // Добавление
+        $permission->description = 'Справочники :: Собственные предприятия :: Добавление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject_own.edit');      // Редактирование
+        $permission->description = 'Справочники :: Собственные предприятия :: Редактирование';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
+        $permission = $authManager->createPermission('legal_subject_own.delete');    // Удаление
+        $permission->description = 'Справочники :: Собственные предприятия :: Удаление';
+        $authManager->add($permission);
+        // Разрешаем Администратору
+        $authManager->addChild($admin, $permission);
+
         // Разрешения для управления Пользователями ----------------------------------
 
         $permission = $authManager->createPermission('user.list');      // Просмотр списка

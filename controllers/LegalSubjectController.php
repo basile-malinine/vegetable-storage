@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use app\models\LegalSubject\LegalSubject;
@@ -11,6 +12,40 @@ use app\models\LegalSubject\LegalSubjectSearch;
 
 class LegalSubjectController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'all', 'supplier', 'buyer'],
+                        'roles' => ['legal_subject.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['legal_subject.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['legal_subject.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['legal_subject.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $action = yii::$app->session->get('legal-subject.list', 'all');

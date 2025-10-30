@@ -2,14 +2,49 @@
 
 namespace app\controllers;
 
-use app\models\LegalSubject\LegalSubject;
-use app\models\LegalSubject\LegalSubjectSearch;
 use yii\db\IntegrityException;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\LegalSubject\LegalSubject;
+use app\models\LegalSubject\LegalSubjectSearch;
 
 class LegalSubjectOwnController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['legal_subject_own.list'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['legal_subject_own.create'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['edit'],
+                        'roles' => ['legal_subject_own.edit'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['delete'],
+                        'roles' => ['legal_subject_own.delete'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex(): string
     {
         $searchModel = new LegalSubjectSearch();
