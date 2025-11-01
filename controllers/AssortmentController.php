@@ -6,6 +6,7 @@ use yii\db\IntegrityException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use app\models\Assortment\Assortment;
 use app\models\Assortment\AssortmentSearch;
 
@@ -39,6 +40,12 @@ class AssortmentController extends Controller
                         'allow' => true,
                         'actions' => ['delete'],
                         'roles' => ['assortment.delete'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['get-unit-weight'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -99,6 +106,19 @@ class AssortmentController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+
+    // Возвращает название Ед. изм. и Вес по позиции в виде
+    public function actionGetUnitWeight()
+    {
+        $id = \Yii::$app->request->post('id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $this->findModel($id);
+
+        return [
+            'unit' => $model->unit->name,
+            'weight' => $model->weight,
+        ];
     }
 
     private function findModel($id)

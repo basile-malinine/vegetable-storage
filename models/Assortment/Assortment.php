@@ -3,7 +3,10 @@
 namespace app\models\Assortment;
 
 use DateTime;
+
 use Yii;
+use yii\db\ActiveQuery;
+
 use app\models\Product\Product;
 use app\models\Unit\Unit;
 use app\models\User\User;
@@ -99,7 +102,7 @@ class Assortment extends \yii\db\ActiveRecord
     /**
      * Gets query for [[CreatedBy]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getCreatedBy()
     {
@@ -109,7 +112,7 @@ class Assortment extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Product]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getProduct()
     {
@@ -119,11 +122,29 @@ class Assortment extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Unit]].
      *
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getUnit()
     {
         return $this->hasOne(Unit::class, ['id' => 'unit_id']);
     }
 
+    public static function getList(): array
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
+
+    public static function getListExceptIds(array $ids): array
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->where(['not in', 'id', $ids])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
 }

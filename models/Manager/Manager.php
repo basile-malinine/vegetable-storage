@@ -47,4 +47,13 @@ class Manager extends \yii\db\ActiveRecord
         ];
     }
 
+    // Список Менеджеров
+    public static function getList(): array
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
 }

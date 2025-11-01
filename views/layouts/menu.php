@@ -82,6 +82,17 @@ echo Nav::widget([
         ],
 
         [
+            'label' => 'Документы',
+            'options' => ['class' => 'ms-4'],
+            'items' => [
+                [
+                    'label' => 'Доставки',
+                    'url' => ['/delivery'],
+                ],
+            ],
+        ],
+
+        [
             'label' => 'Управление',
             'options' => ['class' => 'ms-4'],
             'items' => [

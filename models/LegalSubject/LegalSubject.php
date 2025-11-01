@@ -97,12 +97,23 @@ class LegalSubject extends ActiveRecord
             ->column();
     }
 
-    // Список Контрагентов
-    public static function getListExceptOwn(): array
+    // Список Поставщиков
+    public static function getListSupplier(): array
     {
         return self::find()
             ->select(['name', 'id'])
-            ->where(['is_own' => false])
+            ->where(['is_supplier' => true])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
+
+    // Список Покупателей
+    public static function getListBuyer(): array
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->where(['is_buyer' => true])
             ->indexBy('id')
             ->orderBy(['name' => SORT_ASC])
             ->column();

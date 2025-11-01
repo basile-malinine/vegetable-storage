@@ -42,4 +42,14 @@ class Stock extends ActiveRecord
             'comment' => 'Комментарий',
         ];
     }
+
+    // Список Складов
+    public static function getList(): array
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
+    }
 }

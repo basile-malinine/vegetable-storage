@@ -108,8 +108,14 @@ $config = [
                 // ContractorController Менеджеры
                 'manager/<action:(edit|delete)>/<id:\d+>' => 'manager/<action>',
 
-                // ContractorController Склады
+                // StockController Склады
                 'stock/<action:(edit|delete)>/<id:\d+>' => 'stock/<action>',
+
+                // DeliveryController Доставки
+                'delivery/<action:(edit|delete)>/<id:\d+>' => 'delivery/<action>',
+
+                // DeliveryItemController Позиция по Доставке
+                'delivery-item/<action:(add|edit)>/<id:\d+>' => 'delivery-item/<action>',
             ],
         ],
     ],
