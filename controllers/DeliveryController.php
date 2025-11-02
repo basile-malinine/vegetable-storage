@@ -17,15 +17,6 @@ class DeliveryController extends Controller
         $searchModel = new DeliverySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $session = Yii::$app->session;
-        if ($session->get('delivery_item.change', false)) {
-            $items = $dataProvider->getModels();
-            foreach ($items as $item) {
-                $item->setSummaryValues();
-            }
-            $session->remove('delivery_item.change');
-        }
-
         return $this->render('list', compact('dataProvider'));
     }
 
