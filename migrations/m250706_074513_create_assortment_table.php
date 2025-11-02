@@ -20,8 +20,8 @@ class m250706_074513_create_assortment_table extends Migration
             'weight' => $this->decimal(10, 3)->notNull()->comment('Вес'),
             'comment' => $this->text()->null()->comment('Комментарий'),
             'created_by' => $this->integer()->notNull()->comment('Создатель'),
-            'created_at' => $this->date()->notNull()->comment('Дата создания'),
-            'updated_at' => $this->date()->notNull()->comment('Дата обновления'),
+            'created_at' => $this->timestamp()->notNull()->comment('Дата создания'),
+            'updated_at' => $this->timestamp()->notNull()->comment('Дата обновления'),
         ]);
 
         $this->createIndex(
