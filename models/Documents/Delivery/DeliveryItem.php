@@ -1,10 +1,9 @@
 <?php
 
-namespace app\models\Delivery;
-
-use yii\db\ActiveRecord;
+namespace app\models\Documents\Delivery;
 
 use app\models\Assortment\Assortment;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "delivery_item".

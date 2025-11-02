@@ -1,15 +1,14 @@
 <?php
 
-namespace app\models\Delivery;
+namespace app\models\Documents\Delivery;
 
+use app\models\LegalSubject\LegalSubject;
+use app\models\Manager\Manager;
 use app\models\Stock\Stock;
 use DateTime;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
-
-use app\models\LegalSubject\LegalSubject;
-use app\models\Manager\Manager;
 
 /**
  * This is the model class for table "delivery".

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\Delivery;
+namespace app\models\Documents\Delivery;
 
 use yii\data\ActiveDataProvider;
 

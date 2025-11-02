@@ -3,7 +3,7 @@
 /** @var yii\web\View $this */
 /** @var DeliveryItem $model */
 
-use app\models\Delivery\DeliveryItem;
+use app\models\Documents\Delivery\DeliveryItem;
 
 $header = 'Новая позиция';
 ?>

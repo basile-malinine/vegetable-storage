@@ -3,10 +3,9 @@
 /** @var yii\data\ActiveDataProvider $dataProviderItem */
 /** @var Delivery $model */
 
+use app\models\Documents\Delivery\Delivery;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-
-use app\models\Delivery\Delivery;
 
 ?>
 

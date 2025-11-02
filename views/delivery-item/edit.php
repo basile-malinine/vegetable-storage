@@ -1,9 +1,9 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var DeliveryItem $model */
+/** @var \app\models\Documents\Delivery\DeliveryItem $model */
 
-use app\models\Delivery\DeliveryItem;
+use app\models\Documents\Delivery\DeliveryItem;
 
 $header = 'Позиция [' . $model->assortment->name . ']';
 

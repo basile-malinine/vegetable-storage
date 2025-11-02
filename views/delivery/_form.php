@@ -7,16 +7,15 @@
 
 /** @var string $header */
 
-use yii\web\View;
-use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\Html;
-use kartik\datetime\DateTimePicker;
-use kartik\select2\Select2;
-
-use app\models\Delivery\Delivery;
+use app\models\Documents\Delivery\Delivery;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
 use app\models\Stock\Stock;
+use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
+use yii\web\View;
 
 $actionID = Yii::$app->controller->action->id;
 if ($actionID !== 'create' && !$model->date_close) {
