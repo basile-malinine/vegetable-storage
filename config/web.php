@@ -116,6 +116,9 @@ $config = [
 
                 // DeliveryItemController Позиция по Доставке
                 'delivery-item/<action:(add|edit)>/<id:\d+>' => 'delivery-item/<action>',
+
+                // EmployeeController Сотрудники
+                'employee/<action:(edit|delete)>/<id:\d+>' => 'employee/<action>',
             ],
         ],
     ],

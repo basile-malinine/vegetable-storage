@@ -39,6 +39,11 @@ echo Nav::widget([
                 ],
 
                 [
+                    'label' => 'Сотрудники',
+                    'url' => ['/employee'],
+                ],
+
+                [
                     'label' => 'Менеджеры',
                     'url' => ['/manager'],
                 ],
