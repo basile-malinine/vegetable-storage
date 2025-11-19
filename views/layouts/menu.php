@@ -34,7 +34,7 @@ echo Nav::widget([
                 ],
 
                 [
-                    'label' => 'Склады',
+                    'label' => 'Склады +G',
                     'url' => ['/stock'],
                 ],
 
