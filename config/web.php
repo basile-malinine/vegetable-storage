@@ -119,6 +119,9 @@ $config = [
 
                 // EmployeeController Сотрудники
                 'employee/<action:(edit|delete)>/<id:\d+>' => 'employee/<action>',
+
+                // FlightTypeController Тип рейса
+                'flight-type/<action:(edit|delete)>/<id:\d+>' => 'flight-type/<action>',
             ],
         ],
     ],

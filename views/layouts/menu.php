@@ -72,6 +72,11 @@ echo Nav::widget([
                     'url' => ['/shipment-type'],
                 ],
 
+                [
+                    'label' => 'Типы рейсов +G',
+                    'url' => ['/flight-type'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [
