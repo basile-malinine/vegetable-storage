@@ -77,6 +77,11 @@ echo Nav::widget([
                     'url' => ['/flight-type'],
                 ],
 
+                [
+                    'label' => 'Ворота / Рампы +G',
+                    'url' => ['/gate-type'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

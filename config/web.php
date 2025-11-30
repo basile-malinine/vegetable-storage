@@ -122,6 +122,9 @@ $config = [
 
                 // FlightTypeController Тип рейса
                 'flight-type/<action:(edit|delete)>/<id:\d+>' => 'flight-type/<action>',
+
+                // GateTypeController Ворота / Рампы
+                'gate-type/<action:(edit|delete)>/<id:\d+>' => 'gate-type/<action>',
             ],
         ],
     ],
