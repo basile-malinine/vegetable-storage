@@ -16,3 +16,6 @@ Thumbs.db
 
 tests/_output/*
 tests/_support/_generated
+
+# Google Sheets API
+google-auth.json
