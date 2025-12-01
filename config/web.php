@@ -128,6 +128,9 @@ $config = [
 
                 // PalletTypeController Типы паллет
                 'pallet-type/<action:(edit|delete)>/<id:\d+>' => 'pallet-type/<action>',
+
+                // WorkshiftController Смена
+                'workshift/<action:(edit|delete)>/<id:\d+>' => 'workshift/<action>',
             ],
         ],
     ],

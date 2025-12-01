@@ -87,6 +87,11 @@ echo Nav::widget([
                     'url' => ['/pallet-type'],
                 ],
 
+                [
+                    'label' => 'Смена',
+                    'url' => ['/workshift'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [
