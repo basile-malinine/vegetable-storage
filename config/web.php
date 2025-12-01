@@ -131,6 +131,9 @@ $config = [
 
                 // WorkshiftController Смена
                 'workshift/<action:(edit|delete)>/<id:\d+>' => 'workshift/<action>',
+
+                // TemperatureRegimeController Смена
+                'temperature-regime/<action:(edit|delete)>/<id:\d+>' => 'temperature-regime/<action>',
             ],
         ],
     ],

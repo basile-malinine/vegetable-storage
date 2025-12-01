@@ -92,6 +92,11 @@ echo Nav::widget([
                     'url' => ['/workshift'],
                 ],
 
+                [
+                    'label' => 'Температурные режимы',
+                    'url' => ['/temperature-regime'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [
