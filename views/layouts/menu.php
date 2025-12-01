@@ -97,6 +97,11 @@ echo Nav::widget([
                     'url' => ['/temperature-regime'],
                 ],
 
+                [
+                    'label' => 'Марки автомобилей',
+                    'url' => ['/temperature-regime'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

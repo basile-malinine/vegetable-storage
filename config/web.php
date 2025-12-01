@@ -132,8 +132,11 @@ $config = [
                 // WorkshiftController Смена
                 'workshift/<action:(edit|delete)>/<id:\d+>' => 'workshift/<action>',
 
-                // TemperatureRegimeController Смена
+                // TemperatureRegimeController Температурные режимы
                 'temperature-regime/<action:(edit|delete)>/<id:\d+>' => 'temperature-regime/<action>',
+
+                // CarBrandController Марки автомобилей
+                'car-brand/<action:(edit|delete)>/<id:\d+>' => 'car-brand/<action>',
             ],
         ],
     ],
