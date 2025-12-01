@@ -99,7 +99,12 @@ echo Nav::widget([
 
                 [
                     'label' => 'Марки автомобилей',
-                    'url' => ['/temperature-regime'],
+                    'url' => ['/car-brand'],
+                ],
+
+                [
+                    'label' => 'Типы кузова',
+                    'url' => ['/car-body'],
                 ],
 
                 '<hr class="dropdown-divider">',

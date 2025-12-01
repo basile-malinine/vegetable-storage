@@ -2,29 +2,29 @@
 
 namespace app\controllers;
 
+use app\models\CarBody\CarBody;
+use app\models\CarBody\CarBodySearch;
 use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use app\models\CarBrand\CarBrand;
-use app\models\CarBrand\CarBrandSearch;
 
-class CarBrandController extends Controller
+class CarBodyController extends Controller
 {
     public function actionIndex()
     {
-        $searchModel = new CarBrandSearch();
+        $searchModel = new CarBodySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Марки автомобилей';
+        $header = 'Типы кузова';
 
         return $this->render('list', compact('dataProvider', 'header'));
     }
 
     public function actionCreate()
     {
-        $model = new CarBrand();
+        $model = new CarBody();
 
-        $header = 'Марка автомобиля (новая)';
+        $header = 'Тип кузова (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -40,7 +40,7 @@ class CarBrandController extends Controller
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Марка автомобиля [' . $model->name . ']';
+        $header = 'Тип кузова [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,7 +68,7 @@ class CarBrandController extends Controller
 
     private function findModel($id)
     {
-        if (($model = CarBrand::findOne(['id' => $id])) !== null) {
+        if (($model = CarBody::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

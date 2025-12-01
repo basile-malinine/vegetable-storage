@@ -137,6 +137,9 @@ $config = [
 
                 // CarBrandController Марки автомобилей
                 'car-brand/<action:(edit|delete)>/<id:\d+>' => 'car-brand/<action>',
+
+                // CarBodyController Типы кузова
+                'car-body/<action:(edit|delete)>/<id:\d+>' => 'car-body/<action>',
             ],
         ],
     ],
