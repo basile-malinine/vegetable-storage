@@ -3,10 +3,7 @@
 namespace app\models\FlightType;
 
 use yii\db\ActiveRecord;
-use Google_Client;
-use Google_Service_Sheets;
-use Google_Service_Sheets_ClearValuesRequest;
-use Google_Service_Sheets_ValueRange;
+use app\models\UpdateGoogle;
 
 /**
  * This is the model class for table "flight_type".
@@ -52,35 +49,15 @@ class FlightType extends ActiveRecord
         $this->updateGoogle();
     }
 
-    private function updateGoogle()
+    private function updateGoogle(): void
     {
-        $configPath = \Yii::getAlias('@app/google-auth.json');
-        $values = $this->getListForGoogle();
-
-        $options = ['valueInputOption' => 'USER_ENTERED'];
-        $client = new Google_Client();
-
-        $client->setApplicationName('Google Sheets API');
-        $client->setScopes([Google_Service_Sheets::SPREADSHEETS]);
-        $client->setAccessType('offline');
-        $client->setAuthConfig($configPath);
-        $service = new Google_Service_Sheets($client);
-
-        $range = 'DB!B4:B';
-        $clearRange = new Google_Service_Sheets_ClearValuesRequest();
-        $valueRange = new Google_Service_Sheets_ValueRange();
-        $valueRange->setMajorDimension('COLUMNS');
-        $valueRange->setValues([$values]);
-
-        // Для таблицы Старший смены
-//        $spreadsheetId = '1wzmRAhmt_PQufvNIzAsOvUnHfGCtzLuyx5UuncwdeNc';
-//        $service->spreadsheets_values->clear($spreadsheetId, $range, $clearRange);
-//        $service->spreadsheets_values->update($spreadsheetId, $range, $valueRange, $options);
+        $ug = new UpdateGoogle('DB!B4:B', $this->getListForGoogle());
 
         // Для таблицы Test Table Security
-        $spreadsheetId = '1cr8nsLo9dq-f1n2Tw7rG2sqnS-TtyXoF-G9qfwPRZ4M';
-        $service->spreadsheets_values->clear($spreadsheetId, $range, $clearRange);
-        $service->spreadsheets_values->update($spreadsheetId, $range, $valueRange, $options);
+        $ug->update('1cr8nsLo9dq-f1n2Tw7rG2sqnS-TtyXoF-G9qfwPRZ4M');
+
+        // Для таблицы Старший смены
+        $ug->update('1wzmRAhmt_PQufvNIzAsOvUnHfGCtzLuyx5UuncwdeNc');
     }
 
     // Список Складов
