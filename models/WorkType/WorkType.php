@@ -44,8 +44,8 @@ class WorkType extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'comment' => 'Comment',
+            'name' => 'Название',
+            'comment' => 'Комментарий',
         ];
     }
 
