@@ -82,6 +82,11 @@ echo Nav::widget([
                     'url' => ['/gate-type'],
                 ],
 
+                [
+                    'label' => 'Типы паллет',
+                    'url' => ['/pallet-type'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

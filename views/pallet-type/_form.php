@@ -2,13 +2,13 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-/** @var FlightType $model */
+/** @var PalletType $model */
 
 /** @var string $header */
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-use app\models\FlightType\FlightType;
+use app\models\PalletType\PalletType;
 ?>
 
 <div class="page-top-panel">
@@ -51,7 +51,7 @@ use app\models\FlightType\FlightType;
 
         <div class="form-group">
             <?= Html::submitButton('Сохранить', ['class' => 'btn btn-light btn-outline-primary btn-sm me-2']) ?>
-            <?= Html::a('Отмена', '/flight-type/index', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
+            <?= Html::a('Отмена', '/pallet-type/index', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

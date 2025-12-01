@@ -2,29 +2,29 @@
 
 namespace app\controllers;
 
-use app\models\FlightType\FlightType;
-use app\models\FlightType\FlightTypeSearch;
+use app\models\PalletType\PalletType;
+use app\models\PalletType\PalletTypeSearch;
 use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class FlightTypeController extends Controller
+class PalletTypeController extends Controller
 {
     public function actionIndex()
     {
-        $searchModel = new FlightTypeSearch();
+        $searchModel = new PalletTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Типы рейсов';
+        $header = 'Типы паллет';
 
         return $this->render('list', compact('dataProvider', 'header'));
     }
 
     public function actionCreate()
     {
-        $model = new FlightType();
+        $model = new PalletType();
 
-        $header = 'Тип рейса (новый)';
+        $header = 'Тип паллета (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -40,7 +40,7 @@ class FlightTypeController extends Controller
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Тип рейса [' . $model->name . ']';
+        $header = 'Тип паллета [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,7 +68,7 @@ class FlightTypeController extends Controller
 
     private function findModel($id)
     {
-        if (($model = FlightType::findOne(['id' => $id])) !== null) {
+        if (($model = PalletType::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

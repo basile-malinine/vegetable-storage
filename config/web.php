@@ -125,6 +125,9 @@ $config = [
 
                 // GateTypeController Ворота / Рампы
                 'gate-type/<action:(edit|delete)>/<id:\d+>' => 'gate-type/<action>',
+
+                // PalletTypeController Типы паллет
+                'pallet-type/<action:(edit|delete)>/<id:\d+>' => 'pallet-type/<action>',
             ],
         ],
     ],
