@@ -122,6 +122,17 @@ echo Nav::widget([
         ],
 
         [
+            'label' => 'Статусы',
+            'options' => ['class' => 'ms-4'],
+            'items' => [
+                [
+                    'label' => 'Водитель +G',
+                    'url' => ['/driver-status'],
+                ],
+            ],
+        ],
+
+        [
             'label' => 'Документы',
             'options' => ['class' => 'ms-4'],
             'items' => [

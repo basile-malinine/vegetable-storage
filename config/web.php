@@ -140,6 +140,9 @@ $config = [
 
                 // CarBodyController Типы кузова
                 'car-body/<action:(edit|delete)>/<id:\d+>' => 'car-body/<action>',
+
+                // DriverStatusController Статус Водитель
+                'driver-status/<action:(edit|delete)>/<id:\d+>' => 'driver-status/<action>',
             ],
         ],
     ],
