@@ -144,6 +144,11 @@ echo Nav::widget([
                     'label' => 'Заказ +G',
                     'url' => ['/order-status'],
                 ],
+
+                [
+                    'label' => 'Приёмка +G',
+                    'url' => ['/acceptance-status'],
+                ],
             ],
         ],
 

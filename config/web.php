@@ -152,6 +152,9 @@ $config = [
 
                 // OrderStatusController Статус Заказ
                 'order-status/<action:(edit|delete)>/<id:\d+>' => 'order-status/<action>',
+
+                // AcceptanceStatusController Статус Приёмка
+                'acceptance-status/<action:(edit|delete)>/<id:\d+>' => 'acceptance-status/<action>',
             ],
         ],
     ],
