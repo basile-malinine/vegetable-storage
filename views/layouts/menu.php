@@ -129,6 +129,11 @@ echo Nav::widget([
                     'label' => 'Водитель +G',
                     'url' => ['/driver-status'],
                 ],
+
+                [
+                    'label' => 'Местоположение +G',
+                    'url' => ['/location-status'],
+                ],
             ],
         ],
 

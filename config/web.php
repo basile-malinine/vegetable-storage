@@ -143,6 +143,9 @@ $config = [
 
                 // DriverStatusController Статус Водитель
                 'driver-status/<action:(edit|delete)>/<id:\d+>' => 'driver-status/<action>',
+
+                // LocationStatusController Статус Местоположение
+                'location-status/<action:(edit|delete)>/<id:\d+>' => 'location-status/<action>',
             ],
         ],
     ],
