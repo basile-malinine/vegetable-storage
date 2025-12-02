@@ -146,6 +146,9 @@ $config = [
 
                 // LocationStatusController Статус Местоположение
                 'location-status/<action:(edit|delete)>/<id:\d+>' => 'location-status/<action>',
+
+                // StickerStatusController Статус Стикер
+                'sticker-status/<action:(edit|delete)>/<id:\d+>' => 'sticker-status/<action>',
             ],
         ],
     ],

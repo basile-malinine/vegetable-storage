@@ -134,6 +134,11 @@ echo Nav::widget([
                     'label' => 'Местоположение +G',
                     'url' => ['/location-status'],
                 ],
+
+                [
+                    'label' => 'Стикер +G',
+                    'url' => ['/sticker-status'],
+                ],
             ],
         ],
 
