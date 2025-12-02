@@ -149,6 +149,9 @@ $config = [
 
                 // StickerStatusController Статус Стикер
                 'sticker-status/<action:(edit|delete)>/<id:\d+>' => 'sticker-status/<action>',
+
+                // OrderStatusController Статус Заказ
+                'order-status/<action:(edit|delete)>/<id:\d+>' => 'order-status/<action>',
             ],
         ],
     ],

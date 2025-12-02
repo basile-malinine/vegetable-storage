@@ -139,6 +139,11 @@ echo Nav::widget([
                     'label' => 'Стикер +G',
                     'url' => ['/sticker-status'],
                 ],
+
+                [
+                    'label' => 'Заказ +G',
+                    'url' => ['/order-status'],
+                ],
             ],
         ],
 
