@@ -6,9 +6,9 @@ use yii\db\IntegrityException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use app\models\Country\Country;
 use app\models\Country\CountrySearch;
-use yii\web\Response;
 
 class CountryController extends Controller
 {
