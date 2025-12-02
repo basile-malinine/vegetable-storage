@@ -2,13 +2,13 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-/** @var DriverStatus $model */
+/** @var LocationStatus $model */
 
 /** @var string $header */
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-use app\models\DriverStatus\DriverStatus;
+use app\models\LocationStatus\LocationStatus;
 ?>
 
 <div class="page-top-panel">
