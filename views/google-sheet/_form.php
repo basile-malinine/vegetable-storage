@@ -44,6 +44,11 @@ $account = UpdateGoogle::getAccount();
                     [
                         'id' => 'sheet_id',
                         'maxlength' => true,
+                        'onchange' => '
+                            $("#name").val("");
+                            $("#submit-btn").attr("hidden", true);
+                            $("#open-sheet").attr("hidden", true);
+                        '
                     ]
                 ) ?>
             </div>
