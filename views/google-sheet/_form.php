@@ -46,7 +46,7 @@ $account = UpdateGoogle::getAccount();
                         'maxlength' => true,
                         'onchange' => '
                             $("#name").val("");
-                            $("#submit-btn").attr("hidden", true);
+                            $("#submit-btn").attr("disabled", true);
                             $("#open-sheet").attr("hidden", true);
                         '
                     ]
@@ -55,7 +55,7 @@ $account = UpdateGoogle::getAccount();
             <div class="form-col col-2">
                 <?= Html::img(Yii::getAlias('@web/images/sheet.webp'), [
                     'id' => 'open-sheet',
-                    'style' => 'height: 56px; margin-top: 5px; cursor: pointer;',
+                    'style' => 'height: 70px; margin-top: 6px; cursor: pointer;',
                     'title' => 'Открыть',
                     'hidden' => true,
                     'onclick' => '
@@ -89,7 +89,7 @@ $account = UpdateGoogle::getAccount();
                 'class' => 'btn btn-light btn-outline-secondary btn-sm me-2',
                 'onclick' => '
                     $("#name").val("");
-                    $("#submit-btn").attr("hidden", true);
+                    $("#submit-btn").attr("disabled", true);
                     $("#open-sheet").attr("hidden", true);
                     if ($("#sheet_id").val().trim() === "") {
                         alert("Sheet ID не должно быть пустым.");                    
@@ -104,7 +104,7 @@ $account = UpdateGoogle::getAccount();
                                 case 0:
                                     $("#name").val(data.title);
                                     $("#open-sheet").removeAttr("hidden");
-                                    $("#submit-btn").removeAttr("hidden");
+                                    $("#submit-btn").removeAttr("disabled");
                                     break;
                                 case 403:
                                     $("#open-sheet").removeAttr("hidden");
@@ -124,7 +124,7 @@ $account = UpdateGoogle::getAccount();
             <?= Html::submitButton('Сохранить', [
                 'id' => 'submit-btn',
                 'class' => 'btn btn-light btn-outline-primary btn-sm me-2',
-                'hidden' => true,
+                'disabled' => true,
             ]) ?>
 
             <?= Html::a('Отмена', '/google-sheet/index', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>

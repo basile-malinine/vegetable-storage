@@ -118,6 +118,9 @@ label {
 
 .dropdown-menu {
     border-radius: 3px;
+}
+
+.bootstrapMenu > .dropdown-menu {
     font-size: 12px;
 }
 
@@ -126,21 +129,21 @@ label {
     right: 0;
 }
 
-.dropdown-menu > li > a {
+.bootstrapMenu > .dropdown-menu > li > a {
     display: block;
-    width: 152px;
+    width: 157px;
     padding: 5px 5px 5px 15px;
     color: #333333;
     text-decoration: none;
 }
 
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
-
-    color: #ffffff;
-    background-color: #315d76;
+.bootstrapMenu > .dropdown-menu > li > a:hover,
+.bootstrapMenu > .dropdown-menu > li > a:focus {
+    /*color: #ffffff;*/
+    background-color: #eeeeee;
 }
 
+/*
 .dropdown-menu > li > a:hover > span,
 .dropdown-menu > li > a:focus > span {
     color: #fff;
@@ -193,6 +196,9 @@ label {
     left: -100%;
     margin-left: 10px;
 }
+*/
+
+/* ------------------------------------------------------------- */
 
 .form-control {
     border-color: #9ca2a6;

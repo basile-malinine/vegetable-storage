@@ -1,9 +1,11 @@
 <?php
 
 use yii\bootstrap5\Nav;
+use kartik\bs5dropdown\Dropdown;
 
 echo Nav::widget([
-    'options' => ['class' => 'navbar-nav'],
+    'dropdownClass' => Dropdown::class,
+    'options' => ['class' => 'navbar-nav mr-auto me-auto'],
     'encodeLabels' => false,
 
     'items' => [
