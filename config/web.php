@@ -155,6 +155,9 @@ $config = [
 
                 // AcceptanceStatusController Статус Приёмка
                 'acceptance-status/<action:(edit|delete)>/<id:\d+>' => 'acceptance-status/<action>',
+
+                // GoogleSheetController Таблицы Google
+                'google-sheet/<action:(edit|delete)>/<id:\d+>' => 'google-sheet/<action>',
             ],
         ],
     ],

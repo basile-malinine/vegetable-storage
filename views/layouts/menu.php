@@ -21,6 +21,11 @@ echo Nav::widget([
                     'url' => ['/unit'],
                 ],
 
+                [
+                    'label' => 'Таблицы Google',
+                    'url' => ['/google-sheet'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [
