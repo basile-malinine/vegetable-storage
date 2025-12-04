@@ -1,10 +1,11 @@
 <?php
 
-use app\models\GateType\GateType;
 use yii\web\View;
+use app\models\GateType\GateType;
 
 /* @var View $this */
 /* @var GateType $model */
-/* @var string $header */
+
+$header = 'Ворота / Рампы [' . $model->name . ']';
 
 echo $this->render('_form', compact(['model', 'header']));

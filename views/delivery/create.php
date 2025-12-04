@@ -1,7 +1,7 @@
 <?php
 
-use app\models\Documents\Delivery\Delivery;
 use yii\web\View;
+use app\models\Documents\Delivery\Delivery;
 
 /* @var View $this */
 /* @var Delivery $model */

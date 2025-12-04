@@ -49,16 +49,12 @@ class WorkTypeController extends BaseController
         $searchModel = new WorkTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Виды работ';
-
-        return $this->render('list', compact('dataProvider', 'header'));
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new WorkType();
-
-        $header = 'Вид работы (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,13 +64,12 @@ class WorkTypeController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Вид работы [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -82,7 +77,7 @@ class WorkTypeController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

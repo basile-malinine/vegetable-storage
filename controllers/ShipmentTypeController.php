@@ -49,16 +49,12 @@ class ShipmentTypeController extends BaseController
         $searchModel = new ShipmentTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Типы отгрузки';
-
-        return $this->render('list', compact('dataProvider', 'header'));
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new ShipmentType();
-
-        $header = 'Тип отгрузки (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,13 +64,12 @@ class ShipmentTypeController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Тип отгрузки [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -82,7 +77,7 @@ class ShipmentTypeController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

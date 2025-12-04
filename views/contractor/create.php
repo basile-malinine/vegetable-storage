@@ -6,6 +6,7 @@ use app\models\Contractor\Contractor;
 
 /* @var View $this */
 /* @var Contractor $model */
-/* @var string $header */
+
+$header = 'Исполнитель (новый)';
 
 echo $this->render('_form', compact(['model', 'header']));

@@ -55,15 +55,13 @@ class CountryController extends BaseController
     {
         $searchModel = new CountrySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-        $header = 'Страны';
 
-        return $this->render('list', compact(['searchModel', 'dataProvider', 'header']));
+        return $this->render('list', compact(['searchModel', 'dataProvider']));
     }
 
     public function actionCreate()
     {
         $model = new Country();
-        $header = 'Страна (новая)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -73,13 +71,12 @@ class CountryController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact('model', 'header'));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Страна [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -87,7 +84,7 @@ class CountryController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

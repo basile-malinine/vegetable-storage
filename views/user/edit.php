@@ -5,6 +5,7 @@ use app\models\User\User;
 
 /* @var View $this */
 /* @var User $model */
-/* @var string $header */
+
+$header = 'Пользователь [' . $model->name . ']';
 
 echo $this->render('_form', compact(['model', 'header']));

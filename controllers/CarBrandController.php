@@ -14,16 +14,12 @@ class CarBrandController extends BaseController
         $searchModel = new CarBrandSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Марки автомобилей';
-
-        return $this->render('list', compact('dataProvider', 'header'));
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new CarBrand();
-
-        $header = 'Марка автомобиля (новая)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -33,13 +29,12 @@ class CarBrandController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Марка автомобиля [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -47,7 +42,7 @@ class CarBrandController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

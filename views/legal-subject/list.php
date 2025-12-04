@@ -7,7 +7,8 @@ use app\models\LegalSubject\LegalSubjectSearch;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var yii\web\View $this */
 /** @var LegalSubjectSearch $searchModel */
-/** @var string $header */
+
+$header = 'Контрагенты';
 
 $actionId = yii::$app->controller->action->id;
 if ($actionId === 'index') $actionId = 'all';

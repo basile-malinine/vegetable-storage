@@ -5,6 +5,7 @@ use app\models\Manager\Manager;
 
 /* @var View $this */
 /* @var Manager $model */
-/* @var string $header */
+
+$header = 'Менеджер (новый)';
 
 echo $this->render('_form', compact(['model', 'header']));

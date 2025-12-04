@@ -14,16 +14,12 @@ class PalletTypeController extends BaseController
         $searchModel = new PalletTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Типы паллет';
-
-        return $this->render('list', compact('dataProvider', 'header'));
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new PalletType();
-
-        $header = 'Тип паллета (новый)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -33,13 +29,12 @@ class PalletTypeController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Тип паллета [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -47,7 +42,7 @@ class PalletTypeController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

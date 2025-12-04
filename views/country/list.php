@@ -6,7 +6,8 @@ use app\models\Country\CountrySearch;
 /** @var yii\web\View $this */
 /** @var CountrySearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-/** @var string $header */
+
+$header = 'Страны';
 
 $this->registerJs('let controllerName = "country";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');

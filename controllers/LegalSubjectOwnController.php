@@ -49,16 +49,14 @@ class LegalSubjectOwnController extends BaseController
         $searchModel = new LegalSubjectSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         $dataProvider->query->andWhere(['is_own' => true]);
-        $header = 'Собственные предприятия';
 
-        return $this->render('list', compact(['searchModel', 'dataProvider', 'header']));
+        return $this->render('list', compact(['searchModel', 'dataProvider']));
     }
 
     public function actionCreate()
     {
         $model = new LegalSubject();
         $model->is_own = true;
-        $header = 'Собственное предприятие (новое)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,13 +66,12 @@ class LegalSubjectOwnController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact('model', 'header'));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Собственное предприятие [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -82,7 +79,7 @@ class LegalSubjectOwnController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

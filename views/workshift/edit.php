@@ -1,10 +1,11 @@
 <?php
 
-use app\models\Workshift\Workshift;
 use yii\web\View;
+use app\models\Workshift\Workshift;
 
 /* @var View $this */
 /* @var Workshift $model */
-/* @var string $header */
+
+$header = 'Смена [' . $model->name . ']';
 
 echo $this->render('_form', compact(['model', 'header']));

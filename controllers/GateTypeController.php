@@ -14,16 +14,12 @@ class GateTypeController extends BaseController
         $searchModel = new GateTypeSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Ворота / Рампы';
-
-        return $this->render('list', compact('dataProvider', 'header'));
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new GateType();
-
-        $header = 'Ворота / Рампы (новые)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -33,13 +29,12 @@ class GateTypeController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact(['model']));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Ворота / Рампы [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -47,7 +42,7 @@ class GateTypeController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

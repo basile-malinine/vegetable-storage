@@ -1,10 +1,11 @@
 <?php
 
+use yii\web\View;
 use app\models\LegalSubject\LegalSubject;
 
-/** @var yii\web\View $this */
+/** @var View $this */
 /** @var LegalSubject $model */
-/** @var string $header */
-?>
 
-<?= $this->render('_form', compact('model', 'header')) ?>
+$header = 'Контрагент [' . $model->name . ']';
+
+echo $this->render('_form', compact('model', 'header'));

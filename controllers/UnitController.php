@@ -49,16 +49,12 @@ class UnitController extends BaseController
         $searchModel = new UnitSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Единицы измерения';
-
-        return $this->render('list', ['dataProvider' => $dataProvider, 'header' => $header]);
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new Unit();
-
-        $header = 'Единица измерения (новая)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -68,13 +64,12 @@ class UnitController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Единица измерения [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -82,7 +77,7 @@ class UnitController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     protected function findModel($id)

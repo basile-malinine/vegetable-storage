@@ -29,12 +29,12 @@ class EmployeeController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model']));
+        return $this->render('create', compact('model'));
     }
+
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Исполнитель [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -42,7 +42,7 @@ class EmployeeController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
    protected function findModel($id)

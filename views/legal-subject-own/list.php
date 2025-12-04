@@ -6,7 +6,8 @@ use app\models\LegalSubject\LegalSubjectSearch;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var yii\web\View $this */
 /** @var LegalSubjectSearch $searchModel */
-/** @var string $header */
+
+$header = 'Собственные предприятия';
 
 $this->registerJs('let controllerName = "legal-subject-own";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');

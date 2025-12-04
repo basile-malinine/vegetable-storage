@@ -56,16 +56,12 @@ class AssortmentController extends BaseController
         $searchModel = new AssortmentSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        $header = 'Номенклатура';
-
-        return $this->render('list', ['dataProvider' => $dataProvider, 'header' => $header]);
+        return $this->render('list', compact('dataProvider'));
     }
 
     public function actionCreate()
     {
         $model = new Assortment();
-
-        $header = 'Номенклатура (новая позиция)';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -75,13 +71,12 @@ class AssortmentController extends BaseController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model', 'header']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        $header = 'Номенклатура [' . $model->name . ']';
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
@@ -89,7 +84,7 @@ class AssortmentController extends BaseController
             }
         }
 
-        return $this->render('edit', compact('model', 'header'));
+        return $this->render('edit', compact('model'));
     }
 
     // Возвращает название Ед. изм. и Вес по позиции в виде

@@ -3,8 +3,9 @@
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
-/** @var string $header Заголовок */
 /** @var ActiveDataProvider $dataProvider Данные */
+
+$header = 'Статус Водитель';
 
 $this->registerJs('let controllerName = "driver-status";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');

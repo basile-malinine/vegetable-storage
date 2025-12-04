@@ -1,11 +1,12 @@
 <?php
 
+use yii\data\ActiveDataProvider;
+use yii\web\View;
+use app\models\Documents\Delivery\Delivery;
+
 /** @var View $this */
 /** @var Delivery $model */
-/** @var yii\data\ActiveDataProvider $dataProviderItem */
-
-use app\models\Documents\Delivery\Delivery;
-use yii\web\View;
+/** @var ActiveDataProvider $dataProviderItem */
 
 $header = 'Доставка №' . $model->id . ' от ' . date("d.m.Y", strtotime($model->created_at));
 

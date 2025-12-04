@@ -4,8 +4,9 @@ use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
 
-/** @var string $header Заголовок */
 /** @var ActiveDataProvider $dataProvider Данные */
+
+$header = 'Склады';
 
 $this->registerJs('let controllerName = "stock";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');

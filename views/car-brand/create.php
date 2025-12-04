@@ -1,10 +1,11 @@
 <?php
 
-use app\models\CarBrand\CarBrand;
 use yii\web\View;
+use app\models\CarBrand\CarBrand;
 
 /* @var View $this */
 /* @var CarBrand $model */
-/* @var string $header */
+
+$header = 'Марка автомобиля (новая)';
 
 echo $this->render('_form', compact(['model', 'header']));

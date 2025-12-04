@@ -1,10 +1,11 @@
 <?php
 
-use app\models\CarBody\CarBody;
 use yii\web\View;
+use app\models\CarBody\CarBody;
 
 /* @var View $this */
 /* @var CarBody $model */
-/* @var string $header */
+
+$header = 'Тип кузова [' . $model->name . ']';
 
 echo $this->render('_form', compact(['model', 'header']));

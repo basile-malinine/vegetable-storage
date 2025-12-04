@@ -4,8 +4,9 @@ use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
 
-/** @var string $header Заголовок */
 /** @var ActiveDataProvider $dataProvider Данные */
+
+$header = 'Типы кузова';
 
 $this->registerJs('let controllerName = "car-body";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');

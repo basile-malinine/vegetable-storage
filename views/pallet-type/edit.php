@@ -1,10 +1,11 @@
 <?php
 
-use app\models\PalletType\PalletType;
 use yii\web\View;
+use app\models\PalletType\PalletType;
 
 /* @var View $this */
 /* @var PalletType $model */
-/* @var string $header */
+
+$header = 'Тип паллета [' . $model->name . ']';
 
 echo $this->render('_form', compact(['model', 'header']));

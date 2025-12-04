@@ -3,9 +3,9 @@
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
-
-/** @var string $header Заголовок */
 /** @var ActiveDataProvider $dataProvider Данные */
+
+$header = 'Менеджеры';
 
 $this->registerJs('let controllerName = "manager";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
