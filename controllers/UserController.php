@@ -3,15 +3,14 @@
 namespace app\controllers;
 
 use Yii;
-use yii\db\IntegrityException;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+
 use app\models\User\LoginForm;
 use app\models\User\User;
 use app\models\User\UserSearch;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     public function behaviors()
     {
@@ -99,21 +98,6 @@ class UserController extends Controller
         return $this->render('edit', compact('model', 'header'));
     }
 
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        $dbMessages = \Yii::$app->params['messages']['db'];
-        try {
-            $model->delete();
-        } catch (IntegrityException $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);
-        } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delError']);
-        }
-
-        return $this->redirect(['index']);
-    }
-
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -138,22 +122,12 @@ class UserController extends Controller
         return $this->goHome();
     }
 
-    private function findModel($id)
+    protected function findModel($id)
     {
         if (($model = User::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    private function postRequestAnalysis($model): bool
-    {
-        if ($model->load($this->request->post())) {
-            if ($model->validate() && $model->save()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

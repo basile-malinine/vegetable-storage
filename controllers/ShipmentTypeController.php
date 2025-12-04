@@ -2,14 +2,13 @@
 
 namespace app\controllers;
 
-use yii\db\IntegrityException;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+
 use app\models\ShipmentType\ShipmentType;
 use app\models\ShipmentType\ShipmentTypeSearch;
 
-class ShipmentTypeController extends Controller
+class ShipmentTypeController extends BaseController
 {
     public function behaviors()
     {
@@ -86,22 +85,7 @@ class ShipmentTypeController extends Controller
         return $this->render('edit', compact('model', 'header'));
     }
 
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        $dbMessages = \Yii::$app->params['messages']['db'];
-        try {
-            $model->delete();
-        } catch (IntegrityException $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);
-        } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delError']);
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    private function findModel($id)
+    protected function findModel($id)
     {
         if (($model = ShipmentType::findOne(['id' => $id])) !== null) {
             return $model;
@@ -109,15 +93,4 @@ class ShipmentTypeController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
-    private function postRequestAnalysis($model): bool
-    {
-        if ($model->load($this->request->post())) {
-            if ($model->validate() && $model->save()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

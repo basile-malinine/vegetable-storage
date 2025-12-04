@@ -2,12 +2,13 @@
 
 namespace app\controllers;
 
-use app\models\Documents\Delivery\DeliveryItem;
 use Yii;
 use yii\bootstrap5\ActiveForm;
 use yii\db\IntegrityException;
 use yii\web\Controller;
 use yii\web\Response;
+
+use app\models\Documents\Delivery\DeliveryItem;
 
 class DeliveryItemController extends Controller
 {
@@ -90,7 +91,6 @@ class DeliveryItemController extends Controller
         return 'false';
     }
 
-    // Редактирование позиции Торга Агентом
     protected function findModel($id)
     {
         return DeliveryItem::findOne($id);

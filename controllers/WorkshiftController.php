@@ -2,13 +2,12 @@
 
 namespace app\controllers;
 
-use app\models\Workshift\Workshift;
-use app\models\Workshift\WorkshiftSearch;
-use yii\db\IntegrityException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class WorkshiftController extends Controller
+use app\models\Workshift\Workshift;
+use app\models\Workshift\WorkshiftSearch;
+
+class WorkshiftController extends BaseController
 {
     public function actionIndex()
     {
@@ -51,37 +50,12 @@ class WorkshiftController extends Controller
         return $this->render('edit', compact('model', 'header'));
     }
 
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-        $dbMessages = \Yii::$app->params['messages']['db'];
-        try {
-            $model->delete();
-        } catch (IntegrityException $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);
-        } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $dbMessages['delError']);
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    private function findModel($id)
+    protected function findModel($id)
     {
         if (($model = Workshift::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    private function postRequestAnalysis($model): bool
-    {
-        if ($model->load($this->request->post())) {
-            if ($model->validate() && $model->save()) {
-                return true;
-            }
-        }
-        return false;
     }
 }
