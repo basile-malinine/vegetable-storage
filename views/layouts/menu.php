@@ -70,6 +70,36 @@ echo Nav::widget([
                 '<hr class="dropdown-divider">',
 
                 [
+                    'label' => 'Статусы',
+                    'items' => [
+                        [
+                            'label' => 'Водитель +G',
+                            'url' => ['/driver-status'],
+                        ],
+
+                        [
+                            'label' => 'Местоположение +G',
+                            'url' => ['/location-status'],
+                        ],
+
+                        [
+                            'label' => 'Стикер +G',
+                            'url' => ['/sticker-status'],
+                        ],
+
+                        [
+                            'label' => 'Заказ +G',
+                            'url' => ['/order-status'],
+                        ],
+
+                        [
+                            'label' => 'Приёмка +G',
+                            'url' => ['/acceptance-status'],
+                        ],
+                    ],
+                ],
+
+                [
                     'label' => 'Типы приемки',
                     'url' => ['/acceptance-type'],
                 ],
@@ -124,37 +154,6 @@ echo Nav::widget([
                 [
                     'label' => 'Исполнители',
                     'url' => ['/contractor'],
-                ],
-            ],
-        ],
-
-        [
-            'label' => 'Статусы',
-            'options' => ['class' => 'ms-4'],
-            'items' => [
-                [
-                    'label' => 'Водитель +G',
-                    'url' => ['/driver-status'],
-                ],
-
-                [
-                    'label' => 'Местоположение +G',
-                    'url' => ['/location-status'],
-                ],
-
-                [
-                    'label' => 'Стикер +G',
-                    'url' => ['/sticker-status'],
-                ],
-
-                [
-                    'label' => 'Заказ +G',
-                    'url' => ['/order-status'],
-                ],
-
-                [
-                    'label' => 'Приёмка +G',
-                    'url' => ['/acceptance-status'],
                 ],
             ],
         ],
