@@ -3,6 +3,9 @@
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
+use app\models\Assortment\Assortment;
+use app\models\Assortment\AssortmentGroup;
+
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
@@ -89,23 +92,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Вес
-            [
-                'attribute' => 'pallet_weight',
-                'label' => 'Вес<br>паллета',
-                'encodeLabel' => false,
-                'enableSorting' => false,
-                'headerOptions' => [
-                    'style' => 'width: 80px;'
-                ],
-                'filterInputOptions' => [
-                    'class' => 'form-control form-control-sm',
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: right;',
-                ],
-            ],
-
             // Базовый продукт (Возможно пригодится для Фасовки...)
 //            [
 //                'attribute' => 'product_id',
@@ -118,6 +104,53 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 //                    'class' => 'form-control form-control-sm',
 //                ],
 //            ],
+
+            // Подгруппа
+            [
+                'attribute' => 'assortment_group',
+                'label' => 'Подгруппа',
+                'value' => 'group.name',
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 230px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Группа
+            [
+                'attribute' => 'parent_group',
+                'label' => 'Группа',
+                'value' => function (Assortment $model) {
+                    $val = AssortmentGroup::findOne($model->parent_id)->name;
+                    return $val;
+                },
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 230px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Вес паллета
+            [
+                'attribute' => 'pallet_weight',
+                'label' => 'Вес паллета',
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 100px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;',
+                ],
+            ],
 
             // Комментарий
             [

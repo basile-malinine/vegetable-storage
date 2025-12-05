@@ -30,6 +30,8 @@ use app\models\User\User;
  * @property Unit $unit
  * @property Product $product
  * @property User $createdBy
+
+ * @property ActiveQuery $group Magic
  */
 class Assortment extends \yii\db\ActiveRecord
 {
