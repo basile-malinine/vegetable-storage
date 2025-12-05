@@ -16,6 +16,8 @@ use app\models\User\User;
  *
  * @property int $id
  * @property int $unit_id Единица измерения
+ * @property int $parent_id Группа классификатора
+ * @property int $assortment_group_id Подгруппа классификатора
  * @property int|null $product_id Продукт
  * @property string $name Название
  * @property float $weight Вес
@@ -30,7 +32,7 @@ use app\models\User\User;
  */
 class Assortment extends \yii\db\ActiveRecord
 {
-
+    public mixed $parent_id = null;
 
     /**
      * {@inheritdoc}
@@ -47,17 +49,22 @@ class Assortment extends \yii\db\ActiveRecord
     {
         return [
             [['product_id'], 'default', 'value' => null],
-            [['unit_id', 'name', 'weight'], 'required'],
-            [['unit_id', 'product_id', 'created_by'], 'integer'],
+            [['unit_id', 'assortment_group_id', 'name', 'weight'], 'required'],
+            [['unit_id', 'assortment_group_id', 'product_id', 'created_by'], 'integer'],
             [['weight'], 'number', 'numberPattern' => '/^\d+(.\d+)?$/', 'min' => 0.001],
             [['comment'], 'string'],
             [['comment'], 'default', 'value' => null],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 100],
             [['name'], 'unique'],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['created_by' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
-            [['unit_id'], 'exist', 'skipOnError' => true, 'targetClass' => Unit::class, 'targetAttribute' => ['unit_id' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
+                'targetAttribute' => ['created_by' => 'id']],
+            [['unit_id'], 'exist', 'skipOnError' => true, 'targetClass' => Unit::class,
+                'targetAttribute' => ['unit_id' => 'id']],
+            [['assortment_group_id'], 'exist', 'skipOnError' => true,
+                'targetClass' => AssortmentGroup::class, 'targetAttribute' => ['assortment_group_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class,
+                'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -69,6 +76,8 @@ class Assortment extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'unit_id' => 'Единица измерения',
+            'parent_id' => 'Группа',
+            'assortment_group_id' => 'Подгруппа',
             'product_id' => 'Базовый продукт',
             'name' => 'Название',
             'weight' => 'Вес',
@@ -85,6 +94,14 @@ class Assortment extends \yii\db\ActiveRecord
             $this->weight = str_replace(',', '.', $this->weight);
         }
         return parent::beforeValidate();
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        if (isset($this->assortment_group_id)) {
+            $this->parent_id = AssortmentGroup::findOne($this->assortment_group_id)->parent_id;
+        }
     }
 
     public function beforeSave($insert)
@@ -127,6 +144,32 @@ class Assortment extends \yii\db\ActiveRecord
     public function getUnit()
     {
         return $this->hasOne(Unit::class, ['id' => 'unit_id']);
+    }
+
+    /**
+     * Gets query for [[AssortmentGroup]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(AssortmentGroup::class, ['id' => 'assortment_group_id']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParent_id(): mixed
+    {
+        return $this->parent_id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setParent_id(mixed $id): void
+    {
+        $this->parent_id = $id;
     }
 
     public static function getList(): array

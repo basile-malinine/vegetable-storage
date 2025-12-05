@@ -158,6 +158,11 @@ $config = [
 
                 // GoogleSheetController Таблицы Google
                 'google-sheet/<action:(edit|delete)>/<id:\d+>' => 'google-sheet/<action>',
+
+                //AssortmentGroupController Классификатор номенклатуры
+                'assortment-group/<action:(index|create)>/<parent_id:\d+>' => 'assortment-group/<action>',
+                'assortment-group/<action:(edit|delete)>/<id:\d+>' => 'assortment-group/<action>',
+                'assortment-group/<action:(edit|delete)>/<id:\d+>/<parent_id:\d+>' => 'assortment-group/<action>',
             ],
         ],
     ],

@@ -31,40 +31,56 @@ echo Nav::widget([
                 '<hr class="dropdown-divider">',
 
                 [
-                    'label' => 'Контрагенты',
-                    'url' => ['/legal-subject'],
+                    'label' => 'Предприятия и сотрудники',
+                    'items' => [
+                        [
+                            'label' => 'Контрагенты',
+                            'url' => ['/legal-subject'],
+                        ],
+
+                        [
+                            'label' => 'Собственные предприятия',
+                            'url' => ['/legal-subject-own'],
+                        ],
+
+                        [
+                            'label' => 'Склады +G',
+                            'url' => ['/stock'],
+                        ],
+
+                        [
+                            'label' => 'Сотрудники',
+                            'url' => ['/employee'],
+                        ],
+
+                        [
+                            'label' => 'Менеджеры',
+                            'url' => ['/manager'],
+                        ],
+                    ],
                 ],
 
-                [
-                    'label' => 'Собственные предприятия',
-                    'url' => ['/legal-subject-own'],
-                ],
-
-                [
-                    'label' => 'Склады +G',
-                    'url' => ['/stock'],
-                ],
-
-                [
-                    'label' => 'Сотрудники',
-                    'url' => ['/employee'],
-                ],
-
-                [
-                    'label' => 'Менеджеры',
-                    'url' => ['/manager'],
-                ],
-
-                '<hr class="dropdown-divider">',
-
-                [
-                    'label' => 'Продукты',
-                    'url' => ['/product'],
-                ],
+//                '<hr class="dropdown-divider">',
 
                 [
                     'label' => 'Номенклатура',
-                    'url' => ['/assortment'],
+                    'items' => [
+                        [
+                            'label' => 'Классификатор номенклатуры',
+                            'url' => ['/assortment-group'],
+                        ],
+
+
+//                        [
+//                            'label' => 'Продукты',
+//                            'url' => ['/product'],
+//                        ],
+
+                        [
+                            'label' => 'Номенклатура',
+                            'url' => ['/assortment'],
+                        ],
+                    ],
                 ],
 
                 '<hr class="dropdown-divider">',

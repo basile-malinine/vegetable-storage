@@ -9,9 +9,15 @@
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+use yii\web\JsExpression;
+
 use app\models\Assortment\Assortment;
+use app\models\Assortment\AssortmentGroup;
 use app\models\Product\Product;
 use app\models\Unit\Unit;
+
+$this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('@web/js/assortment.js');
 
 // Список Ед. изм. для формы
 $unitList = Unit::getList();
@@ -42,17 +48,43 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
         ]); ?>
 
         <div class="row form-row">
+            <!-- Группа -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'parent_id')->widget(Select2::class, [
+                    'data' => AssortmentGroup::getParentList(),
+                    'options' => [
+                        'placeholder' => 'Не назначена',
+                    ],
+                    'pluginOptions' => [
+                        'matcher' => new JsExpression('matchStart'),
+                    ],
+                ]) ?>
+            </div>
+
+            <!-- Подгруппа -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'assortment_group_id')->widget(Select2::class, [
+                    'data' => $model->parent_id ? AssortmentGroup::getChildListByParentId($model->parent_id) : [],
+                    'options' => [
+                        'placeholder' => 'Не назначена',
+                    ],
+                    'pluginOptions' => [
+                        'matcher' => new JsExpression('matchStart'),
+                    ],
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
             <!-- Наименование -->
-            <div class="form-col col-6">
+            <div class="form-col col-4">
                 <?= $form->field($model, 'name')->textInput(
                     [
                         'maxlength' => true,
                     ]
                 ) ?>
             </div>
-        </div>
 
-        <div class="row form-row">
             <!-- Ед. изм. -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'unit_id')->dropDownList($unitList, [
@@ -83,24 +115,31 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
             </div>
         </div>
 
-        <div class="row form-row">
+
+
+        <!-- Возможно пригодится для Фасовки...  -->
+<!--        <div class="row form-row" >-->
             <!-- Базовый продукт -->
-            <div class="form-col col-6">
-                <?= $form->field($model, 'product_id')->widget(Select2::class, [
-                    'data' => Product::getList(),
-                    'options' => [
-                        'placeholder' => 'Не назначен',
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ]); ?>
-            </div>
-        </div>
+<!--            <div class="form-col col-4">-->
+                <?= false;
+//                $form->field($model, 'product_id')->widget(Select2::class, [
+//                    'data' => Product::getList(),
+//                    'options' => [
+//                        'placeholder' => 'Не назначен',
+//                    ],
+//                    'pluginOptions' => [
+//                        'allowClear' => true,
+//                    ],
+//                ]);
+                ?>
+<!--            </div>-->
+<!--        </div>-->
+
+
 
         <div class="row form-last-row">
             <!-- Комментарий -->
-            <div class="form-col col-6">
+            <div class="form-col col-8">
                 <?= $form->field($model, 'comment')->textarea() ?>
             </div>
         </div>
