@@ -116,25 +116,27 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
         </div>
 
 
-
-        <!-- Возможно пригодится для Фасовки...  -->
-<!--        <div class="row form-row" >-->
+        <div class="row form-row">
+            <!-- Возможно пригодится для Фасовки...  -->
             <!-- Базовый продукт -->
-<!--            <div class="form-col col-4">-->
-                <?= false;
-//                $form->field($model, 'product_id')->widget(Select2::class, [
-//                    'data' => Product::getList(),
-//                    'options' => [
-//                        'placeholder' => 'Не назначен',
-//                    ],
-//                    'pluginOptions' => [
-//                        'allowClear' => true,
-//                    ],
-//                ]);
-                ?>
-<!--            </div>-->
-<!--        </div>-->
+            <!--            <div class="form-col col-4">-->
+            <?= false;
+            //                $form->field($model, 'product_id')->widget(Select2::class, [
+            //                    'data' => Product::getList(),
+            //                    'options' => [
+            //                        'placeholder' => 'Не назначен',
+            //                    ],
+            //                    'pluginOptions' => [
+            //                        'allowClear' => true,
+            //                    ],
+            //                ]);
+            ?>
+            <!--            </div>-->
 
+            <div class="form-col col-2">
+                <?= $form->field($model, 'pallet_weight')->textInput() ?>
+            </div>
+            </div>
 
 
         <div class="row form-last-row">

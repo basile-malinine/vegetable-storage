@@ -21,6 +21,7 @@ use app\models\User\User;
  * @property int|null $product_id Продукт
  * @property string $name Название
  * @property float $weight Вес
+ * @property int $pallet_weight Средний вес паллета
  * @property string|null $comment Комментарий
  * @property int $created_by Создатель
  * @property string $created_at Дата создания
@@ -50,7 +51,7 @@ class Assortment extends \yii\db\ActiveRecord
         return [
             [['product_id'], 'default', 'value' => null],
             [['unit_id', 'assortment_group_id', 'name', 'weight'], 'required'],
-            [['unit_id', 'assortment_group_id', 'product_id', 'created_by'], 'integer'],
+            [['unit_id', 'assortment_group_id', 'product_id', 'pallet_weight', 'created_by'], 'integer'],
             [['weight'], 'number', 'numberPattern' => '/^\d+(.\d+)?$/', 'min' => 0.001],
             [['comment'], 'string'],
             [['comment'], 'default', 'value' => null],
@@ -81,6 +82,7 @@ class Assortment extends \yii\db\ActiveRecord
             'product_id' => 'Базовый продукт',
             'name' => 'Название',
             'weight' => 'Вес',
+            'pallet_weight' => 'Средний вес паллета',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
             'created_at' => 'Дата создания',

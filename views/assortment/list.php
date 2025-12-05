@@ -89,6 +89,23 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
+            // Вес
+            [
+                'attribute' => 'pallet_weight',
+                'label' => 'Вес<br>паллета',
+                'encodeLabel' => false,
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 80px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;',
+                ],
+            ],
+
             // Базовый продукт (Возможно пригодится для Фасовки...)
 //            [
 //                'attribute' => 'product_id',
