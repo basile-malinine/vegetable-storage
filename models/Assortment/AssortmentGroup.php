@@ -12,7 +12,6 @@ use yii\db\ActiveRecord;
  * @property ActiveQuery parent Magic getParent()
  * @property ActiveQuery child Magic getChild()
  */
-
 class AssortmentGroup extends ActiveRecord
 {
     public static function tableName()
@@ -27,11 +26,35 @@ class AssortmentGroup extends ActiveRecord
             [['name'], 'required'],
             [['name'], 'string', 'max' => 50],
             [['name'], 'trim'],
-            [['name'], 'unique'],
+            [['name'], 'testUnique'],
         ];
     }
 
-    public function attributeLabels()
+    public function testUnique()
+    {
+        $err = false;
+        if ($this->parent_id === null) {
+            $err = self::find()
+                ->where(['parent_id' => null])
+                ->andWhere(['name' => $this->name])
+                ->exists();
+            if ($err) {
+                $this->addError('name', 'В группах значение "' . $this->name . '" уже занято.');
+            }
+        } else {
+            $err = self::find()
+                ->where('parent_id')
+                ->andWhere(['name' => $this->name])
+                ->exists();
+            if ($err) {
+                $this->addError('name', 'В подгруппах значение "' . $this->name . '" уже занято.');
+            }
+        }
+    }
+
+
+    public
+    function attributeLabels()
     {
         return [
             'id' => 'ID',
@@ -41,17 +64,20 @@ class AssortmentGroup extends ActiveRecord
         ];
     }
 
-    public function getParent()
+    public
+    function getParent()
     {
         return $this->hasOne(AssortmentGroup::class, ['id' => 'parent_id']);
     }
 
-    public function getChild()
+    public
+    function getChild()
     {
         return $this->hasMany(AssortmentGroup::class, ['parent_id' => 'id']);
     }
 
-    public static function getParentList()
+    public
+    static function getParentList()
     {
         $query = self::find()
             ->select(['name', 'id'])
@@ -68,7 +94,8 @@ class AssortmentGroup extends ActiveRecord
         return $list;
     }
 
-    public static function getChildListByParentId($id)
+    public
+    static function getChildListByParentId($id)
     {
         if ($id == 0) {
             return self::getChildList();
@@ -82,7 +109,8 @@ class AssortmentGroup extends ActiveRecord
             ->column();
     }
 
-    public static function getChildList()
+    public
+    static function getChildList()
     {
         return self::find()
             ->select(['name', 'id'])
