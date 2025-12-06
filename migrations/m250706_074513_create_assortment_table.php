@@ -40,21 +40,6 @@ class m250706_074513_create_assortment_table extends Migration
         );
 
         $this->createIndex(
-            '{{%idx-assortment-product_id}}',
-            '{{%assortment}}',
-            'product_id'
-        );
-
-        $this->addForeignKey(
-            '{{%fk-assortment-product_id}}',
-            '{{%assortment}}',
-            'product_id',
-            '{{%product}}',
-            'id',
-            'NO ACTION'
-        );
-
-        $this->createIndex(
             '{{%idx-assortment-created_by}}',
             '{{%assortment}}',
             'created_by'
@@ -82,16 +67,6 @@ class m250706_074513_create_assortment_table extends Migration
 
         $this->dropIndex(
             '{{%idx-assortment-created_by}}',
-            '{{%assortment}}',
-        );
-
-        $this->dropForeignKey(
-            '{{%fk-assortment-product_id}}',
-            '{{%assortment}}',
-        );
-
-        $this->dropIndex(
-            '{{%idx-assortment-product_id}}',
             '{{%assortment}}',
         );
 

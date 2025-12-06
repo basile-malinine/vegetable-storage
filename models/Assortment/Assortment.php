@@ -7,7 +7,6 @@ use DateTime;
 use Yii;
 use yii\db\ActiveQuery;
 
-use app\models\Product\Product;
 use app\models\Unit\Unit;
 use app\models\User\User;
 
@@ -18,7 +17,6 @@ use app\models\User\User;
  * @property int $unit_id Единица измерения
  * @property int $parent_id Группа классификатора
  * @property int $assortment_group_id Подгруппа классификатора
- * @property int|null $product_id Продукт
  * @property string $name Название
  * @property float $weight Вес
  * @property int $pallet_weight Средний вес паллета
@@ -28,7 +26,6 @@ use app\models\User\User;
  * @property string $updated_at Дата обновления
  *
  * @property Unit $unit
- * @property Product $product
  * @property User $createdBy
 
  * @property ActiveQuery $group Magic
@@ -51,9 +48,8 @@ class Assortment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_id'], 'default', 'value' => null],
             [['unit_id', 'assortment_group_id', 'name', 'weight'], 'required'],
-            [['unit_id', 'assortment_group_id', 'product_id', 'pallet_weight', 'created_by'], 'integer'],
+            [['unit_id', 'assortment_group_id', 'pallet_weight', 'created_by'], 'integer'],
             [['weight'], 'number', 'numberPattern' => '/^\d+(.\d+)?$/', 'min' => 0.001],
             [['comment'], 'string'],
             [['comment'], 'default', 'value' => null],
@@ -66,8 +62,6 @@ class Assortment extends \yii\db\ActiveRecord
                 'targetAttribute' => ['unit_id' => 'id']],
             [['assortment_group_id'], 'exist', 'skipOnError' => true,
                 'targetClass' => AssortmentGroup::class, 'targetAttribute' => ['assortment_group_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class,
-                'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -81,7 +75,6 @@ class Assortment extends \yii\db\ActiveRecord
             'unit_id' => 'Единица измерения',
             'parent_id' => 'Группа',
             'assortment_group_id' => 'Подгруппа',
-            'product_id' => 'Базовый продукт',
             'name' => 'Название',
             'weight' => 'Вес',
             'pallet_weight' => 'Средний вес паллета',
@@ -128,16 +121,6 @@ class Assortment extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(User::class, ['id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[Product]].
-     *
-     * @return ActiveQuery
-     */
-    public function getProduct()
-    {
-        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**

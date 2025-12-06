@@ -71,9 +71,6 @@ $config = [
                 // UnitController Единицы измерения
                 'unit/<action:(edit|delete)>/<id:\d+>' => 'unit/<action>',
 
-                // ProductController Продукты
-                'product/<action:(edit|delete)>/<id:\d+>' => 'product/<action>',
-
                 // AssortmentController Номенклатура
                 'assortment/<action:(edit|delete)>/<id:\d+>' => 'assortment/<action>',
 

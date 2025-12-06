@@ -70,12 +70,6 @@ echo Nav::widget([
                             'url' => ['/assortment-group'],
                         ],
 
-
-//                        [
-//                            'label' => 'Продукты',
-//                            'url' => ['/product'],
-//                        ],
-
                         [
                             'label' => 'Номенклатура',
                             'url' => ['/assortment'],
