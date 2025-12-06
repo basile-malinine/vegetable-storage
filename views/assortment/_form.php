@@ -13,7 +13,6 @@ use yii\web\JsExpression;
 
 use app\models\Assortment\Assortment;
 use app\models\Assortment\AssortmentGroup;
-use app\models\Product\Product;
 use app\models\Unit\Unit;
 
 $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View::POS_HEAD]);
@@ -117,22 +116,6 @@ $weightDefault = Unit::findOne($unitDefault)->weight;
 
 
         <div class="row form-row">
-            <!-- Возможно пригодится для Фасовки...  -->
-            <!-- Базовый продукт -->
-            <!--            <div class="form-col col-4">-->
-            <?= false;
-            //                $form->field($model, 'product_id')->widget(Select2::class, [
-            //                    'data' => Product::getList(),
-            //                    'options' => [
-            //                        'placeholder' => 'Не назначен',
-            //                    ],
-            //                    'pluginOptions' => [
-            //                        'allowClear' => true,
-            //                    ],
-            //                ]);
-            ?>
-            <!--            </div>-->
-
             <div class="form-col col-2">
                 <?= $form->field($model, 'pallet_weight')->textInput() ?>
             </div>

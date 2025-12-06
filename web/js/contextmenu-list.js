@@ -23,7 +23,11 @@ $(document).ready(function () {
                 iconClass: 'fa-trash-alt',
                 onClick: (id) => {
                     if (confirm("Вы точно хотите удалить запись?")) {
-                        document.location.href = "/" + controllerName + "/delete/" + id;
+                        if (id.includes('/')) {
+                            document.location.href = "/" + controllerName + "/delete-by-two-params/" + id;
+                        } else {
+                            document.location.href = "/" + controllerName + "/delete/" + id;
+                        }
                     }
                 }
             }

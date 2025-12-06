@@ -23,11 +23,6 @@ echo Nav::widget([
                     'url' => ['/unit'],
                 ],
 
-                [
-                    'label' => 'Таблицы Google',
-                    'url' => ['/google-sheet'],
-                ],
-
                 '<hr class="dropdown-divider">',
 
                 [
@@ -191,6 +186,28 @@ echo Nav::widget([
                 [
                     'label' => 'Роли',
                     'url' => ['/rbac'],
+                ],
+
+                '<hr class="dropdown-divider">',
+
+                [
+                    'label' => 'Объекты системы',
+                    'url' => ['/system-object'],
+                ],
+
+                [
+                    'label' => 'Google',
+                    'items' => [
+                        [
+                            'label' => 'Таблицы Google',
+                            'url' => ['/google-sheet'],
+                        ],
+
+                        [
+                            'label' => 'Связь объектов с Google',
+                            'url' => ['/system-object-google-sheet'],
+                        ],
+                    ],
                 ],
             ],
         ],

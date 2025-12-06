@@ -160,6 +160,13 @@ $config = [
                 'assortment-group/<action:(index|create)>/<parent_id:\d+>' => 'assortment-group/<action>',
                 'assortment-group/<action:(edit|delete)>/<id:\d+>' => 'assortment-group/<action>',
                 'assortment-group/<action:(edit|delete)>/<id:\d+>/<parent_id:\d+>' => 'assortment-group/<action>',
+
+                // SystemObjectController Объекты приложения
+                'system-object/<action:(edit|delete)>/<id:\d+>' => 'system-object/<action>',
+
+                // SystemObjectGoogleSheetController Объекты - Google
+                'system-object-google-sheet/<action:(index)>/<id:\d+>' => 'system-object-google-sheet/<action>',
+                'system-object-google-sheet/<action:(edit|delete-by-two-params)>/<id:\d+>/<id2:\d+>' => 'system-object-google-sheet/<action>',
             ],
         ],
     ],

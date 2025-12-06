@@ -2,6 +2,9 @@
 
 namespace app\models\GoogleSheet;
 
+use app\models\SystemObject\SystemObject;
+use app\models\SystemObjectGoogleSheet\SystemObjectGoogleSheet;
+
 /**
  * This is the model class for table "google_sheet".
  *
@@ -44,9 +47,39 @@ class GoogleSheet extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'sheet_id' => 'Sheet ID',
+            'sheet_id' => 'Таблица Google',
             'name' => 'Название',
             'comment' => 'Комментарий',
         ];
+    }
+
+    /**
+     * Gets query for [[SystemObjectGoogleSheets]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSystemObjectGoogleSheets()
+    {
+        return $this->hasMany(SystemObjectGoogleSheet::class, ['google_sheet_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SystemObjects]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSystemObjects()
+    {
+        return $this->hasMany(SystemObject::class, ['id' => 'system_object_id'])
+            ->viaTable('system_object_google_sheet', ['google_sheet_id' => 'id']);
+    }
+
+    public static function getList()
+    {
+        return self::find()
+            ->select(['name', 'id'])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->column();
     }
 }

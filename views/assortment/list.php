@@ -92,19 +92,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Базовый продукт (Возможно пригодится для Фасовки...)
-//            [
-//                'attribute' => 'product_id',
-//                'value' => 'product.name',
-//                'enableSorting' => false,
-//                'headerOptions' => [
-//                    'style' => 'width: 280px;'
-//                ],
-//                'filterInputOptions' => [
-//                    'class' => 'form-control form-control-sm',
-//                ],
-//            ],
-
             // Подгруппа
             [
                 'attribute' => 'assortment_group',
