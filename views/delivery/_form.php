@@ -7,15 +7,16 @@
 
 /** @var string $header */
 
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
+use yii\web\View;
+use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
+
 use app\models\Documents\Delivery\Delivery;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
 use app\models\Stock\Stock;
-use kartik\datetime\DateTimePicker;
-use kartik\select2\Select2;
-use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\Html;
-use yii\web\View;
 
 $actionID = Yii::$app->controller->action->id;
 if ($actionID !== 'create' && !$model->date_close) {
@@ -50,6 +51,9 @@ if ($actionID !== 'create' && !$model->date_close) {
             <div class="form-col col-6">
                 <?= $form->field($model, 'own_id')->widget(Select2::class, [
                     'data' => LegalSubject::getListOwn(),
+                    'options' => [
+                        'placeholder' => 'Не назначено',
+                    ],
                 ]); ?>
             </div>
 
@@ -57,6 +61,9 @@ if ($actionID !== 'create' && !$model->date_close) {
             <div class="form-col col-2">
                 <?= $form->field($model, 'stock_id')->widget(Select2::class, [
                     'data' => Stock::getList(),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
                 ]); ?>
             </div>
 
@@ -64,6 +71,9 @@ if ($actionID !== 'create' && !$model->date_close) {
             <div class="form-col col-2">
                 <?= $form->field($model, 'manager_id')->widget(Select2::class, [
                     'data' => Manager::getList(),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
                 ]); ?>
             </div>
         </div>
@@ -73,6 +83,9 @@ if ($actionID !== 'create' && !$model->date_close) {
             <div class="form-col col-6">
                 <?= $form->field($model, 'supplier_id')->widget(Select2::class, [
                     'data' => LegalSubject::getListSupplier(),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
                 ]) ?>
             </div>
 
