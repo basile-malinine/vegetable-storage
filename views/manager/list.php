@@ -52,7 +52,23 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'attribute' => 'name',
                 'enableSorting' => false,
                 'headerOptions' => [
-                    'style' => 'width: 280px;'
+                    'style' => 'width: 200px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Типы
+            [
+                'attribute' => 'types',
+                'label' => 'Типы',
+                'value' => function ($model) {
+                    return implode(', ', $model->types);
+                },
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 640px;'
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',

@@ -8,7 +8,9 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+
 use app\models\Manager\Manager;
+
 ?>
 
 <div class="page-top-panel">
@@ -41,6 +43,26 @@ use app\models\Manager\Manager;
                 ) ?>
             </div>
         </div>
+
+
+        <div class="row form-row">
+            <div class="form-col col-4">
+                <div class="card mt-2 mb-1">
+                    <div class="card-header pt-1 pb-1 ps-2">Типы</div>
+                    <div class="card-body pb-2">
+                        <?= $form->field($model, 'is_purchasing_mng')->checkbox() ?>
+                        <?= $form->field($model, 'is_sales_mng')->checkbox() ?>
+                        <?= $form->field($model, 'is_support')->checkbox() ?>
+                        <?= $form->field($model, 'is_purchasing_agent')->checkbox() ?>
+                        <?= $form->field($model, 'is_sales_agent')->checkbox() ?>
+                    </div>
+                </div>
+                <?= $form->field($model, 'error')->input('text', [
+                    'style' => 'display: none;',
+                ])->label(false) ?>
+            </div>
+        </div>
+
 
         <!-- Комментарий -->
         <div class="row form-last-row">
