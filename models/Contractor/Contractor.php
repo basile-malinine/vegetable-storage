@@ -2,6 +2,8 @@
 
 namespace app\models\Contractor;
 
+use app\models\Base;
+
 /**
  * This is the model class for table "contractor".
  *
@@ -9,10 +11,8 @@ namespace app\models\Contractor;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class Contractor extends \yii\db\ActiveRecord
+class Contractor extends Base
 {
-
-
     /**
      * {@inheritdoc}
      */

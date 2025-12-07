@@ -5,7 +5,7 @@ namespace app\models\Employee;
 use DateTime;
 
 use Yii;
-use yii\db\ActiveRecord;
+use app\models\Base;
 
 /**
  * This is the model class for table "employee".
@@ -21,7 +21,7 @@ use yii\db\ActiveRecord;
  * @property string $updated_at Время обновления
  * @property string|null $comment Комментарий
  */
-class Employee extends ActiveRecord
+class Employee extends Base
 {
     public mixed $full_name = null;
 

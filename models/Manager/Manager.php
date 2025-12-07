@@ -2,6 +2,8 @@
 
 namespace app\models\Manager;
 
+use app\models\Base;
+
 /**
  * This is the model class for table "manager".
  *
@@ -9,10 +11,8 @@ namespace app\models\Manager;
  * @property string $name Имя
  * @property string|null $comment Комментарий
  */
-class Manager extends \yii\db\ActiveRecord
+class Manager extends Base
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -45,15 +45,5 @@ class Manager extends \yii\db\ActiveRecord
             'name' => 'Имя',
             'comment' => 'Комментарий',
         ];
-    }
-
-    // Список Менеджеров
-    public static function getList(): array
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 }

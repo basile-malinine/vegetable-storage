@@ -11,7 +11,7 @@ use yii\bootstrap5\Html;
 use app\models\GoogleSheet\GoogleSheet;
 use app\models\UpdateGoogle;
 
-$account = UpdateGoogle::getAccount();
+$account = GoogleSheet::getAccount();
 ?>
 
 <div class="page-top-panel">

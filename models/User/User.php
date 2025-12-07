@@ -10,10 +10,11 @@ namespace app\models\User;
  */
 
 use Yii;
-use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class User extends ActiveRecord implements IdentityInterface
+use app\models\Base;
+
+class User extends Base implements IdentityInterface
 {
     public string $password = '';
 

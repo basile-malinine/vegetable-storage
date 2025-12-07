@@ -2,6 +2,7 @@
 
 namespace app\models\SystemObjectGoogleSheet;
 
+use app\models\Base;
 use app\models\GoogleSheet\GoogleSheet;
 use app\models\SystemObject\SystemObject;
 
@@ -16,7 +17,7 @@ use app\models\SystemObject\SystemObject;
  * @property GoogleSheet $googleSheet
  * @property SystemObject $systemObject
  */
-class SystemObjectGoogleSheet extends \yii\db\ActiveRecord
+class SystemObjectGoogleSheet extends Base
 {
     /**
      * {@inheritdoc}

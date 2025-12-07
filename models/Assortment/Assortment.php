@@ -7,6 +7,7 @@ use DateTime;
 use Yii;
 use yii\db\ActiveQuery;
 
+use app\models\Base;
 use app\models\Unit\Unit;
 use app\models\User\User;
 
@@ -30,7 +31,7 @@ use app\models\User\User;
 
  * @property ActiveQuery $group Magic
  */
-class Assortment extends \yii\db\ActiveRecord
+class Assortment extends Base
 {
     public mixed $parent_id = null;
 
@@ -157,15 +158,6 @@ class Assortment extends \yii\db\ActiveRecord
     public function setParent_id(mixed $id): void
     {
         $this->parent_id = $id;
-    }
-
-    public static function getList(): array
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 
     public static function getListExceptIds(array $ids): array

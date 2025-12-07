@@ -2,10 +2,9 @@
 
 namespace app\models\Unit;
 
-use yii\db\ActiveRecord;
+use app\models\Base;
 
-
-class Unit extends ActiveRecord
+class Unit extends Base
 {
     public static function tableName()
     {
@@ -45,14 +44,5 @@ class Unit extends ActiveRecord
         $this->weight = str_replace(',', '.', $this->weight);
 
         return true;
-    }
-
-    public static function getList()
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 }

@@ -3,7 +3,7 @@
 namespace app\models\Documents\Delivery;
 
 use app\models\Assortment\Assortment;
-use yii\db\ActiveRecord;
+use app\models\Base;
 
 /**
  * This is the model class for table "delivery_item".
@@ -22,7 +22,7 @@ use yii\db\ActiveRecord;
  * @property Assortment $assortment
  * @property Delivery $delivery
  */
-class DeliveryItem extends ActiveRecord
+class DeliveryItem extends Base
 {
     public mixed $assortment_name;
     public mixed $price_total;

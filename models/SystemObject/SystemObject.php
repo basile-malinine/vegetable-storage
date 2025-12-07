@@ -2,8 +2,7 @@
 
 namespace app\models\SystemObject;
 
-use yii\db\ActiveRecord;
-
+use app\models\Base;
 use app\models\GoogleSheet\GoogleSheet;
 use app\models\SystemObjectGoogleSheet\SystemObjectGoogleSheet;
 
@@ -19,7 +18,7 @@ use app\models\SystemObjectGoogleSheet\SystemObjectGoogleSheet;
  * @property GoogleSheet[] $googleSheets
  * @property SystemObjectGoogleSheet[] $systemObjectGoogleSheets
  */
-class SystemObject extends ActiveRecord
+class SystemObject extends Base
 {
     /**
      * {@inheritdoc}
@@ -39,6 +38,8 @@ class SystemObject extends ActiveRecord
             [['table_name', 'name'], 'string', 'max' => 50],
             [['table_name'], 'unique'],
             [['name'], 'unique'],
+            [['is_google'], 'boolean'],
+            [['is_google'], 'default', 'value' => true],
             [['comment'], 'string'],
             [['comment'], 'default', 'value' => null],
         ];
@@ -77,15 +78,6 @@ class SystemObject extends ActiveRecord
     public function getSystemObjectGoogleSheets()
     {
         return $this->hasMany(SystemObjectGoogleSheet::class, ['system_object_id' => 'id']);
-    }
-
-    public static function getList()
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 
     // Список таблиц БД

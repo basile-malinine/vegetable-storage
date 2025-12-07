@@ -2,7 +2,8 @@
 
 namespace app\models\Stock;
 
-use yii\db\ActiveRecord;
+use app\models\GoogleBase;
+use app\models\SystemObject\SystemObject;
 use app\models\UpdateGoogle;
 
 /**
@@ -14,7 +15,7 @@ use app\models\UpdateGoogle;
  * @property string|null $comment Комментарий
  *
  */
-class Stock extends ActiveRecord
+class Stock extends GoogleBase
 {
     public static function tableName()
     {
@@ -45,37 +46,11 @@ class Stock extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->updateGoogle();
+        self::updateGoogleSheet($this);
     }
 
     public function afterDelete()
     {
-        $this->updateGoogle();
-    }
-
-    private function updateGoogle(): void
-    {
-        $ug = new UpdateGoogle('DB!C4:C', $this->getListForGoogle());
-
-        // Для таблицы Test Table Security
-        $ug->update('1cr8nsLo9dq-f1n2Tw7rG2sqnS-TtyXoF-G9qfwPRZ4M');
-
-        // Для таблицы Старший смены
-        $ug->update('1wzmRAhmt_PQufvNIzAsOvUnHfGCtzLuyx5UuncwdeNc');
-    }
-
-    // Список Складов
-    public static function getList(): array
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
-    }
-
-    private function getListForGoogle(): array
-    {
-        return array_values(self::getList());
+        self::updateGoogleSheet($this);
     }
 }

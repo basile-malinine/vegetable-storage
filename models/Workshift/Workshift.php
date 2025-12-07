@@ -2,7 +2,7 @@
 
 namespace app\models\Workshift;
 
-use Yii;
+use app\models\Base;
 
 /**
  * This is the model class for table "workshift".
@@ -11,7 +11,7 @@ use Yii;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class Workshift extends \yii\db\ActiveRecord
+class Workshift extends Base
 {
 
 

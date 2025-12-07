@@ -3,7 +3,8 @@
 namespace app\models\Assortment;
 
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+
+use app\models\Base;
 
 /**
  * @property int id ID
@@ -12,7 +13,7 @@ use yii\db\ActiveRecord;
  * @property ActiveQuery parent Magic getParent()
  * @property ActiveQuery child Magic getChild()
  */
-class AssortmentGroup extends ActiveRecord
+class AssortmentGroup extends Base
 {
     public static function tableName()
     {

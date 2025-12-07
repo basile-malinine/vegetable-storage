@@ -60,8 +60,8 @@ class GoogleSheetController extends BaseController
     {
         $spreadsheetId = $this->request->post('spreadsheetId');
         \Yii::$app->response->format = Response::FORMAT_JSON;
-        $ug = new UpdateGoogle();
-        $data = $ug->testSpreadsheet($spreadsheetId);
+
+        $data = GoogleSheet::testGoogleSpreadsheet($spreadsheetId);
 
         return $data;
     }

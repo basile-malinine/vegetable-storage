@@ -2,7 +2,7 @@
 
 namespace app\models\PalletType;
 
-use Yii;
+use app\models\Base;
 
 /**
  * This is the model class for table "pallet_type".
@@ -11,10 +11,8 @@ use Yii;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class PalletType extends \yii\db\ActiveRecord
+class PalletType extends Base
 {
-
-
     /**
      * {@inheritdoc}
      */

@@ -2,7 +2,7 @@
 
 namespace app\models\WorkType;
 
-use yii\db\ActiveRecord;
+use app\models\Base;
 
 /**
  * This is the model class for table "work_type".
@@ -11,10 +11,8 @@ use yii\db\ActiveRecord;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class WorkType extends ActiveRecord
+class WorkType extends Base
 {
-
-
     /**
      * {@inheritdoc}
      */

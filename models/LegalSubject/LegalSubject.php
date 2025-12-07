@@ -2,7 +2,7 @@
 
 namespace app\models\LegalSubject;
 
-use yii\db\ActiveRecord;
+use app\models\Base;
 use app\models\Country\Country;
 
 /**
@@ -25,7 +25,7 @@ use app\models\Country\Country;
  *
  * @property Country $country
  */
-class LegalSubject extends ActiveRecord
+class LegalSubject extends Base
 {
     public static function tableName(): string
     {

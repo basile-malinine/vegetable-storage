@@ -2,7 +2,7 @@
 
 namespace app\models\AcceptanceStatus;
 
-use app\models\UpdateGoogle;
+use app\models\GoogleBase;
 
 /**
  * This is the model class for table "acceptance_status".
@@ -11,7 +11,7 @@ use app\models\UpdateGoogle;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class AcceptanceStatus extends \yii\db\ActiveRecord
+class AcceptanceStatus extends GoogleBase
 {
 
 
@@ -51,38 +51,12 @@ class AcceptanceStatus extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->updateGoogle();
+        self::updateGoogleSheet($this);
     }
 
     public function afterDelete()
     {
-        $this->updateGoogle();
+        self::updateGoogleSheet($this);
     }
 
-    private function updateGoogle(): void
-    {
-        $ug = new UpdateGoogle('DB!R4:R', $this->getListForGoogle());
-
-        // Для таблицы Test Table Security
-        $ug->update('1cr8nsLo9dq-f1n2Tw7rG2sqnS-TtyXoF-G9qfwPRZ4M');
-
-        // Для таблицы Старший смены
-        $ug->update('1wzmRAhmt_PQufvNIzAsOvUnHfGCtzLuyx5UuncwdeNc');
-    }
-
-    // Список Статусов
-    public static function getList(): array
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
-    }
-
-    // Формат списка для Google Sheets
-    private function getListForGoogle(): array
-    {
-        return array_values(self::getList());
-    }
 }

@@ -78,55 +78,65 @@ echo Nav::widget([
                     'label' => 'Статусы',
                     'items' => [
                         [
-                            'label' => 'Водитель +G',
+                            'label' => 'Статусы Водителя +G',
                             'url' => ['/driver-status'],
                         ],
 
                         [
-                            'label' => 'Местоположение +G',
+                            'label' => 'Статусы Местоположения +G',
                             'url' => ['/location-status'],
                         ],
 
                         [
-                            'label' => 'Стикер +G',
+                            'label' => 'Статусы Стикера +G',
                             'url' => ['/sticker-status'],
                         ],
 
                         [
-                            'label' => 'Заказ +G',
+                            'label' => 'Статусы Заказа +G',
                             'url' => ['/order-status'],
                         ],
 
                         [
-                            'label' => 'Приёмка +G',
+                            'label' => 'Статусы Приёмки +G',
                             'url' => ['/acceptance-status'],
                         ],
                     ],
                 ],
 
                 [
-                    'label' => 'Типы приемки',
-                    'url' => ['/acceptance-type'],
-                ],
+                    'label' => 'Типы',
+                    'items' => [
+                        [
+                            'label' => 'Типы Приёмки',
+                            'url' => ['/acceptance-type'],
+                        ],
 
-                [
-                    'label' => 'Типы отгрузки',
-                    'url' => ['/shipment-type'],
-                ],
+                        [
+                            'label' => 'Типы Отгрузки',
+                            'url' => ['/shipment-type'],
+                        ],
 
-                [
-                    'label' => 'Типы рейсов +G',
-                    'url' => ['/flight-type'],
+                        [
+                            'label' => 'Типы Рейсов +G',
+                            'url' => ['/flight-type'],
+                        ],
+
+                        [
+                            'label' => 'Типы Паллета',
+                            'url' => ['/pallet-type'],
+                        ],
+
+                        [
+                            'label' => 'Типы Кузова',
+                            'url' => ['/car-body'],
+                        ],
+                    ],
                 ],
 
                 [
                     'label' => 'Ворота / Рампы +G',
                     'url' => ['/gate-type'],
-                ],
-
-                [
-                    'label' => 'Типы паллет',
-                    'url' => ['/pallet-type'],
                 ],
 
                 [
@@ -142,11 +152,6 @@ echo Nav::widget([
                 [
                     'label' => 'Марки автомобилей',
                     'url' => ['/car-brand'],
-                ],
-
-                [
-                    'label' => 'Типы кузова',
-                    'url' => ['/car-body'],
                 ],
 
                 '<hr class="dropdown-divider">',

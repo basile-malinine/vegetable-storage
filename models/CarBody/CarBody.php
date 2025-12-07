@@ -2,7 +2,7 @@
 
 namespace app\models\CarBody;
 
-use Yii;
+use app\models\Base;
 
 /**
  * This is the model class for table "car_body".
@@ -11,7 +11,7 @@ use Yii;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class CarBody extends \yii\db\ActiveRecord
+class CarBody extends Base
 {
 
 

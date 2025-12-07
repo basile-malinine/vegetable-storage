@@ -2,13 +2,16 @@
 
 namespace app\models\Documents\Delivery;
 
-use app\models\LegalSubject\LegalSubject;
-use app\models\Manager\Manager;
-use app\models\Stock\Stock;
 use DateTime;
+
 use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
+
+use app\models\Base;
+use app\models\LegalSubject\LegalSubject;
+use app\models\Manager\Manager;
+use app\models\Stock\Stock;
 
 /**
  * This is the model class for table "delivery".
@@ -36,7 +39,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property array $deliveryItems Состав Доставки
  */
-class Delivery extends \yii\db\ActiveRecord
+class Delivery extends Base
 {
     public mixed $price = null;
     public mixed $weight = null;

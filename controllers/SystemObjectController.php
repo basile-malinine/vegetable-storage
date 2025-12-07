@@ -21,6 +21,9 @@ class SystemObjectController extends BaseController
     {
         $model = new SystemObject();
 
+        // Временно. Нужно реализовать событие onChange для флажка is_google!!!
+        $model->is_google = 1;
+
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
                 $this->redirect(['index']);

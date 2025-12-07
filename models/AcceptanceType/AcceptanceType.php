@@ -2,6 +2,8 @@
 
 namespace app\models\AcceptanceType;
 
+use app\models\Base;
+
 /**
  * This is the model class for table "acceptance_type".
  *
@@ -9,7 +11,7 @@ namespace app\models\AcceptanceType;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class AcceptanceType extends \yii\db\ActiveRecord
+class AcceptanceType extends Base
 {
     public static function tableName()
     {

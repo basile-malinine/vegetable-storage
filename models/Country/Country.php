@@ -2,7 +2,7 @@
 
 namespace app\models\Country;
 
-use yii\db\ActiveRecord;
+use app\models\Base;
 
 /**
  * This is the model class for table "country".
@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
  *
  */
 
-class Country extends ActiveRecord
+class Country extends Base
 {
     public static function tableName()
     {
@@ -58,14 +58,5 @@ class Country extends ActiveRecord
             'inn_name' => 'Название ID Физ. лица',
             'inn_size' => 'Размер ID Физ. лица',
         ];
-    }
-
-    public static function getList(): array
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 }

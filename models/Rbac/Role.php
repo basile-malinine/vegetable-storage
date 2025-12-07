@@ -96,7 +96,7 @@ class Role extends Model
         return $auth->getUserIdsByRole($role->name);
     }
 
-    public static function getList()
+    public static function getList(): array
     {
         $auth = Yii::$app->authManager;
         $roles = $auth->getRoles();

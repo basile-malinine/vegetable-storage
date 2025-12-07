@@ -2,7 +2,7 @@
 
 namespace app\models\TemperatureRegime;
 
-use Yii;
+use app\models\Base;
 
 /**
  * This is the model class for table "temperature_regime".
@@ -11,7 +11,7 @@ use Yii;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class TemperatureRegime extends \yii\db\ActiveRecord
+class TemperatureRegime extends Base
 {
 
 

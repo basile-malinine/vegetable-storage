@@ -2,6 +2,7 @@
 
 namespace app\models\GoogleSheet;
 
+use app\models\GoogleBase;
 use app\models\SystemObject\SystemObject;
 use app\models\SystemObjectGoogleSheet\SystemObjectGoogleSheet;
 
@@ -13,10 +14,8 @@ use app\models\SystemObjectGoogleSheet\SystemObjectGoogleSheet;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class GoogleSheet extends \yii\db\ActiveRecord
+class GoogleSheet extends GoogleBase
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -72,14 +71,5 @@ class GoogleSheet extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SystemObject::class, ['id' => 'system_object_id'])
             ->viaTable('system_object_google_sheet', ['google_sheet_id' => 'id']);
-    }
-
-    public static function getList()
-    {
-        return self::find()
-            ->select(['name', 'id'])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
     }
 }
