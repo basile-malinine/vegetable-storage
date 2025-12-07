@@ -37,14 +37,4 @@ class FlightType extends GoogleBase
             'comment' => 'Комментарий',
         ];
     }
-
-    public function afterSave($insert, $changedAttributes)
-    {
-        self::updateGoogleSheet($this);
-    }
-
-    public function afterDelete()
-    {
-        self::updateGoogleSheet($this);
-    }
 }

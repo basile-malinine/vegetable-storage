@@ -7,7 +7,6 @@ use yii\web\Response;
 
 use app\models\GoogleSheet\GoogleSheet;
 use app\models\GoogleSheet\GoogleSheetSearch;
-use app\models\UpdateGoogle;
 
 class GoogleSheetController extends BaseController
 {

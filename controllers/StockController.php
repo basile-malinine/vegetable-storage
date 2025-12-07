@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
+use app\models\GoogleBase;
 use app\models\Stock\Stock;
 use app\models\Stock\StockSearch;
 
@@ -38,6 +40,12 @@ class StockController extends BaseController
                         'allow' => true,
                         'actions' => ['delete'],
                         'roles' => ['stock.delete'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['google-update'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -87,5 +95,14 @@ class StockController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new Stock();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

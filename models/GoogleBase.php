@@ -51,14 +51,14 @@ class GoogleBase extends Base
     }
 
     // Обновляет данные на Google листе
-    protected static function updateGoogleSheet(self $classModel): void
+    public static function updateGoogleSheet(self $classModel): array
     {
         $systemObjectModel = SystemObject::findOne(['table_name' => $classModel::tableName()]);
         $links = $systemObjectModel->systemObjectGoogleSheets;
 
         self::initGoogleSheet();
 
-        $values = self::getListForGoogle();
+        $values = $classModel::getListForGoogle();
 
         $errors = [];
         foreach ($links as $link) {
@@ -77,6 +77,8 @@ class GoogleBase extends Base
                 $errors[] = $e->getMessage();
             }
         }
+
+        return $errors;
     }
 
     // Возвращает технический аккаунт

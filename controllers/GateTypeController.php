@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\GateType\GateType;
 use app\models\GateType\GateTypeSearch;
+use app\models\GoogleBase;
 
 class GateTypeController extends BaseController
 {
@@ -52,5 +54,14 @@ class GateTypeController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new GateType();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

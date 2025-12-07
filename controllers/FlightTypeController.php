@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\FlightType\FlightType;
 use app\models\FlightType\FlightTypeSearch;
+use app\models\GoogleBase;
 
 class FlightTypeController extends BaseController
 {
@@ -52,5 +54,14 @@ class FlightTypeController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new FlightType();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

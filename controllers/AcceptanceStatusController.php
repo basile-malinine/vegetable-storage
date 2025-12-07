@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\AcceptanceStatus\AcceptanceStatus;
 use app\models\AcceptanceStatus\AcceptanceStatusSearch;
+use app\models\GoogleBase;
 
 class AcceptanceStatusController extends BaseController
 {
@@ -52,5 +54,14 @@ class AcceptanceStatusController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new AcceptanceStatus();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

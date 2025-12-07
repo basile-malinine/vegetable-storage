@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\DriverStatus\DriverStatus;
 use app\models\DriverStatus\DriverStatusSearch;
+use app\models\GoogleBase;
 
 class DriverStatusController extends BaseController
 {
@@ -52,5 +54,14 @@ class DriverStatusController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new DriverStatus();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

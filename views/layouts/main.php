@@ -28,6 +28,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <head>
     <title><?= Yii::$app->name ?></title>
     <?php $this->head() ?>
+    <script src="https://kit.fontawesome.com/3b6c4fd938.js" crossorigin="anonymous"></script>
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
