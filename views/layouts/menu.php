@@ -39,6 +39,13 @@ echo Nav::widget([
                         ],
 
                         [
+                            'label' => 'Распределительные центры',
+                            'url' => ['/distribution-center'],
+                        ],
+
+                        '<hr class="dropdown-divider">',
+
+                        [
                             'label' => 'Склады +G',
                             'url' => ['/stock'],
                         ],

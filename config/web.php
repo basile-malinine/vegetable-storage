@@ -167,6 +167,9 @@ $config = [
                 // SystemObjectGoogleSheetController Объекты - Google
                 'system-object-google-sheet/<action:(index)>/<id:\d+>' => 'system-object-google-sheet/<action>',
                 'system-object-google-sheet/<action:(edit|delete-by-two-params)>/<id:\d+>/<id2:\d+>' => 'system-object-google-sheet/<action>',
+
+                // DistributionCenterController Распределительные центры
+                'distribution-center/<action:(edit|delete)>/<id:\d+>' => 'distribution-center/<action>',
             ],
         ],
     ],
