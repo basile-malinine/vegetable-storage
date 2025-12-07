@@ -47,7 +47,7 @@ use app\models\Manager\Manager;
 
         <div class="row form-row">
             <div class="form-col col-4">
-                <div class="card mt-2 mb-1">
+                <div class="card mt-2 mb-1 form-control form-control-sm p-0">
                     <div class="card-header pt-1 pb-1 ps-2">Типы</div>
                     <div class="card-body pb-2">
                         <?= $form->field($model, 'is_purchasing_mng')->checkbox() ?>

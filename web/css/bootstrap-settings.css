@@ -200,7 +200,8 @@ label {
 
 /* ------------------------------------------------------------- */
 
-.form-control {
+.form-control,
+.form-check-input {
     border-color: #9ca2a6;
 }
 
