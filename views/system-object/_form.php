@@ -61,18 +61,18 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
         </div>
 
         <!-- Комментарий -->
-        <div class="row form-last-row">
+        <div class="row form-row">
             <div class="form-col col-4">
                 <?= $form->field($model, 'comment')->textarea() ?>
             </div>
         </div>
 
         <!-- Поддержка Google -->
-<!--        <div class="row form-last-row">-->
-<!--            <div class="form-col col-4 d-flex justify-content-end pt-2">-->
-<!--                --><?php //= $form->field($model, 'is_google')->checkbox() ?>
-<!--            </div>-->
-<!--        </div>-->
+        <div class="row form-last-row">
+            <div class="form-col col-4 d-flex justify-content-end pt-2">
+                <?= $form->field($model, 'is_google')->checkbox() ?>
+            </div>
+        </div>
 
         <div class="form-group">
             <?= Html::submitButton('Сохранить', ['class' => 'btn btn-light btn-outline-primary btn-sm me-2']) ?>
