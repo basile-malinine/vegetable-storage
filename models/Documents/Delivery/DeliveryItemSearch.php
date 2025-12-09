@@ -16,7 +16,9 @@ class DeliveryItemSearch extends DeliveryItem
     public function search($params)
     {
         $query = DeliveryItem::find()
-            ->joinWith('assortment');
+            ->joinWith('delivery')
+            ->joinWith('assortment')
+            ->where(['delivery.id' => $params]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

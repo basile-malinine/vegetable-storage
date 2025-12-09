@@ -89,33 +89,18 @@ class LegalSubject extends Base
     // Список Собственных предприятий
     public static function getListOwn(): array
     {
-        return self::find()
-            ->select(['name', 'id'])
-            ->where(['is_own' => true])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
+        return self::getList('is_own');
     }
 
     // Список Поставщиков
     public static function getListSupplier(): array
     {
-        return self::find()
-            ->select(['name', 'id'])
-            ->where(['is_supplier' => true])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
+        return self::getList('is_supplier');
     }
 
     // Список Покупателей
     public static function getListBuyer(): array
     {
-        return self::find()
-            ->select(['name', 'id'])
-            ->where(['is_buyer' => true])
-            ->indexBy('id')
-            ->orderBy(['name' => SORT_ASC])
-            ->column();
+        return self::getList('is_own');
     }
 }

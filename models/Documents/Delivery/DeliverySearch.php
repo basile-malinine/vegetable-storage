@@ -37,6 +37,10 @@ class DeliverySearch extends Delivery
             return $dataProvider;
         };
 
+        if (!isset($params['sort'])) {
+            $query->orderBy('id DESC');
+        }
+
         return $dataProvider;
     }
 }
