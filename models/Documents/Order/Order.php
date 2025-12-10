@@ -23,10 +23,11 @@ use yii\helpers\ArrayHelper;
  * @property int $executor_id Исполнитель
  * @property int $sales_mng_id Менеджер по реализации
  * @property int $sales_agent_id Агент по реализации
- * @property int|null $accounting_status_id Статус учёта
- * @property int|null $implementation_status_id Статус реализации
+ * @property int|null $status_main_id Основные статусы
+ * @property int|null $status_additional_id Дополнительные статусы
  * @property string $date Дата
  * @property string $date_close Дата закрытия
+ * @property float|null $accepted_dist_center Принято РЦ
  * @property float|null $price Сумма
  * @property int|null $weight Вес
  * @property string|null $comment Комментарий
@@ -46,13 +47,51 @@ use yii\helpers\ArrayHelper;
  */
 class Order extends Base
 {
+    // Типы Заказа -------------------------------------------------------------
     const TYPE_STOCK = 1;
     const TYPE_EXECUTOR = 2;
-    const ORDER_TYPE_LIST = [
+    const TYPE_LIST = [
         self::TYPE_STOCK => 'Склад',
         self::TYPE_EXECUTOR => 'Исполнитель',
     ];
 
+    // Статусы Заказа основные -------------------------------------------------
+    const STATUS_MAIN_CANCELED = 1;
+    const STATUS_MAIN_SHIPPED = 2;
+    const STATUS_MAIN_SHIPPED_REFUND = 3;
+    const STATUS_MAIN_SHIPPED_COMPLETED = 4;
+    const STATUS_MAIN_LINKED = 5;
+    const STATUS_MAIN_LINKED_REFUND = 6;
+    const STATUS_MAIN_LIKED_COMPLETED = 7;
+
+    const STATUS_MAIN_LIST = [
+        self::STATUS_MAIN_CANCELED => 'Отменён',
+        self::STATUS_MAIN_SHIPPED => 'Отгружен',
+        self::STATUS_MAIN_SHIPPED_REFUND => 'Возврат отгруженного',
+        self::STATUS_MAIN_SHIPPED_COMPLETED => 'Выполнен отгруженный',
+        self::STATUS_MAIN_LINKED => 'Привязан',
+        self::STATUS_MAIN_LINKED_REFUND => 'Возврат привязанного',
+        self::STATUS_MAIN_LIKED_COMPLETED => 'Выполнен привязанный',
+    ];
+
+    // Статусы Заказа дополнительные -------------------------------------------
+    const STATUS_ADDITIONAL_MIGRATED = 1;
+    const STATUS_ADDITIONAL_NOT_COMPLETED = 2;
+    const STATUS_ADDITIONAL_BUYER_CANCELED = 3;
+    const STATUS_ADDITIONAL_COMPLETED = 4;
+    const STATUS_ADDITIONAL_PARTIALLY_COMPLETED = 5;
+    const STATUS_ADDITIONAL_FULL_REFUND = 6;
+
+    const STATUS_ADDITIONAL_LIST = [
+        self::STATUS_ADDITIONAL_MIGRATED => 'Перенесён',
+        self::STATUS_ADDITIONAL_NOT_COMPLETED => 'Не выполнен',
+        self::STATUS_ADDITIONAL_BUYER_CANCELED => 'Отменён покупателем',
+        self::STATUS_ADDITIONAL_COMPLETED => 'Выполнен',
+        self::STATUS_ADDITIONAL_PARTIALLY_COMPLETED => 'Выполнен частично',
+        self::STATUS_ADDITIONAL_FULL_REFUND => 'Полный возврат',
+    ];
+
+    // Итоги по документу ------------------------------------------------------
     public mixed $price = null;
     public mixed $weight = null;
 
@@ -73,10 +112,13 @@ class Order extends Base
             [[
                 'stock_id',
                 'executor_id',
-                'accounting_status_id',
-                'implementation_status_id',
+                'status_main_id',
+                'status_additional_id',
+                'accepted_dist_center',
                 'comment'], 'default', 'value' => null
             ],
+
+            [['accepted_dist_center'], 'safe'],
 
             [[
                 'date',
@@ -84,8 +126,7 @@ class Order extends Base
                 'supplier_id',
                 'buyer_id',
                 'distribution_center_id',
-                'sales_mng_id',
-                'sales_agent_id'], 'required'
+                'sales_mng_id'], 'required'
             ],
 
             [[
@@ -97,8 +138,8 @@ class Order extends Base
                 'executor_id',
                 'sales_mng_id',
                 'sales_agent_id',
-                'accounting_status_id',
-                'implementation_status_id',
+                'status_main_id',
+                'status_additional_id',
                 'created_by'], 'integer'
             ],
 
@@ -134,10 +175,11 @@ class Order extends Base
             'weight' => 'Вес',
             'sales_mng_id' => 'Менеджер по реализации',
             'sales_agent_id' => 'Агент по реализации',
-            'accounting_status_id' => 'Статус учёта',
-            'implementation_status_id' => 'Статус реализации',
+            'status_main_id' => 'Основные статусы',
+            'status_additional_id' => 'Дополнительные статусы',
             'date' => 'Дата',
             'date_close' => 'Дата закрытия',
+            'accepted_dist_center' => 'Принято РЦ',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
             'created_at' => 'Дата создания',
@@ -163,7 +205,12 @@ class Order extends Base
             $weights = ArrayHelper::getColumn($items, 'weight');
             $this->weight = array_sum($weights);
         }
+
+        if ($this->accepted_dist_center) {
+            $this->accepted_dist_center = number_format($this->accepted_dist_center, 1, '.', ' ');
+        }
     }
+
     public function beforeSave($insert)
     {
         $this->date = $this->date ? date('Y-m-d', strtotime($this->date)) : null;
@@ -174,6 +221,11 @@ class Order extends Base
             $this->created_at = $now;
         }
         $this->updated_at = $now;
+
+        if ($this->accepted_dist_center) {
+            $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
+            $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
+        }
 
         return true;
     }

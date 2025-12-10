@@ -10,7 +10,7 @@ use app\models\Documents\Order\Order;
 
 ?>
 
-<?php Pjax::begin(['id' => 'delivery-items']) ?>
+<?php Pjax::begin(['id' => 'order-items']) ?>
 <?= GridView::widget([
     'layout' => "{items}\n{pager}",
     'dataProvider' => $dataProviderItem,
@@ -67,7 +67,7 @@ use app\models\Documents\Order\Order;
             'attribute' => 'quantity',
             'enableSorting' => false,
             'value' => function ($model) {
-                return number_format($model->quantity, 0,
+                return number_format($model->quantity, 1,
                         '.', ' ');
             },
             'contentOptions' => [

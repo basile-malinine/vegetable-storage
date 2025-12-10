@@ -11,13 +11,13 @@ use app\models\Base;
  * @property int $id
  * @property int|null $order_id Доставка
  * @property int $assortment_id Номенклатурная позиция
- * @property int $quantity Количество
+ * @property float $quantity Количество
  * @property float $price Цена
  * @property float|null $price_total Сумма
  * @property int|null $weight Вес
-// * @property int|null $quantity_fact Количество по факту
-// * @property float|null $price_total_fact Сумма по факту
-// * @property int|null $weight_fact Вес по факту
+ * // * @property int|null $quantity_fact Количество по факту
+ * // * @property float|null $price_total_fact Сумма по факту
+ * // * @property int|null $weight_fact Вес по факту
  *
  * @property Assortment $assortment
  * @property Order $order
@@ -37,8 +37,9 @@ class OrderItem extends Base
     {
         return [
             [['order_id'], 'default', 'value' => null],
-            [['order_id', 'assortment_id', 'quantity'], 'integer'],
+            [['order_id', 'assortment_id'], 'integer'],
             [['assortment_id', 'quantity', 'price'], 'required', 'message' => 'Необходимо заполнить'],
+            [['quantity'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'],
             [['price'], 'number', 'numberPattern' => '/^\d+(\.\d{2})?$/'],
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
@@ -68,6 +69,14 @@ class OrderItem extends Base
         $this->assortment_name = $this->assortment->name;
         $this->price_total = $this->quantity * $this->price;
         $this->weight = $this->quantity * $this->assortment->weight;
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->quantity = str_replace(' ', '', $this->quantity);
+        $this->quantity = str_replace(',', '.', $this->quantity);
+
+        return true;
     }
 
     public function getAssortment()

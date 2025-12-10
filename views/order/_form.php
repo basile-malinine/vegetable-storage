@@ -7,27 +7,26 @@
 
 /** @var string $header */
 
-use app\models\DistributionCenter\DistributionCenter;
+use app\models\OrderStatus\OrderStatus;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\web\View;
 use kartik\date\DatePicker;
-use kartik\datetime\DateTimePicker;
 use kartik\select2\Select2;
 
+use app\models\DistributionCenter\DistributionCenter;
 use app\models\Documents\Order\Order;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
 use app\models\Stock\Stock;
 
 $actionID = Yii::$app->controller->action->id;
-if ($actionID !== 'create') {
-    $this->registerJs('let controllerName = "' . Yii::$app->controller->id . '";', View::POS_HEAD);
-    $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
-    $this->registerJsFile('@web/js/document.js');
-} else {
-    $model->date = (new DateTime('now'))->format('d.m.Y');
-}
+//if ($actionID !== 'create') {
+//    $this->registerJs('let controllerName = "' . Yii::$app->controller->id . '";', View::POS_HEAD);
+//    $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
+//    $this->registerJsFile('@web/js/document.js');
+//}
+
 $this->registerJsFile('@web/js/order.js');
 
 $list = LegalSubject::getList('is_own OR is_buyer');
@@ -76,14 +75,24 @@ foreach ($list as $key => $value) {
                     ],
                 ]) ?>
             </div>
+
             <!-- Тип -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Order::ORDER_TYPE_LIST,
+                    'data' => Order::TYPE_LIST,
                     'options' => [
                         'id' => 'order-type',
                     ],
                 ]); ?>
+            </div>
+
+            <div class="form-col col-2 d-flex align-items-center pt-2"></div>
+
+            <!-- Принято РЦ -->
+            <div class="form-col col-2 d-flex justify-content-end">
+                <?= $form->field($model, 'accepted_dist_center')->textInput([
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
             </div>
         </div>
 
@@ -94,7 +103,6 @@ foreach ($list as $key => $value) {
                     'data' => $buyerList,
                     'options' => [
                         'id' => 'buyer-select',
-//                        'placeholder' => 'Не назначено',
                     ],
                 ]); ?>
             </div>
@@ -162,19 +170,38 @@ foreach ($list as $key => $value) {
                     'options' => [
                         'placeholder' => 'Не назначен',
                     ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ]); ?>
             </div>
         </div>
 
         <div class="row form-row" <?= $actionID === 'create' ? 'hidden' : '' ?>>
-            <!-- Статус учёта -->
+            <!-- Основные статусы -->
             <div class="form-col col-3">
-                <?= $form->field($model, 'accounting_status_id')->textInput(['readonly' => true,]) ?>
+                <?= $form->field($model, 'status_main_id')->widget(select2::class, [
+                    'data' => Order::STATUS_MAIN_LIST,
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ]) ?>
             </div>
 
-            <!-- Статус реализации -->
+            <!-- Дополнительные статусы -->
             <div class="form-col col-3">
-                <?= $form->field($model, 'implementation_status_id')->textInput(['readonly' => true,]) ?>
+                <?= $form->field($model, 'status_additional_id')->widget(select2::class, [
+                    'data' => Order::STATUS_ADDITIONAL_LIST,
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ]) ?>
             </div>
 
             <!-- Кнопка добавления позиции -->

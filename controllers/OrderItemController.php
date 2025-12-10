@@ -74,7 +74,7 @@ class OrderItemController extends Controller
             $dbMessages = \Yii::$app->params['messages']['db'];
             try {
                 $model->delete();
-                return true;
+                return false;
             } catch (IntegrityException $e) {
                 if (!$this->request->isAjax) {
                     \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);
