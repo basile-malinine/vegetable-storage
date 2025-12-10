@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use yii\web\Response;
+
 use app\models\DistributionCenter\DistributionCenter;
 use app\models\DistributionCenter\DistributionCenterSearch;
 
@@ -46,5 +48,13 @@ class DistributionCenterController extends BaseController
     protected function findModel($id)
     {
         return DistributionCenter::findOne($id);
+    }
+
+    public function actionGetLegalSubject()
+    {
+        $id = \Yii::$app->request->post('id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return DistributionCenter::findOne($id)->legal_subject_id;
     }
 }

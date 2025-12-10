@@ -1,0 +1,214 @@
+<?php
+
+/** @var yii\web\View $this */
+/** @var yii\bootstrap5\ActiveForm $form */
+/** @var yii\data\ActiveDataProvider $dataProviderItem */
+/** @var Order $model */
+
+/** @var string $header */
+
+use app\models\DistributionCenter\DistributionCenter;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
+use yii\web\View;
+use kartik\date\DatePicker;
+use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
+
+use app\models\Documents\Order\Order;
+use app\models\LegalSubject\LegalSubject;
+use app\models\Manager\Manager;
+use app\models\Stock\Stock;
+
+$actionID = Yii::$app->controller->action->id;
+if ($actionID !== 'create') {
+    $this->registerJs('let controllerName = "' . Yii::$app->controller->id . '";', View::POS_HEAD);
+    $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
+    $this->registerJsFile('@web/js/document.js');
+} else {
+    $model->date = (new DateTime('now'))->format('d.m.Y');
+}
+$this->registerJsFile('@web/js/order.js');
+
+$list = LegalSubject::getList('is_own OR is_buyer');
+
+$buyerList[0] = 'Все';
+foreach ($list as $key => $value) {
+    $buyerList[$key] = $value;
+}
+
+?>
+
+<div class="page-top-panel">
+    <div class="page-top-panel-header d-inline">
+        <?= $header ?>
+    </div>
+</div>
+
+<div class="page-content">
+    <div class="page-content-form">
+
+        <?php $form = ActiveForm::begin([
+            'id' => 'page-content-form',
+            'fieldConfig' => [
+                'template' => "{label}\n{input}\n{error}",
+                'labelOptions' => ['class' => 'col-form-label pt-0'],
+                'inputOptions' => ['class' => 'form-control form-control-sm'],
+                'errorOptions' => ['class' => 'invalid-feedback'],
+                'enableClientValidation' => false,
+            ],
+        ]); ?>
+
+        <div class="row form-row">
+            <!-- Дата -->
+            <div class="form-col col-2">
+                <?= $form->field($model, 'date')->widget(DatePicker::class, [
+                    'type' => DatePicker::TYPE_COMPONENT_APPEND,
+                    'name' => 'date',
+                    'readonly' => true,
+                    'removeButton' => false,
+                    'size' => 'sm',
+
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'dd.mm.yyyy',
+                        'todayHighlight' => true,
+                    ],
+                ]) ?>
+            </div>
+            <!-- Тип -->
+            <div class="form-col col-2">
+                <?= $form->field($model, 'type_id')->widget(Select2::class, [
+                    'data' => Order::ORDER_TYPE_LIST,
+                    'options' => [
+                        'id' => 'order-type',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Сеть -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'buyer_id')->widget(Select2::class, [
+                    'data' => $buyerList,
+                    'options' => [
+                        'id' => 'buyer-select',
+//                        'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Распределительный центр -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'distribution_center_id')->widget(Select2::class, [
+                    'data' => DistributionCenter::getList(),
+                    'options' => [
+                        'id' => 'distribution-center-select',
+                        'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Поставщик (ЮЛ) -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'supplier_id')->widget(Select2::class, [
+                    'data' => LegalSubject::getList('is_own'),
+                    'options' => [
+                        'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Склад -->
+            <div class="form-col col-4" id="stock-div">
+                <?= $form->field($model, 'stock_id')->widget(Select2::class, [
+                    'data' => Stock::getList(),
+                    'options' => [
+                        'id' => 'stockSelect',
+                        'placeholder' => 'Не назначен',
+                    ],
+                ]); ?>
+            </div>
+            <!-- Исполнитель -->
+            <div class="form-col col-4" id="executor-div">
+                <?= $form->field($model, 'executor_id')->widget(Select2::class, [
+                    'data' => Manager::getList('is_purchasing_mng'),
+                    'options' => [
+                        'id' => 'executorSelect',
+                        'placeholder' => 'Не назначен',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Менеджер по реализации -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'sales_mng_id')->widget(Select2::class, [
+                    'data' => Manager::getList('is_sales_mng'),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Агент по реализации -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'sales_agent_id')->widget(Select2::class, [
+                    'data' => Manager::getList('is_sales_agent'),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-row" <?= $actionID === 'create' ? 'hidden' : '' ?>>
+            <!-- Статус учёта -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'accounting_status_id')->textInput(['readonly' => true,]) ?>
+            </div>
+
+            <!-- Статус реализации -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'implementation_status_id')->textInput(['readonly' => true,]) ?>
+            </div>
+
+            <!-- Кнопка добавления позиции -->
+            <div class="form-col col-2 d-flex align-items-center pt-2">
+                <?= Html::button('<i class="fa fa-plus"></i><span class="ms-2">Добавить позицию</span>',
+                    [
+                        'id' => 'btnAdd',
+                        'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3',
+                        'style' => 'height: 31px',
+                    ]);
+                ?>
+            </div>
+        </div>
+
+        <!-- GridView (Состав) -->
+        <div class="row form-row">
+            <div class="form-col col-8">
+                <?= isset($dataProviderItem) ? $this->render('_item_grid', compact(['model', 'dataProviderItem'])) : '' ?>
+            </div>
+        </div>
+
+        <!-- Комментарий -->
+        <div <?= $actionID === 'create' ? 'class="row form-last-row mt-2"' : 'class="row form-last-row"' ?>>
+            <div class="form-col col-8">
+                <?= $form->field($model, 'comment')->textarea() ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-light btn-outline-primary btn-sm me-2']) ?>
+            <?= Html::a('К списку', '/order/index', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
+        </div>
+
+        <?php ActiveForm::end(); ?>
+
+    </div>
+</div>

@@ -110,7 +110,6 @@ $config = [
 
                 // DeliveryController Доставки
                 'delivery/<action:(edit|delete)>/<id:\d+>' => 'delivery/<action>',
-
                 // DeliveryItemController Позиция по Доставке
                 'delivery-item/<action:(add|edit)>/<id:\d+>' => 'delivery-item/<action>',
 
@@ -170,6 +169,11 @@ $config = [
 
                 // DistributionCenterController Распределительные центры
                 'distribution-center/<action:(edit|delete)>/<id:\d+>' => 'distribution-center/<action>',
+
+                // OrderController Заказы
+                'order/<action:(edit|delete)>/<id:\d+>' => 'order/<action>',
+                // DeliveryItemController Позиция по Заказу
+                'order-item/<action:(add|edit)>/<id:\d+>' => 'order-item/<action>',
             ],
         ],
     ],

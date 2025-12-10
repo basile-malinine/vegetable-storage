@@ -183,6 +183,11 @@ echo Nav::widget([
                     'label' => 'Доставки',
                     'url' => ['/delivery'],
                 ],
+
+                [
+                    'label' => 'Заказы',
+                    'url' => ['/order'],
+                ],
             ],
         ],
 

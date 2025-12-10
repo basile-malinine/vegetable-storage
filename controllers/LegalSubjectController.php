@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\DistributionCenter\DistributionCenter;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\LegalSubject\LegalSubject;
 use app\models\LegalSubject\LegalSubjectSearch;
@@ -39,6 +42,12 @@ class LegalSubjectController extends BaseController
                         'allow' => true,
                         'actions' => ['delete'],
                         'roles' => ['legal_subject.delete'],
+                    ],
+
+                    [
+                        'allow' => true,
+                        'actions' => ['get-distribution-center'],
+                        'roles' => ['@'],
                     ],
                 ],
             ],
@@ -123,5 +132,26 @@ class LegalSubjectController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGetDistributionCenter()
+    {
+        $id = \Yii::$app->request->post('id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if ($id) {
+            $model = LegalSubject::findOne($id);
+            $children = ArrayHelper::map($model->distributionCenter, 'id', 'name');
+            asort($children);
+        } else {
+            $children = DistributionCenter::getList();
+        }
+
+        $ret = [];
+        foreach ($children as $key => $child) {
+            $ret[] = ['value' => $key, 'text' => $child];
+        }
+
+        return $ret;
     }
 }

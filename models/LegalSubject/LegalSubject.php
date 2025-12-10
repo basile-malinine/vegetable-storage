@@ -4,6 +4,8 @@ namespace app\models\LegalSubject;
 
 use app\models\Base;
 use app\models\Country\Country;
+use app\models\DistributionCenter\DistributionCenter;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "legal_subject".
@@ -24,6 +26,7 @@ use app\models\Country\Country;
  * @property string|null $comment Комментарий
  *
  * @property Country $country
+ * @property DistributionCenter $distributionCenter
  */
 class LegalSubject extends Base
 {
@@ -84,6 +87,11 @@ class LegalSubject extends Base
     public function getCountry()
     {
         return $this->hasOne(Country::class, ['id' => 'country_id']);
+    }
+
+    public function getDistributionCenter()
+    {
+        return $this->hasMany(DistributionCenter::class, ['legal_subject_id' => 'id']);
     }
 
     // Список Собственных предприятий
