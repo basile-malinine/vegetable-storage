@@ -49,8 +49,8 @@ class Order extends Base
     const TYPE_STOCK = 1;
     const TYPE_EXECUTOR = 2;
     const ORDER_TYPE_LIST = [
-        self::TYPE_STOCK => 'Со склада',
-        self::TYPE_EXECUTOR => 'Через исполнителя',
+        self::TYPE_STOCK => 'Склад',
+        self::TYPE_EXECUTOR => 'Исполнитель',
     ];
 
     public mixed $price = null;
