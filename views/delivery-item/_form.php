@@ -101,7 +101,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                         : '',
                     [
                         'id' => 'delivery-item-weight',
-                        'class' => 'form-control form-control-sm',
+                        'class' => 'form-control form-control-sm text-end',
                         'disabled' => true,
                     ]
                 ) ?>
@@ -113,6 +113,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <div class="form-col col-4">
                 <?= $form->field($model, 'quantity')->textInput([
                     'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
                 ]) ?>
             </div>
 
@@ -120,6 +121,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <div class="form-col col-4">
                 <?= $form->field($model, 'price')->textInput([
                     'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
                 ]) ?>
             </div>
         </div>
