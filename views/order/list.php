@@ -72,7 +72,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                     return date("d.m.Y", strtotime($model->created_at));
                 },
                 'headerOptions' => [
-                    'style' => 'width: 100px; text-align: center;'
+                    'style' => 'width: 80px; text-align: center;'
                 ],
                 'contentOptions' => [
                     'style' => 'text-align: center;'
@@ -100,7 +100,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'value' => 'distributionCenter.name',
                 'headerOptions' => [
-                    'style' => 'width: 100px;'
+                    'style' => 'width: 80px;'
                 ],
             ],
 
@@ -124,10 +124,11 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                     $val = '';
                     switch ($model->type_id) {
                         case Order::TYPE_STOCK:
-                            $val = $model->stock->name;
+                            $val = '<span style="padding-left: 14px">'
+                                . $model->stock->name . '</span>';
                             break;
                         case Order::TYPE_EXECUTOR:
-                            $val = '<i class="fas fa-male me-1" style="color: #0077ff;"></i>'
+                            $val = '<i class="fas fa-male me-1" style="color: #0077ff; margin-left: -5px;"></i>'
                                 . $model->executor->name;
                             break;
                     }
@@ -135,7 +136,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                     return $val;
                 },
                 'headerOptions' => [
-                    'style' => 'width: 200px;'
+                    'style' => 'width: 180px;'
                 ],
             ],
 
@@ -146,11 +147,10 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'value' => function ($model) {
                     return number_format($model->price, 0,
-                            '.', ' ');
-//                    return number_format(0, 0);
+                        '.', ' ');
                 },
                 'headerOptions' => [
-                    'style' => 'width: 120px;'
+                    'style' => 'width: 100px;'
                 ],
                 'contentOptions' => [
                     'style' => 'text-align: right;'
@@ -164,11 +164,32 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'value' => function ($model) {
                     return number_format($model->weight, 0,
-                            '.', ' ');
-//                    return number_format(0, 0);
+                        '.', ' ');
                 },
                 'headerOptions' => [
-                    'style' => 'width: 120px;'
+                    'style' => 'width: 100px;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;'
+                ],
+            ],
+
+            // Принято РЦ
+            [
+                'format' => 'raw',
+                'attribute' => 'accepted_dist_center',
+                'enableSorting' => false,
+                'value' => function ($model) {
+                    $val = null;
+                    if ($model->accepted_dist_center) {
+                        $model->accepted_dist_center = str_replace(' ', '', $model->accepted_dist_center);
+                        $val = number_format((float)$model->accepted_dist_center, 1, '.', ' ');
+                    }
+
+                    return $val;
+                },
+                'headerOptions' => [
+                    'style' => 'width: 110px;'
                 ],
                 'contentOptions' => [
                     'style' => 'text-align: right;'
