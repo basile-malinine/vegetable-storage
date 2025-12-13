@@ -152,6 +152,11 @@ echo Nav::widget([
                 ],
 
                 [
+                    'label' => 'Методы оплаты',
+                    'url' => ['/payment-method'],
+                ],
+
+                [
                     'label' => 'Ворота / Рампы +G',
                     'url' => ['/gate-type'],
                 ],

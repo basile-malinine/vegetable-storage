@@ -178,8 +178,11 @@ $config = [
                 // OfpController ОПФ
                 'opf/<action:(edit|delete)>/<id:\d+>' => 'opf/<action>',
 
-                // CurrencyController ОПФ
+                // CurrencyController Валюты
                 'currency/<action:(edit|delete)>/<id:\d+>' => 'currency/<action>',
+
+                // PaymentMethodController Валюты
+                'payment-method/<action:(edit|delete)>/<id:\d+>' => 'payment-method/<action>',
             ],
         ],
     ],
