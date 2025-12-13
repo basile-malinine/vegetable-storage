@@ -87,6 +87,24 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
+
+            // Без НДС
+            [
+                'attribute' => 'is_not_nds',
+                'enableSorting' => false,
+                'value' => function ($model) {
+                    return $model->is_not_nds ? 'Без НДС' : '';
+                },
+                'headerOptions' => [
+                    'style' => 'width: 80px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: center;',
+                ]
+            ],
             [
                 'attribute' => 'country',
                 'enableSorting' => false,

@@ -122,7 +122,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'label' => 'Пост.',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    return $model->is_supplier ? 'Да' : '';
+                    return $model->is_supplier ? 'Поставщик' : '';
                 },
                 'headerOptions' => [
                     'style' => 'width: 80px;'
@@ -141,7 +141,25 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'label' => 'Покуп.',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    return $model->is_buyer ? 'Да' : '';
+                    return $model->is_buyer ? 'Покупатель' : '';
+                },
+                'headerOptions' => [
+                    'style' => 'width: 80px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: center;',
+                ]
+            ],
+
+            // Без НДС
+            [
+                'attribute' => 'is_not_nds',
+                'enableSorting' => false,
+                'value' => function ($model) {
+                    return $model->is_not_nds ? 'Без НДС' : '';
                 },
                 'headerOptions' => [
                     'style' => 'width: 80px;'

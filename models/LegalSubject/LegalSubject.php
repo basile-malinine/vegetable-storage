@@ -17,6 +17,7 @@ use app\models\Opf\Opf;
  * @property int $is_own Собственное предприятие
  * @property int $is_supplier Поставщик
  * @property int $is_buyer Покупатель
+ * @property int $is_not_nds Без НДС
  * @property string $name Краткое название предприятия или ФИО
  * @property string $full_name Полное название предприятия или ФИО
  * @property string $inn ИНН
@@ -45,7 +46,7 @@ class LegalSubject extends Base
             [['country_id', 'opf_id'], 'integer'],
             [['inn'], 'unique', 'targetAttribute' => ['inn' , 'country_id'],
                 'message' => 'Комбинация {attribute} и Страна уже существует'],
-            [['is_legal', 'is_own', 'is_supplier', 'is_buyer'], 'boolean'],
+            [['is_legal', 'is_own', 'is_supplier', 'is_buyer', 'is_not_nds'], 'boolean'],
             [['director'], 'string', 'max' => 255],
             [['accountant'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 255],
@@ -75,6 +76,7 @@ class LegalSubject extends Base
             'is_own' => 'Собственное предприятие',
             'is_supplier' => 'Поставщик',
             'is_buyer' => 'Покупатель',
+            'is_not_nds' => 'Без НДС',
             'name' => 'Название или ФИО',
             'full_name' => 'Полное название или ФИО',
             'inn' => 'ИНН',
