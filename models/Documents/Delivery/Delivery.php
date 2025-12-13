@@ -93,7 +93,7 @@ class Delivery extends Base
     {
         parent::afterFind();
 
-        $this->date_wait = $this->date_wait ? date('Y-m-d H:i', strtotime($this->date_wait)) : null;
+        $this->date_wait = $this->date_wait ? date('d.m.Y H:i', strtotime($this->date_wait)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
         $this->created_at = $this->created_at ? date('Y-m-d H:i', strtotime($this->created_at)) : null;
 
