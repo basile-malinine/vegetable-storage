@@ -5,13 +5,14 @@ namespace app\models\LegalSubject;
 use app\models\Base;
 use app\models\Country\Country;
 use app\models\DistributionCenter\DistributionCenter;
-use yii\db\ActiveQuery;
+use app\models\Opf\Opf;
 
 /**
  * This is the model class for table "legal_subject".
  *
  * @property int $id
  * @property int $country_id Страна
+ * @property int $opf_id ОПФ
  * @property int $is_legal Юридическое лицо
  * @property int $is_own Собственное предприятие
  * @property int $is_supplier Поставщик
@@ -38,10 +39,10 @@ class LegalSubject extends Base
     public function rules(): array
     {
         return [
-            [['name', 'full_name', 'country_id', 'is_legal', 'is_own'], 'required'],
+            [['name', 'full_name', 'country_id', 'opf_id', 'is_legal', 'is_own'], 'required'],
             [['name'], 'string', 'min' => 1, 'max' => 30],
             [['full_name'], 'string', 'min' => 1, 'max' => 100],
-            [['country_id'], 'integer'],
+            [['country_id', 'opf_id'], 'integer'],
             [['inn'], 'unique', 'targetAttribute' => ['inn' , 'country_id'],
                 'message' => 'Комбинация {attribute} и Страна уже существует'],
             [['is_legal', 'is_own', 'is_supplier', 'is_buyer'], 'boolean'],
@@ -69,6 +70,7 @@ class LegalSubject extends Base
             'id' => 'ID',
             'country_id' => 'Страна',
             'country' => 'Страна',
+            'opf_id' => 'ОПФ',
             'is_legal' => 'Юридическое лицо',
             'is_own' => 'Собственное предприятие',
             'is_supplier' => 'Поставщик',
@@ -87,6 +89,11 @@ class LegalSubject extends Base
     public function getCountry()
     {
         return $this->hasOne(Country::class, ['id' => 'country_id']);
+    }
+
+    public function getOpf()
+    {
+        return $this->hasOne(Opf::class, ['id' => 'country_id']);
     }
 
     public function getDistributionCenter()

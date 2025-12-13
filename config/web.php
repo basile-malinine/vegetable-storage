@@ -174,6 +174,9 @@ $config = [
                 'order/<action:(edit|delete)>/<id:\d+>' => 'order/<action>',
                 // DeliveryItemController Позиция по Заказу
                 'order-item/<action:(add|edit)>/<id:\d+>' => 'order-item/<action>',
+
+                // OfpController Смена
+                'opf/<action:(edit|delete)>/<id:\d+>' => 'opf/<action>',
             ],
         ],
     ],

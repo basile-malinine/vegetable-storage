@@ -23,6 +23,11 @@ echo Nav::widget([
                     'url' => ['/unit'],
                 ],
 
+                [
+                    'label' => 'Организационно-правовые формы (ОПФ) ',
+                    'url' => ['/opf'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Opf\Opf;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\web\View;
@@ -78,18 +79,6 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
                 ]); ?>
             </div>
 
-            <!-- Поставщик -->
-            <div class="form-col col-1" style="margin-top: 31px;">
-                <?= $form->field($model, 'is_supplier')->checkbox() ?>
-            </div>
-
-            <!-- Покупатель -->
-            <div class="form-col col-1" style="margin-top: 31px;">
-                <?= $form->field($model, 'is_buyer')->checkbox() ?>
-            </div>
-        </div>
-
-        <div class="row form-row">
             <!-- Тип -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'is_legal')->widget(Select2::class, [
@@ -126,9 +115,31 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
                 ])->label('Тип'); ?>
             </div>
 
+            <!-- Поставщик -->
+            <div class="form-col col-1" style="margin-top: 31px;">
+                <?= $form->field($model, 'is_supplier')->checkbox() ?>
+            </div>
+
+            <!-- Покупатель -->
+            <div class="form-col col-1" style="margin-top: 31px;">
+                <?= $form->field($model, 'is_buyer')->checkbox() ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
             <!-- ИНН -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'inn')->textInput(['maxlength' => true])->label($innName) ?>
+            </div>
+
+            <!-- ОПФ -->
+            <div class="form-col col-2">
+                <?= $form->field($model, 'opf_id')->widget(Select2::class, [
+                    'data' => Opf::getList(),
+                    'options' => [
+                        'placeholder' => 'Не назначена',
+                    ],
+                ]); ?>
             </div>
 
             <!-- Название или ФИО -->
