@@ -152,7 +152,7 @@ echo Nav::widget([
                 ],
 
                 [
-                    'label' => 'Методы оплаты',
+                    'label' => 'Способы оплаты',
                     'url' => ['/payment-method'],
                 ],
 
@@ -195,13 +195,13 @@ echo Nav::widget([
             'options' => ['class' => 'ms-4'],
             'items' => [
                 [
-                    'label' => 'Доставки',
-                    'url' => ['/delivery'],
+                    'label' => 'Заказы',
+                    'url' => ['/order'],
                 ],
 
                 [
-                    'label' => 'Заказы',
-                    'url' => ['/order'],
+                    'label' => 'Поставки',
+                    'url' => ['/delivery'],
                 ],
             ],
         ],
