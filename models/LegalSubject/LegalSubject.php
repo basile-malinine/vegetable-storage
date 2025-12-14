@@ -76,7 +76,7 @@ class LegalSubject extends Base
             'is_own' => 'Собственное предприятие',
             'is_supplier' => 'Поставщик',
             'is_buyer' => 'Покупатель',
-            'is_not_nds' => 'Без НДС',
+            'is_not_nds' => 'НДС',
             'name' => 'Название или ФИО',
             'full_name' => 'Полное название или ФИО',
             'inn' => 'ИНН',

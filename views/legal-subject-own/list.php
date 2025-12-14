@@ -93,7 +93,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'attribute' => 'is_not_nds',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    return $model->is_not_nds ? 'Без НДС' : '';
+                    return $model->is_not_nds ? 'Без НДС' : 'С НДС';
                 },
                 'headerOptions' => [
                     'style' => 'width: 80px;'
