@@ -191,8 +191,9 @@ class Order extends Base
     {
         parent::afterFind();
 
-        $this->date = $this->date ? date('Y-m-d', strtotime($this->date)) : null;
+        $this->date = $this->date ? date('d.m.Y', strtotime($this->date)) : null;
         $this->created_at = $this->created_at ? date('Y-m-d H:i', strtotime($this->created_at)) : null;
+        $this->updated_at = $this->updated_at ? date('Y-m-d H:i', strtotime($this->updated_at)) : null;
 
         if (!$this->price) {
             $items = $this->items;
