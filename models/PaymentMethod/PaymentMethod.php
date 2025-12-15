@@ -42,8 +42,8 @@ class PaymentMethod extends Base
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'comment' => 'Comment',
+            'name' => 'Название',
+            'comment' => 'Комментарий',
         ];
     }
 }
