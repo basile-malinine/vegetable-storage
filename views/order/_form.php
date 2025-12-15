@@ -7,10 +7,8 @@
 
 /** @var string $header */
 
-use app\models\OrderStatus\OrderStatus;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-use yii\web\View;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 
@@ -21,13 +19,6 @@ use app\models\Manager\Manager;
 use app\models\Stock\Stock;
 
 $actionID = Yii::$app->controller->action->id;
-//if ($actionID !== 'create') {
-//    $this->registerJs('let controllerName = "' . Yii::$app->controller->id . '";', View::POS_HEAD);
-//    $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
-//    $this->registerJsFile('@web/js/document.js');
-//}
-
-$this->registerJsFile('@web/js/order.js');
 
 $list = LegalSubject::getList('is_own OR is_buyer');
 
@@ -36,6 +27,7 @@ foreach ($list as $key => $value) {
     $buyerList[$key] = $value;
 }
 
+$this->registerJsFile('@web/js/order.js');
 ?>
 
 <div class="page-top-panel">

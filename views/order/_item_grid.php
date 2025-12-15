@@ -46,21 +46,6 @@ use app\models\Documents\Order\Order;
             ],
         ],
 
-        // Единица измерения
-        [
-            'format' => 'raw',
-            'attribute' => 'unit',
-            'label' => 'Изм',
-            'value' => 'assortment.unit.name',
-            'enableSorting' => false,
-            'contentOptions' => [
-                'style' => 'text-align: center;'
-            ],
-            'headerOptions' => [
-                'style' => 'width: 40px;'
-            ],
-        ],
-
         // Количество
         [
             'format' => 'raw',
@@ -68,7 +53,8 @@ use app\models\Documents\Order\Order;
             'enableSorting' => false,
             'value' => function ($model) {
                 return number_format($model->quantity, 1,
-                        '.', ' ');
+                        '.', ' ')
+                    . ' (' . $model->assortment->unit->name . ')';
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'
@@ -77,6 +63,21 @@ use app\models\Documents\Order\Order;
                 'style' => 'width: 100px;'
             ],
         ],
+
+        // Единица измерения
+//        [
+//            'format' => 'raw',
+//            'attribute' => 'unit',
+//            'label' => 'Изм',
+//            'value' => 'assortment.unit.name',
+//            'enableSorting' => false,
+//            'contentOptions' => [
+//                'style' => 'text-align: center;'
+//            ],
+//            'headerOptions' => [
+//                'style' => 'width: 40px;'
+//            ],
+//        ],
 
         // Цена
         [
