@@ -6,13 +6,14 @@
 
 /** @var string $header */
 
-use app\models\Assortment\Assortment;
-use app\models\Documents\Delivery\DeliveryItem;
-use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\JsExpression;
+use kartik\select2\Select2;
+
+use app\models\Assortment\Assortment;
+use app\models\Documents\Delivery\DeliveryItem;
 
 $actionId = Yii::$app->controller->action->id;
 $assortmentList = [];

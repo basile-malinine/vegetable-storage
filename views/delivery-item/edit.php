@@ -1,10 +1,11 @@
 <?php
 
-/** @var yii\web\View $this */
-/** @var \app\models\Documents\Delivery\DeliveryItem $model */
-
+use yii\web\View;
 use app\models\Documents\Delivery\DeliveryItem;
+
+/** @var View $this */
+/** @var DeliveryItem $model */
 
 $header = 'Позиция [' . $model->assortment->name . ']';
 
-$this->render('_form', compact('model', 'header'));
+echo $this->render('_form', compact('model', 'header'));

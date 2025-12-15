@@ -43,6 +43,8 @@ class DeliveryItem extends Base
         self::QUALITY_NOT_AGREED => 'Не согласовано',
     ];
 
+    public mixed $assortment_name;
+
     public static function tableName()
     {
         return 'delivery_item';
@@ -106,6 +108,13 @@ class DeliveryItem extends Base
             'profit_expected' => 'Ожидаемая прибыль',
             'work_plan' => 'План по работе',
         ];
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        $this->assortment_name = $this->assortment->name;
     }
 
     public function getAssortment()

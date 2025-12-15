@@ -104,7 +104,7 @@ $this->registerJsFile('@web/js/delivery.js');
             <!-- Предприятие -->
             <div class="form-col col-4">
                 <?= $form->field($model, 'company_own_id')->widget(Select2::class, [
-                    'data' => LegalSubject::getListOwn(),
+                    'data' => LegalSubject::getList('is_supplier OR is_own'),
                     'options' => [
                         'placeholder' => 'Не назначено',
                     ],
@@ -123,7 +123,7 @@ $this->registerJsFile('@web/js/delivery.js');
             <!-- Исполнитель -->
             <div class="form-col col-2" id="executor-div">
                 <?= $form->field($model, 'executor_id')->widget(Select2::class, [
-                    'data' => Manager::getList('is_purchasing_mng AND is_sales_mng'),
+                    'data' => Manager::getList('is_purchasing_mng'),
                     'options' => [
                         'id' => 'executorSelect',
                         'placeholder' => 'Не назначен',
@@ -148,6 +148,9 @@ $this->registerJsFile('@web/js/delivery.js');
                     'options' => [
                         'placeholder' => 'Не назначен',
                     ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
                 ]); ?>
             </div>
         </div>
@@ -169,6 +172,9 @@ $this->registerJsFile('@web/js/delivery.js');
                     'data' => Manager::getList('is_support'),
                     'options' => [
                         'placeholder' => 'Не назначен',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
                     ],
                 ]); ?>
             </div>

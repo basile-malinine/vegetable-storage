@@ -65,11 +65,9 @@ class Delivery extends Base
     // Способ оплаты -----------------------------------------------------------
     const TRANSPORT_AFFILIATION_SUPPLIER = 1;
     const TRANSPORT_AFFILIATION_BUYER = 2;
-    const TRANSPORT_AFFILIATION_EXECUTOR = 3;
     const TRANSPORT_AFFILIATION_LIST = [
         self::TRANSPORT_AFFILIATION_SUPPLIER => 'Поставщик',
         self::TRANSPORT_AFFILIATION_BUYER => 'Покупатель',
-        self::TRANSPORT_AFFILIATION_EXECUTOR => 'Исполнитель',
     ];
 
     public mixed $price_total = null;
@@ -85,6 +83,8 @@ class Delivery extends Base
             [[
                 'stock_id',
                 'executor_id',
+                'purchasing_agent_id',
+                'support_mng_id',
                 'shipment_date',
                 'unloading_date',
                 'payment_term',
@@ -100,9 +100,7 @@ class Delivery extends Base
                 'supplier_id',
                 'company_own_id',
                 'purchasing_mng_id',
-                'purchasing_agent_id',
                 'sales_mng_id',
-                'support_mng_id',
                 'currency_id',
                 'payment_method_id',
                 'transport_affiliation_id'], 'required'
