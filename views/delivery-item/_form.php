@@ -16,7 +16,7 @@ use yii\web\JsExpression;
 
 $actionId = Yii::$app->controller->action->id;
 $assortmentList = [];
-$ids = ArrayHelper::getColumn($model->delivery->items, 'assortment_id');
+$ids = ArrayHelper::getColumn($model->delivery->deliveryItems, 'assortment_id');
 
 if ($actionId == 'add') {
     $assortmentList = Assortment::getListExceptIds($ids);
@@ -53,6 +53,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                 <?= $form->field($model, 'assortment_id')->widget(Select2::class, [
                     'data' => $assortmentList,
                     'options' => [
+                        'label' => 'Номенклатурная позиция',
                         'placeholder' => 'Не назначена',
                         'onchange' => '
                             const $unit = $("#delivery-item-unit");
@@ -63,7 +64,6 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                                     id: $(this).val()
                                 }, 
                                 (data) => {
-                                    console.log(data);
                                     $unit.val(data.unit);
                                     $weight.val(data.weight);
                                 }
@@ -108,10 +108,10 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             </div>
         </div>
 
-        <div class="row form-last-row">
-            <!-- Количество -->
+        <div class="row form-row">
+            <!-- Отправлено -->
             <div class="form-col col-4">
-                <?= $form->field($model, 'quantity')->textInput([
+                <?= $form->field($model, 'shipped')->textInput([
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
@@ -123,6 +123,61 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
+            </div>
+
+            <!-- Общая стоимость -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'price_total')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Качество -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'quality_id')->widget(Select2::class, [
+                    'data' => DeliveryItem::QUALITY_LIST,
+                    'options' => [
+                        'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Себестоимость до склада -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'cost_before_stock')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+
+            <!-- Ожидаемая прибыль -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'profit_expected')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Тип выгрузки -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'unloading_type_id')->widget(Select2::class, [
+                    'data' => DeliveryItem::UNLOADING_TYPE_LIST,
+                    'options' => [
+                        'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-last-row">
+            <!-- План по работе -->
+            <div class="form-col col-12">
+                <?= $form->field($model, 'work_plan')->textarea() ?>
             </div>
         </div>
 

@@ -1,0 +1,50 @@
+id
+type_id                   + Тип поставки
+supplier_id               + Поставщик                       Поставщики, собственные
+company_own_id            + Предприятие                     Собственные
+stock_id                    Склад
+executor_id                 Исполнитель                     Менеджеры (is_purchasing_mng AND is_sales_mng)
+purchasing_mng_id         + Менеджер по закупкам            Менеджеры (is_purchasing_mng)
+purchasing_agent_id       + Агент по закупкам               Менеджеры (is_purchasing_agent)
+sales_mng_id              + Менеджер по реализации          Менеджеры (is_sales_mng)
+support_mng_id            + Отдел сопровождения             Менеджеры (is_support)
+currency_id               + Валюта
+payment_method_id         + Способ оплаты
+transport affiliation_id  + Ставит транспорт
+shipment_date               Дата отгрузки
+unloading_date              Дата выгрузки
+payment_term                Срок оплаты
+date_close                  Дата закрытия
+price_total                 Общая стоимость поставки        Вычисляемое
+comment                     Комментарий
+created_by                  Создатель
+created_at                  Дата создания
+updated_at                  Дата обновления
+
+Табличная часть (состав) ------------------------------------------------
+
+id                          ? (Не нужен)
+delivery_id               + Поставка
+assortment_id             + Номенклатура
+shipped                   + Отправлено
+                            Ед. изм.
+price                     + Цена
+unloading_type_id         + Тип выгрузки
+quality_id                  Качество
+cost_before_stock           Себестоимость до склада         вручную
+price_total               + Общая стоимость в поставке      вручную
+profit_expected             Ожидаемая прибыль
+work_plan                   План по работе
+
+Для отчёта --------------------------------------------------------------
+
+id
+delivery_id                 Поставка
+actually_paid               Фактически оплачено для ОТЧЕТА
+preliminary_profit          Предварительная прибыль
+a1_profit                   Прибыль А1
+report_link                 Ссылка на отчёт по поставке
+report_status               Статус отчёта
+report_comment              Комментарий по отчёту
+report_doc                  Ссылка на пояснительные документы
+

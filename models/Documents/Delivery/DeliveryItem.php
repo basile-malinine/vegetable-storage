@@ -9,24 +9,39 @@ use app\models\Base;
  * This is the model class for table "delivery_item".
  *
  * @property int $id
- * @property int|null $delivery_id Доставка
- * @property int $assortment_id Номенклатурная позиция
- * @property int $quantity Количество
+ * @property int $delivery_id Поставка
+ * @property int $assortment_id Номенклатура
+ * @property float $shipped Отправлено
  * @property float $price Цена
- * @property float|null $price_total Сумма
- * @property int|null $weight Вес
-// * @property int|null $quantity_fact Количество по факту
-// * @property float|null $price_total_fact Сумма по факту
-// * @property int|null $weight_fact Вес по факту
+ * @property int $unloading_type_id Тип выгрузки
+ * @property int|null $quality_id Качество
+ * @property float|null $cost_before_stock Себестоимость до склада
+ * @property float|null $price_total Общая стоимость в поставке
+ * @property float|null $profit_expected Ожидаемая прибыль
+ * @property string|null $work_plan План по работе
  *
  * @property Assortment $assortment
  * @property Delivery $delivery
  */
 class DeliveryItem extends Base
 {
-    public mixed $assortment_name;
-    public mixed $price_total;
-    public mixed $weight;
+    // Тип выгрузки ------------------------------------------------------------
+    const UNLOADING_TYPE_PALLET = 1;
+    const UNLOADING_TYPE_BULK_WITHOUT_PACK = 2;
+    const UNLOADING_TYPE_BULK_WITH_PACK = 3;
+    const UNLOADING_TYPE_LIST = [
+        self::UNLOADING_TYPE_PALLET => 'На паллетах',
+        self::UNLOADING_TYPE_BULK_WITHOUT_PACK => 'Навалом, без тары',
+        self::UNLOADING_TYPE_BULK_WITH_PACK => 'Навалом, в таре',
+    ];
+
+    // Качество ----------------------------------------------------------------
+    const QUALITY_AGREED = 1;
+    const QUALITY_NOT_AGREED = 2;
+    const QUALITY_LIST = [
+        self::QUALITY_AGREED => 'Согласовано',
+        self::QUALITY_NOT_AGREED => 'Не согласовано',
+    ];
 
     public static function tableName()
     {
@@ -36,10 +51,41 @@ class DeliveryItem extends Base
     public function rules()
     {
         return [
-            [['delivery_id'], 'default', 'value' => null],
-            [['delivery_id', 'assortment_id', 'quantity'], 'integer'],
-            [['assortment_id', 'quantity', 'price'], 'required', 'message' => 'Необходимо заполнить'],
-            [['price'], 'number', 'numberPattern' => '/^\d+(\.\d{2})?$/'],
+            [[
+                'quality_id',
+                'cost_before_stock',
+                'price_total',
+                'profit_expected',
+                'work_plan'], 'default', 'value' => null
+            ],
+
+            [[
+                'delivery_id',
+                'assortment_id',
+                'shipped',
+                'price',
+                'price_total',
+                'unloading_type_id'], 'required'
+            ],
+
+            [[
+                'delivery_id',
+                'assortment_id',
+                'unloading_type_id',
+                'quality_id'], 'integer'
+            ],
+
+            [['shipped'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'],
+
+            [[
+                'price',
+                'cost_before_stock',
+                'price_total',
+                'profit_expected'], 'number', 'numberPattern' => '/^\d+(\.\d{2})?$/'
+            ],
+
+            [['work_plan'], 'safe'],
+
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
             [['delivery_id'], 'exist', 'skipOnError' => true, 'targetClass' => Delivery::class, 'targetAttribute' => ['delivery_id' => 'id']],
         ];
@@ -49,25 +95,17 @@ class DeliveryItem extends Base
     {
         return [
             'id' => 'ID',
-            'delivery_id' => 'Доставка',
-            'assortment_id' => 'Позиция',
-            'quantity' => 'Кол-во',
+            'delivery_id' => 'Поставка',
+            'assortment_id' => 'Номенклатура',
+            'shipped' => 'Отправлено',
             'price' => 'Цена',
-            'price_total' => 'Сумма',
-            'weight' => 'Вес кг',
-            'quantity_fact' => 'Кол-во (факт)',
-            'price_total_fact' => 'Сумма (факт)',
-            'weight_fact' => 'Вес (факт)',
+            'unloading_type_id' => 'Тип выгрузки',
+            'quality_id' => 'Качество',
+            'cost_before_stock' => 'Себестоимость до склада',
+            'price_total' => 'Общая стоимость',
+            'profit_expected' => 'Ожидаемая прибыль',
+            'work_plan' => 'План по работе',
         ];
-    }
-
-    public function afterFind()
-    {
-        parent::afterFind();
-
-        $this->assortment_name = $this->assortment->name;
-        $this->price_total = $this->quantity * $this->price;
-        $this->weight = $this->quantity * $this->assortment->weight;
     }
 
     public function getAssortment()

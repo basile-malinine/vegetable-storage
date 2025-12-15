@@ -2,6 +2,8 @@
 
 namespace app\models\Documents\Delivery;
 
+use app\models\Currency\Currency;
+use app\models\PaymentMethod\PaymentMethod;
 use DateTime;
 
 use Yii;
@@ -17,32 +19,60 @@ use app\models\Stock\Stock;
  * This is the model class for table "delivery".
  *
  * @property int $id
+ * @property int $type_id Тип поставки
  * @property int $supplier_id Поставщик
- * @property int $own_id Предприятие
- * @property int $stock_id Склад
- * @property int $manager_id Менеджер
- * @property string|null $date_wait Дата ожидания
+ * @property int $company_own_id Предприятие
+ * @property int|null $stock_id Склад
+ * @property int|null $executor_id Исполнитель
+ * @property int $purchasing_mng_id Менеджер по закупкам
+ * @property int $purchasing_agent_id Агент по закупкам
+ * @property int $sales_mng_id Менеджер по реализации
+ * @property int $support_mng_id Отдел сопровождения
+ * @property int $currency_id Валюта
+ * @property int $payment_method_id Способ оплаты
+ * @property int $transport_affiliation_id Ставит транспорт
+ * @property string|null $shipment_date Дата отгрузки
+ * @property string|null $unloading_date Дата выгрузки
+ * @property string|null $payment_term Срок оплаты
  * @property string|null $date_close Дата закрытия
- * @property float|null $price Сумма
- * @property int|null $weight Вес
-// * @property float|null $price_fact Фактическая сумма
-// * @property int|null $weight_fact Фактический вес
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
- * @property LegalSubject $supplier
- * @property LegalSubject $own
+ * @property LegalSubject $companyOwn
+ * @property Currency $currency
+ * @property DeliveryItem[] $deliveryItems
+ * @property Manager $executor
+ * @property PaymentMethod $paymentMethod
+ * @property Manager $purchasingAgent
+ * @property Manager $purchasingMng
+ * @property Manager $salesMng
  * @property Stock $stock
- * @property Manager $manager
- *
- * @property array $deliveryItems Состав Доставки
+ * @property LegalSubject $supplier
+ * @property Manager $supportMng *
  */
 class Delivery extends Base
 {
-    public mixed $price = null;
-    public mixed $weight = null;
+    // Типы Заказа -------------------------------------------------------------
+    const TYPE_STOCK = 1;
+    const TYPE_EXECUTOR = 2;
+    const TYPE_LIST = [
+        self::TYPE_STOCK => 'Склад',
+        self::TYPE_EXECUTOR => 'Исполнитель',
+    ];
+
+    // Способ оплаты -----------------------------------------------------------
+    const TRANSPORT_AFFILIATION_SUPPLIER = 1;
+    const TRANSPORT_AFFILIATION_BUYER = 2;
+    const TRANSPORT_AFFILIATION_EXECUTOR = 3;
+    const TRANSPORT_AFFILIATION_LIST = [
+        self::TRANSPORT_AFFILIATION_SUPPLIER => 'Поставщик',
+        self::TRANSPORT_AFFILIATION_BUYER => 'Покупатель',
+        self::TRANSPORT_AFFILIATION_EXECUTOR => 'Исполнитель',
+    ];
+
+    public mixed $price_total = null;
 
     public static function tableName()
     {
@@ -52,16 +82,69 @@ class Delivery extends Base
     public function rules()
     {
         return [
-            [['date_wait', 'date_close', 'comment', 'created_by', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['supplier_id', 'own_id', 'stock_id', 'manager_id'], 'required'],
-            [['supplier_id', 'own_id', 'stock_id', 'manager_id', 'weight', 'created_by'], 'integer'],
-            [['date_wait', 'date_close', 'created_at', 'updated_at'], 'safe'],
-            [['price'], 'number'],
+            [[
+                'stock_id',
+                'executor_id',
+                'shipment_date',
+                'unloading_date',
+                'payment_term',
+                'date_close',
+                'comment',
+                'created_by',
+                'created_at',
+                'updated_at'], 'default', 'value' => null
+            ],
+
+            [[
+                'type_id',
+                'supplier_id',
+                'company_own_id',
+                'purchasing_mng_id',
+                'purchasing_agent_id',
+                'sales_mng_id',
+                'support_mng_id',
+                'currency_id',
+                'payment_method_id',
+                'transport_affiliation_id'], 'required'
+            ],
+
+            [[
+                'type_id',
+                'supplier_id',
+                'company_own_id',
+                'stock_id',
+                'executor_id',
+                'purchasing_mng_id',
+                'purchasing_agent_id',
+                'sales_mng_id',
+                'support_mng_id',
+                'currency_id',
+                'payment_method_id',
+                'transport_affiliation_id',
+                'created_by'], 'integer'
+            ],
+
+            [[
+                'shipment_date',
+                'unloading_date',
+                'payment_term',
+                'date_close',
+                'created_at',
+                'updated_at'], 'safe'
+            ],
+
             [['comment'], 'string'],
-            [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['supplier_id' => 'id']],
-            [['own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['own_id' => 'id']],
+
+            [['company_own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['company_own_id' => 'id']],
+            [['currency_id'], 'exist', 'skipOnError' => true, 'targetClass' => Currency::class, 'targetAttribute' => ['currency_id' => 'id']],
+            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['executor_id' => 'id']],
+            [['payment_method_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentMethod::class, 'targetAttribute' => ['payment_method_id' => 'id']],
+            [['purchasing_agent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['purchasing_agent_id' => 'id']],
+            [['purchasing_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['purchasing_mng_id' => 'id']],
+            [['sales_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['sales_mng_id' => 'id']],
             [['stock_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stock::class, 'targetAttribute' => ['stock_id' => 'id']],
-            [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['manager_id' => 'id']],
+            [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['supplier_id' => 'id']],
+            [['support_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['support_mng_id' => 'id']],
         ];
     }
 
@@ -72,16 +155,24 @@ class Delivery extends Base
     {
         return [
             'id' => 'ID',
+            'type_id' => 'Тип поставки',
             'supplier_id' => 'Поставщик',
-            'own_id' => 'Предприятие',
+            'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'manager_id' => 'Менеджер',
-            'date_wait' => 'Дата доставки',
+            'executor_id' => 'Исполнитель',
+            'stock_executor' => 'Склад / Исполнитель',
+            'purchasing_mng_id' => 'Менеджер по закупкам',
+            'purchasing_agent_id' => 'Агент по закупкам',
+            'sales_mng_id' => 'Менеджер по реализации',
+            'support_mng_id' => 'Отдел сопровождения',
+            'currency_id' => 'Валюта',
+            'payment_method_id' => 'Способ оплаты',
+            'transport_affiliation_id' => 'Ставит транспорт',
+            'shipment_date' => 'Дата отгрузки',
+            'unloading_date' => 'Дата выгрузки',
+            'payment_term' => 'Срок оплаты',
             'date_close' => 'Дата закрытия',
-            'price' => 'Сумма',
-            'weight' => 'Вес',
-            'price_fact' => 'Сумма (факт)',
-            'weight_fact' => 'Вес (факт)',
+            'price_total' => 'Общая стоимость',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
             'created_at' => 'Дата создания',
@@ -93,26 +184,23 @@ class Delivery extends Base
     {
         parent::afterFind();
 
-        $this->date_wait = $this->date_wait ? date('d.m.Y H:i', strtotime($this->date_wait)) : null;
+        $this->shipment_date = $this->shipment_date ? date('d.m.Y H:i', strtotime($this->shipment_date)) : null;
+        $this->unloading_date = $this->unloading_date ? date('d.m.Y H:i', strtotime($this->unloading_date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
         $this->created_at = $this->created_at ? date('Y-m-d H:i', strtotime($this->created_at)) : null;
 
         //
-        if (!$this->price) {
-            $items = $this->items;
+        if (!$this->price_total) {
+            $items = $this->deliveryItems;
             $prices = ArrayHelper::getColumn($items, 'price_total');
-            $this->price = array_sum($prices);
-        }
-
-        if (!$this->weight) {
-            $items = $this->items;
-            $weights = ArrayHelper::getColumn($items, 'weight');
-            $this->weight = array_sum($weights);
+            $this->price_total = array_sum($prices);
         }
     }
+
     public function beforeSave($insert)
     {
-        $this->date_wait = $this->date_wait ? date('Y-m-d H:i', strtotime($this->date_wait)) : null;
+        $this->shipment_date = $this->shipment_date ? date('Y-m-d H:i', strtotime($this->shipment_date)) : null;
+        $this->unloading_date = $this->unloading_date ? date('Y-m-d H:i', strtotime($this->unloading_date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
 
         $now = (new DateTime('now'))->format('Y-m-d');
@@ -140,9 +228,9 @@ class Delivery extends Base
      *
      * @return ActiveQuery
      */
-    public function getOwn()
+    public function getCompanyOwn()
     {
-        return $this->hasOne(LegalSubject::class, ['id' => 'own_id']);
+        return $this->hasOne(LegalSubject::class, ['id' => 'company_own_id']);
     }
 
     /**
@@ -156,6 +244,17 @@ class Delivery extends Base
     }
 
     /**
+     * ------------------------------------------- Исполнитель
+     * Gets query for [[Executor]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExecutor()
+    {
+        return $this->hasOne(Manager::class, ['id' => 'executor_id']);
+    }
+
+    /**
      * Gets query for [[Supplier]].
      *
      * @return ActiveQuery
@@ -166,7 +265,7 @@ class Delivery extends Base
     }
 
     // Возврат состава документа DeliveryItem[]
-    public function getItems()
+    public function getDeliveryItems()
     {
         return $this->hasMany(DeliveryItem::class, ['delivery_id' => 'id']);
     }

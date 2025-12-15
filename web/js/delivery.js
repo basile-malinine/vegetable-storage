@@ -1,55 +1,20 @@
 $(() => {
-    const $btnAdd = $('#btnAdd');
-    $btnAdd.on('click', clickBtnAdd);
+    const $stockDiv = $("#stock-div");
+    const $executorDiv = $("#executor-div");
+    const $deliveryType = $('#delivery-type');
+    $deliveryType.on('change', changeDeliveryType);
 
-    // Обработка кнопки Добавить на форме Доставки
-    function clickBtnAdd(e) {
-        $('#modal').modal('show').find('#modalContent')
-            .load('/delivery-item/add/' + deliveryId);
+    function changeDeliveryType() {
+        if ($deliveryType.val() === '1') {
+            $("#executorSelect").val(null).trigger("change");
+            $stockDiv.removeAttr("hidden");
+            $executorDiv.attr("hidden", true);
+        } else {
+            $("#stockSelect").val(null).trigger("change");
+            $executorDiv.removeAttr("hidden");
+            $stockDiv.attr("hidden", true);
+        }
     }
 
-    // Обработка двойного клика на запись в таблице состава Доставки
-    $('.contextMenuRow').on('dblclick', function () {
-        let rowId = $(this).attr('data-row-id');
-        $('#modal').modal('show').find('#modalContent')
-            .load('/delivery-item/edit/' + rowId);
-    });
-
-    // инициализация контекстного меню для таблицы с данными
-    let menu = new BootstrapMenu('.contextMenuRow', {
-        fetchElementData: function ($rowElem) {
-            return $rowElem.data('rowId');
-        },
-        actions: [
-            {
-                name: 'Редактировать',
-                iconClass: 'fa-pen',
-                onClick: (id) => {
-                    $('#modal').modal('show').find('#modalContent')
-                        .load('/delivery-item/edit/' + id);
-                }
-            },
-
-            {
-                name: 'Удалить',
-                iconClass: 'fa-trash-alt',
-                onClick: (id) => {
-                    if (confirm("Вы точно хотите удалить запись?")) {
-                        $.post(
-                            "/delivery-item/remove",
-                            {
-                                id: id,
-                            },
-                            (data) => {
-                                if (data === 'false') {
-                                    alert('Запись используется в других таблицах!');
-                                }
-                                $.pjax.reload({container: "#delivery-items"});
-                            }
-                        );
-                    }
-                }
-            }
-        ]
-    });
+    changeDeliveryType();
 });

@@ -2,10 +2,11 @@
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
+use app\models\Documents\Delivery\Delivery;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
-$header = 'Доставки';
+$header = 'Поставки';
 
 $this->registerJs('let controllerName = "delivery";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
@@ -33,6 +34,21 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
         },
 
         'columns' => [
+            // Тип Через исполнителя (иконка)
+            [
+                'format' => 'raw',
+                'value' => function (Delivery $model) {
+                    return $model->type_id === Delivery::TYPE_EXECUTOR
+                        ? '<i class="fas fa-arrows-h"></i>' : '';
+                },
+                'contentOptions' => [
+                    'style' => 'color: #0077ff; text-align: center',
+                ],
+                'headerOptions' => [
+                    'style' => 'width: 30px',
+                ],
+            ],
+
             // № (ID)
             [
                 'attribute' => 'id',
@@ -67,13 +83,13 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Дата доставки
             [
-                'attribute' => 'date_wait',
+                'attribute' => 'shipment_date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->date_wait == null) {
+                    if ($model->shipment_date == null) {
                         return '';
                     }
-                    return date("d.m.Y", strtotime($model->date_wait));
+                    return date("d.m.Y", strtotime($model->shipment_date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'
@@ -99,25 +115,46 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             // Предприятие
             [
                 'format' => 'raw',
-                'attribute' => 'own_id',
+                'attribute' => 'company_own_id',
                 'enableSorting' => false,
-                'value' => function ($model) {
-                    return $model->own->name . '<br>'
-                        . $model->stock->name . '<br>'
-                        . $model->manager->name;
-                },
+                'value' => 'companyOwn.name',
                 'headerOptions' => [
                     'style' => 'width: 200px;'
+                ],
+            ],
+
+            // Склад / Исполнитель
+            [
+                'format' => 'raw',
+                'attribute' => 'stock_executor',
+                'enableSorting' => false,
+                'value' => function (Delivery $model, $key, $index, $grid) {
+                    $val = '';
+                    switch ($model->type_id) {
+                        case Delivery::TYPE_STOCK:
+                            $val = '<span style="padding-left: 14px">'
+                                . $model->stock->name . '</span>';
+                            break;
+                        case Delivery::TYPE_EXECUTOR:
+                            $val = '<i class="fas fa-male me-1" style="color: #0077ff; margin-left: -5px;"></i>'
+                                . $model->executor->name;
+                            break;
+                    }
+
+                    return $val;
+                },
+                'headerOptions' => [
+                    'style' => 'width: 180px;'
                 ],
             ],
 
             // Сумма
             [
                 'format' => 'raw',
-                'attribute' => 'price',
+                'attribute' => 'price_total',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    return number_format($model->price, 0,
+                    return number_format($model->price_total, 0,
                             '.', ' ');
                 },
                 'headerOptions' => [
@@ -127,55 +164,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                     'style' => 'text-align: right;'
                 ],
             ],
-
-            // Вес
-            [
-                'format' => 'raw',
-                'attribute' => 'weight',
-                'enableSorting' => false,
-                'value' => function ($model) {
-                    return number_format($model->weight, 0,
-                            '.', ' ');
-                },
-                'headerOptions' => [
-                    'style' => 'width: 120px;'
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: right;'
-                ],
-            ],
-
-            // Сумма (факт)  ------------------------------------------ на будущее, чтобы не забыть!!!
-//            [
-//                'format' => 'raw',
-//                'attribute' => 'price_fact',
-//                'enableSorting' => false,
-//                'value' => function (Delivery $model) {
-//                    return number_format($model->price_fact, 0, '.', ' ') . ' (руб)';
-//                },
-//                'headerOptions' => [
-//                    'style' => 'width: 120px;'
-//                ],
-//                'contentOptions' => [
-//                    'style' => 'text-align: right;'
-//                ],
-//            ],
-
-            // Вес (факт)
-//            [
-//                'format' => 'raw',
-//                'attribute' => 'weight_fact',
-//                'enableSorting' => false,
-//                'value' => function (Delivery $model) {
-//                    return number_format($model->weight_fact, 0, '.', ' ') . ' (кг)';;
-//                },
-//                'headerOptions' => [
-//                    'style' => 'width: 120px;'
-//                ],
-//                'contentOptions' => [
-//                    'style' => 'text-align: right;'
-//                ],
-//            ],
 
             // Комментарий
             [

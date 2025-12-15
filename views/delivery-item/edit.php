@@ -7,6 +7,4 @@ use app\models\Documents\Delivery\DeliveryItem;
 
 $header = 'Позиция [' . $model->assortment->name . ']';
 
-?>
-
-<?= $this->render('_form', compact('model', 'header')) ?>
+$this->render('_form', compact('model', 'header'));

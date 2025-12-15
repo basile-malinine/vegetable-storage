@@ -1,11 +1,13 @@
 <?php
 
 /** @var yii\data\ActiveDataProvider $dataProviderItem */
+
 /** @var Delivery $model */
 
-use app\models\Documents\Delivery\Delivery;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
+use app\models\Documents\Delivery\Delivery;
 
 ?>
 
@@ -36,38 +38,24 @@ use yii\widgets\Pjax;
         // Название
         [
             'format' => 'raw',
-            'label' => 'Номенклатурная позиция',
+            'label' => 'Номенклатура',
             'attribute' => 'assortment',
             'value' => 'assortment.name',
             'enableSorting' => false,
-            'filterInputOptions' => [
-                'class' => 'form-control form-control-sm',
-            ],
-        ],
-
-        // Единица измерения
-        [
-            'format' => 'raw',
-            'attribute' => 'unit',
-            'label' => 'Изм',
-            'value' => 'assortment.unit.name',
-            'enableSorting' => false,
-            'contentOptions' => [
-                'style' => 'text-align: center;'
-            ],
             'headerOptions' => [
-                'style' => 'width: 40px;'
+                'style' => 'width: 180px;'
             ],
         ],
 
-        // Количество
+        // Отправлено
         [
             'format' => 'raw',
-            'attribute' => 'quantity',
+            'attribute' => 'shipped',
             'enableSorting' => false,
             'value' => function ($model) {
-                return number_format($model->quantity, 0,
-                        '.', ' ');
+                return number_format($model->shipped, 0,
+                        '.', ' ')
+                    . ' (' . $model->assortment->unit->name . ')';
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'
@@ -84,7 +72,7 @@ use yii\widgets\Pjax;
             'enableSorting' => false,
             'value' => function ($model) {
                 return number_format($model->price, 2,
-                        '.', ' ');
+                    '.', ' ');
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'
@@ -94,14 +82,14 @@ use yii\widgets\Pjax;
             ],
         ],
 
-        // Сумма
+        // Общая стоимость
         [
             'format' => 'raw',
             'attribute' => 'price_total',
             'enableSorting' => false,
             'value' => function ($model) {
                 return number_format($model->price_total, 0,
-                        '.', ' ');
+                    '.', ' ');
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'
@@ -112,60 +100,30 @@ use yii\widgets\Pjax;
         ],
 
         // Вес
+//        [
+//            'format' => 'raw',
+//            'attribute' => 'weight',
+//            'enableSorting' => false,
+//            'value' => function ($model) {
+//                return number_format($model->weight, 0,
+//                    '.', ' ');
+//            },
+//            'contentOptions' => [
+//                'style' => 'text-align: right;'
+//            ],
+//            'headerOptions' => [
+//                'style' => 'width: 100px;'
+//            ],
+//        ],
+
+        // План по работе
         [
-            'format' => 'raw',
-            'attribute' => 'weight',
+            'attribute' => 'work_plan',
             'enableSorting' => false,
-            'value' => function ($model) {
-                return number_format($model->weight, 0,
-                        '.', ' ');
-            },
-            'contentOptions' => [
-                'style' => 'text-align: right;'
+            'filterInputOptions' => [
+                'class' => 'form-control form-control-sm',
             ],
-            'headerOptions' => [
-                'style' => 'width: 100px;'
-            ],
-        ],
-
-        // Количество (факт)  ------------------------------------------ на будущее, чтобы не забыть!!!
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'quantity_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
-
-        // Сумма (факт)
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'price_total_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
-
-        // Вес (факт)
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'weight_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
+        ]
     ],
 ]); ?>
 <?php Pjax::end() ?>
