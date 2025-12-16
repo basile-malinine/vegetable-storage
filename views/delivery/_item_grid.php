@@ -19,7 +19,7 @@ use app\models\Documents\Delivery\Delivery;
     'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
         return [
             'class' => 'contextMenuRow',
-            'data-row-id' => $model->id,
+            'data-row-id' => $model->delivery_id . '/' . $model->assortment_id,
         ];
     },
 

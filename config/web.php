@@ -111,7 +111,8 @@ $config = [
                 // DeliveryController Доставки
                 'delivery/<action:(edit|delete)>/<id:\d+>' => 'delivery/<action>',
                 // DeliveryItemController Позиция по Доставке
-                'delivery-item/<action:(add|edit)>/<id:\d+>' => 'delivery-item/<action>',
+                'delivery-item/<action:(add)>/<id:\d+>' => 'delivery-item/<action>',
+                'delivery-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'delivery-item/<action>',
 
                 // EmployeeController Сотрудники
                 'employee/<action:(edit|delete)>/<id:\d+>' => 'employee/<action>',
@@ -173,7 +174,8 @@ $config = [
                 // OrderController Заказы
                 'order/<action:(edit|delete)>/<id:\d+>' => 'order/<action>',
                 // DeliveryItemController Позиция по Заказу
-                'order-item/<action:(add|edit)>/<id:\d+>' => 'order-item/<action>',
+                'order-item/<action:(add)>/<id:\d+>' => 'order-item/<action>',
+                'order-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'order-item/<action>',
 
                 // OfpController ОПФ
                 'opf/<action:(edit|delete)>/<id:\d+>' => 'opf/<action>',

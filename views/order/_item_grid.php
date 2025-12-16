@@ -18,7 +18,7 @@ use app\models\Documents\Order\Order;
     'rowOptions' => function ($model, $key, $index, $grid) {
         return [
             'class' => 'contextMenuRow',
-            'data-row-id' => $model->id,
+            'data-row-id' => $model->order_id . '/' . $model->assortment_id,
         ];
     },
 

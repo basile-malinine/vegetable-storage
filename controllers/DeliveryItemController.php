@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Documents\Delivery\DeliveryItemSearch;
 use Yii;
 use yii\bootstrap5\ActiveForm;
 use yii\db\IntegrityException;
@@ -10,8 +11,23 @@ use yii\web\Response;
 
 use app\models\Documents\Delivery\DeliveryItem;
 
-class DeliveryItemController extends Controller
+class DeliveryItemController extends BaseCrudController
 {
+    protected function getModel()
+    {
+        return new DeliveryItem();
+    }
+
+    protected function getSearchModel()
+    {
+        return new DeliveryItemSearch();
+    }
+
+    protected function getTwoId()
+    {
+        return ['delivery_id', 'assortment_id'];
+    }
+
     public function actionAdd($id)
     {
         $model = new DeliveryItem();
@@ -39,9 +55,9 @@ class DeliveryItemController extends Controller
         return $this->renderAjax('add', compact('model'));
     }
 
-    public function actionEdit($id)
+    public function actionEdit($id, $id2 = null)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, $id2);
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -66,10 +82,11 @@ class DeliveryItemController extends Controller
     public function actionRemove()
     {
         $id = \Yii::$app->request->post('id');
+        $id2 = \Yii::$app->request->post('id2');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if ($id) {
-            $model = $this->findModel($id);
+        if ($id && $id2) {
+            $model = $this->findModel($id, $id2);
 
             $dbMessages = \Yii::$app->params['messages']['db'];
             try {
@@ -89,10 +106,5 @@ class DeliveryItemController extends Controller
         }
 
         return false;
-    }
-
-    protected function findModel($id)
-    {
-        return DeliveryItem::findOne($id);
     }
 }

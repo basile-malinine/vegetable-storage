@@ -35,10 +35,17 @@ $(() => {
                 iconClass: 'fa-trash-alt',
                 onClick: (id) => {
                     if (confirm("Вы точно хотите удалить запись?")) {
+                        const arrIds = id.split('/');
+                        let id2 = null;
+                        if (arrIds.length === 2) {
+                            id = arrIds[0];
+                            id2 = arrIds[1];
+                        }
                         $.post(
                             `/${controllerName}-item/remove`,
                             {
                                 id: id,
+                                id2: id2
                             },
                             (data) => {
                                 if (data === 'false') {

@@ -2,16 +2,31 @@
 
 namespace app\controllers;
 
+use app\models\Documents\Order\OrderItemSearch;
 use Yii;
 use yii\bootstrap5\ActiveForm;
 use yii\db\IntegrityException;
-use yii\web\Controller;
 use yii\web\Response;
 
 use app\models\Documents\Order\OrderItem;
 
-class OrderItemController extends Controller
+class OrderItemController extends BaseCrudController
 {
+    protected function getModel()
+    {
+        return new OrderItem();
+    }
+
+    protected function getSearchModel()
+    {
+        return new OrderItemSearch();
+    }
+
+    protected function getTwoId()
+    {
+        return ['order_id', 'assortment_id'];
+    }
+
     public function actionAdd($id)
     {
         $model = new OrderItem();
@@ -39,9 +54,9 @@ class OrderItemController extends Controller
         return $this->renderAjax('add', compact('model'));
     }
 
-    public function actionEdit($id)
+    public function actionEdit($id, $id2 = null)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, $id2);
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -66,10 +81,11 @@ class OrderItemController extends Controller
     public function actionRemove()
     {
         $id = \Yii::$app->request->post('id');
+        $id2 = \Yii::$app->request->post('id2');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if ($id) {
-            $model = $this->findModel($id);
+        if ($id && $id2) {
+            $model = $this->findModel($id, $id2);
 
             $dbMessages = \Yii::$app->params['messages']['db'];
             try {
@@ -89,10 +105,5 @@ class OrderItemController extends Controller
         }
 
         return 'false';
-    }
-
-    protected function findModel($id)
-    {
-        return OrderItem::findOne($id);
     }
 }
