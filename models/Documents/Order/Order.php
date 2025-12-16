@@ -228,6 +228,15 @@ class Order extends Base
             $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
         }
 
+        switch ($this->type_id) {
+            case self::TYPE_STOCK:
+                $this->executor_id = null;
+                break;
+            case self::TYPE_EXECUTOR:
+                $this->stock_id = null;
+                break;
+        }
+
         return true;
     }
 

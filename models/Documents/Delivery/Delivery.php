@@ -208,6 +208,15 @@ class Delivery extends Base
         }
         $this->updated_at = $now;
 
+        switch ($this->type_id) {
+            case self::TYPE_STOCK:
+                $this->executor_id = null;
+                break;
+            case self::TYPE_EXECUTOR:
+                $this->stock_id = null;
+                break;
+        }
+
         return true;
     }
 
