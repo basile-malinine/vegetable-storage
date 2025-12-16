@@ -23,8 +23,6 @@ use yii\helpers\ArrayHelper;
  * @property int $executor_id Исполнитель
  * @property int $sales_mng_id Менеджер по реализации
  * @property int $sales_agent_id Агент по реализации
- * @property int|null $status_main_id Основные статусы
- * @property int|null $status_additional_id Дополнительные статусы
  * @property string $date Дата
  * @property string $date_close Дата закрытия
  * @property float|null $accepted_dist_center Принято РЦ
@@ -55,42 +53,6 @@ class Order extends Base
         self::TYPE_EXECUTOR => 'Исполнитель',
     ];
 
-    // Статусы Заказа основные -------------------------------------------------
-    const STATUS_MAIN_CANCELED = 1;
-    const STATUS_MAIN_SHIPPED = 2;
-    const STATUS_MAIN_SHIPPED_REFUND = 3;
-    const STATUS_MAIN_SHIPPED_COMPLETED = 4;
-    const STATUS_MAIN_LINKED = 5;
-    const STATUS_MAIN_LINKED_REFUND = 6;
-    const STATUS_MAIN_LIKED_COMPLETED = 7;
-
-    const STATUS_MAIN_LIST = [
-        self::STATUS_MAIN_CANCELED => 'Отменён',
-        self::STATUS_MAIN_SHIPPED => 'Отгружен',
-        self::STATUS_MAIN_SHIPPED_REFUND => 'Возврат отгруженного',
-        self::STATUS_MAIN_SHIPPED_COMPLETED => 'Выполнен отгруженный',
-        self::STATUS_MAIN_LINKED => 'Привязан',
-        self::STATUS_MAIN_LINKED_REFUND => 'Возврат привязанного',
-        self::STATUS_MAIN_LIKED_COMPLETED => 'Выполнен привязанный',
-    ];
-
-    // Статусы Заказа дополнительные -------------------------------------------
-    const STATUS_ADDITIONAL_MIGRATED = 1;
-    const STATUS_ADDITIONAL_NOT_COMPLETED = 2;
-    const STATUS_ADDITIONAL_BUYER_CANCELED = 3;
-    const STATUS_ADDITIONAL_COMPLETED = 4;
-    const STATUS_ADDITIONAL_PARTIALLY_COMPLETED = 5;
-    const STATUS_ADDITIONAL_FULL_REFUND = 6;
-
-    const STATUS_ADDITIONAL_LIST = [
-        self::STATUS_ADDITIONAL_MIGRATED => 'Перенесён',
-        self::STATUS_ADDITIONAL_NOT_COMPLETED => 'Не выполнен',
-        self::STATUS_ADDITIONAL_BUYER_CANCELED => 'Отменён покупателем',
-        self::STATUS_ADDITIONAL_COMPLETED => 'Выполнен',
-        self::STATUS_ADDITIONAL_PARTIALLY_COMPLETED => 'Выполнен частично',
-        self::STATUS_ADDITIONAL_FULL_REFUND => 'Полный возврат',
-    ];
-
     // Итоги по документу ------------------------------------------------------
     public mixed $price = null;
     public mixed $weight = null;
@@ -112,8 +74,6 @@ class Order extends Base
             [[
                 'stock_id',
                 'executor_id',
-                'status_main_id',
-                'status_additional_id',
                 'accepted_dist_center',
                 'comment'], 'default', 'value' => null
             ],
@@ -138,8 +98,6 @@ class Order extends Base
                 'executor_id',
                 'sales_mng_id',
                 'sales_agent_id',
-                'status_main_id',
-                'status_additional_id',
                 'created_by'], 'integer'
             ],
 
@@ -175,8 +133,6 @@ class Order extends Base
             'weight' => 'Вес',
             'sales_mng_id' => 'Менеджер по реализации',
             'sales_agent_id' => 'Агент по реализации',
-            'status_main_id' => 'Основные статусы',
-            'status_additional_id' => 'Дополнительные статусы',
             'date' => 'Дата отгрузки',
             'date_close' => 'Дата закрытия',
             'accepted_dist_center' => 'Принято РЦ',

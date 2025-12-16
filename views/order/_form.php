@@ -170,38 +170,12 @@ $this->registerJsFile('@web/js/order.js');
         </div>
 
         <div class="row form-row" <?= $actionID === 'create' ? 'hidden' : '' ?>>
-            <!-- Основные статусы -->
-            <div class="form-col col-3">
-                <?= $form->field($model, 'status_main_id')->widget(select2::class, [
-                    'data' => Order::STATUS_MAIN_LIST,
-                    'options' => [
-                        'placeholder' => 'Не назначен',
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ]) ?>
-            </div>
-
-            <!-- Дополнительные статусы -->
-            <div class="form-col col-3">
-                <?= $form->field($model, 'status_additional_id')->widget(select2::class, [
-                    'data' => Order::STATUS_ADDITIONAL_LIST,
-                    'options' => [
-                        'placeholder' => 'Не назначен',
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                    ],
-                ]) ?>
-            </div>
-
             <!-- Кнопка добавления позиции -->
-            <div class="form-col col-2 d-flex align-items-center pt-2">
+            <div class="form-col col-8 d-flex justify-content-end mt-2 mb-3">
                 <?= Html::button('<i class="fa fa-plus"></i><span class="ms-2">Добавить позицию</span>',
                     [
                         'id' => 'btnAdd',
-                        'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3',
+                        'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 pe-3',
                         'style' => 'height: 31px',
                     ]);
                 ?>
