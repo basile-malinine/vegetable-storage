@@ -21,6 +21,7 @@ use app\models\Stock\Stock;
 
 $actionID = Yii::$app->controller->action->id;
 
+$this->registerCssFile('@web/css/brick-list.css');
 $this->registerJsFile('@web/js/delivery.js');
 ?>
 
@@ -51,6 +52,7 @@ $this->registerJsFile('@web/js/delivery.js');
                     'data' => Delivery::TYPE_LIST,
                     'options' => [
                         'id' => 'delivery-type',
+                        'disabled' => (bool)$model->orders,
                     ],
                 ]); ?>
             </div>
@@ -107,6 +109,7 @@ $this->registerJsFile('@web/js/delivery.js');
                     'data' => LegalSubject::getList('is_supplier OR is_own'),
                     'options' => [
                         'placeholder' => 'Не назначено',
+                        'disabled' => (bool)$model->orders,
                     ],
                 ]); ?>
             </div>
@@ -127,6 +130,7 @@ $this->registerJsFile('@web/js/delivery.js');
                     'options' => [
                         'id' => 'executorSelect',
                         'placeholder' => 'Не назначен',
+                        'disabled' => (bool)$model->orders,
                     ],
                 ]); ?>
             </div>
@@ -210,9 +214,43 @@ $this->registerJsFile('@web/js/delivery.js');
             </div>
         </div>
 
-        <div class="row form-row mb-2">
+        <div class="row form-row mb2">
+            <!-- Привязанные заказы -->
+            <div class="form-col col-8">
+                <div id="order-list-div">
+                    <?php
+                    $items = [];
+                    foreach ($model->orders as $order) {
+                        $items[] = $order->label;
+                    }
+                    sort($items);
+                    $values = '';
+                    foreach ($items as $item) {
+                        $values .= '<div class="set-item">' . $item . '</div>';
+                    }
+                    if (empty($values)) {
+                        $values = '<div class="set-item-none">Нет</div>';
+                    }
+                    ?>
+                    <div class="mb-3">
+                        <label class="col-form-label pt-0">Привязанные Заказы</label>
+                        <div class="set-container d-flex flex-row">
+                            <div class="d-flex flex-column flex-wrap">
+                                <?php echo $values; ?>
+                            </div>
+                            <?= Html::button('<i class="fa fa-ellipsis-h""></i>',
+                                [
+                                    'id' => 'btn-add-orders',
+                                    'class' => 'btn-item-edit',
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Кнопка добавления позиции -->
-            <div class="form-col col-10 d-flex justify-content-end pt-2">
+            <div class="form-col col-2 d-flex justify-content-end align-items-end pb-3">
                 <?= Html::button('<i class="fa fa-plus"></i><span class="ms-2">Добавить позицию</span>',
                     [
                         'id' => 'btnAdd',

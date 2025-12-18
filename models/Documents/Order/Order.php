@@ -2,20 +2,24 @@
 
 namespace app\models\Documents\Order;
 
+use DateTime;
+
+use Yii;
+use yii\helpers\ArrayHelper;
+
 use app\models\Base;
 use app\models\DistributionCenter\DistributionCenter;
+use app\models\Documents\Delivery\Delivery;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
 use app\models\Stock\Stock;
-use DateTime;
-use Yii;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "order".
  *
  * @property int $id
  * @property int $type_id Tип заказа
+ * @property int $delivery_id Поставка
  * @property int $supplier_id Поставщик
  * @property int $buyer_id Сеть
  * @property int $distribution_center_id Распределительный центр
@@ -33,6 +37,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at Дата создания
  * @property string $updated_at Дата обновления
  *
+ * @property Delivery $delivery
  * @property LegalSubject $buyer
  * @property DistributionCenter $distributionCenter
  * @property Stock $stock
@@ -41,7 +46,9 @@ use yii\helpers\ArrayHelper;
  * @property LegalSubject $supplier
  *
  * @property Stock $stock_executor Склад / Исполнитель
- * @property array $orderItems Состав Заказа
+ * @property array $items Состав Заказа
+ * @property string $label
+ *
  */
 class Order extends Base
 {
@@ -72,6 +79,7 @@ class Order extends Base
     {
         return [
             [[
+                'delivery_id',
                 'stock_id',
                 'executor_id',
                 'accepted_dist_center',
@@ -91,6 +99,7 @@ class Order extends Base
 
             [[
                 'type_id',
+                'delivery_id',
                 'supplier_id',
                 'buyer_id',
                 'distribution_center_id',
@@ -112,7 +121,28 @@ class Order extends Base
             [['sales_agent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['sales_agent_id' => 'id']],
             [['sales_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['sales_mng_id' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['supplier_id' => 'id']],
+
+            [[
+                'stock_id',
+                'executor_id'], 'testStockExecutor', 'skipOnEmpty' => false
+            ],
         ];
+    }
+
+    public function testStockExecutor($attribute, $params)
+    {
+        switch ($this->type_id) {
+            case Order::TYPE_STOCK:
+                if (!$this->stock_id) {
+                    $this->addError('stock_id', 'Обязательно');
+                }
+                break;
+            case Order::TYPE_EXECUTOR:
+                if (!$this->executor_id) {
+                    $this->addError('executor_id', 'Обязательно');
+                }
+                break;
+        }
     }
 
     /**
@@ -123,6 +153,7 @@ class Order extends Base
         return [
             'id' => 'ID',
             'type_id' => 'Tип заказа',
+            'delivery_id' => 'Поставка',
             'supplier_id' => 'Предприятие',
             'buyer_id' => 'Покупатель (Сеть)',
             'distribution_center_id' => 'Распределительный центр',
@@ -194,6 +225,17 @@ class Order extends Base
         }
 
         return true;
+    }
+
+    /**
+     * ------------------------------------------- Поставка
+     * Gets query for [[Supplier]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDelivery()
+    {
+        return $this->hasOne(Delivery::class, ['id' => 'delivery_id']);
     }
 
     /**
@@ -273,9 +315,29 @@ class Order extends Base
         return $this->hasOne(Manager::class, ['id' => 'sales_agent_id']);
     }
 
-    // Возврат состава документа DeliveryItem[]
+    // ------------------------------------------- Состав документа DeliveryItem[]
     public function getItems()
     {
         return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
+    }
+
+    // ------------------------------------------- Label
+    public function getLabel(): string
+    {
+//        $assortment = $this->items
+//            ? $this->items[0]->assortment->name
+//            . ' ' . $this->items[0]->quantity
+//            . ' (' . $this->items[0]->assortment->unit->name . ')'
+//            : 'Нет состава';
+
+        $assortment = $this->items
+            ? $this->items[0]->label
+            : 'Нет состава';
+
+        return '№' . $this->id
+            . ' ' . $this->date
+            . ', ' . $this->buyer->name
+            . ', ' . $this->distributionCenter->name
+            . ', ' . $assortment;
     }
 }

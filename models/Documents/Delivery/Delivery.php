@@ -3,6 +3,7 @@
 namespace app\models\Documents\Delivery;
 
 use app\models\Currency\Currency;
+use app\models\Documents\Order\Order;
 use app\models\PaymentMethod\PaymentMethod;
 use DateTime;
 
@@ -40,6 +41,7 @@ use app\models\Stock\Stock;
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
+ * @property Order[] $orders
  * @property LegalSubject $companyOwn
  * @property Currency $currency
  * @property DeliveryItem[] $deliveryItems
@@ -143,7 +145,28 @@ class Delivery extends Base
             [['stock_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stock::class, 'targetAttribute' => ['stock_id' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['supplier_id' => 'id']],
             [['support_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['support_mng_id' => 'id']],
+
+            [[
+                'stock_id',
+                'executor_id'], 'testStockExecutor', 'skipOnEmpty' => false
+            ],
         ];
+    }
+
+    public function testStockExecutor($attribute, $params)
+    {
+        switch ($this->type_id) {
+            case Order::TYPE_STOCK:
+                if (!$this->stock_id) {
+                    $this->addError('stock_id', 'Обязательно');
+                }
+                break;
+            case Order::TYPE_EXECUTOR:
+                if (!$this->executor_id) {
+                    $this->addError('executor_id', 'Обязательно');
+                }
+                break;
+        }
     }
 
     /**
@@ -271,9 +294,15 @@ class Delivery extends Base
         return $this->hasOne(LegalSubject::class, ['id' => 'supplier_id']);
     }
 
-    // Возврат состава документа DeliveryItem[]
+    // Состав документа DeliveryItem[]
     public function getDeliveryItems()
     {
         return $this->hasMany(DeliveryItem::class, ['delivery_id' => 'id']);
+    }
+
+    // Привязанные заказы Order[]
+    public function getOrders()
+    {
+        return $this->hasMany(Order::class, ['delivery_id' => 'id']);
     }
 }

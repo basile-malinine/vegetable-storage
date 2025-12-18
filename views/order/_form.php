@@ -74,6 +74,7 @@ $this->registerJsFile('@web/js/order.js');
                     'data' => Order::TYPE_LIST,
                     'options' => [
                         'id' => 'order-type',
+                        'disabled' => (bool)$model->delivery_id,
                     ],
                 ]); ?>
             </div>
@@ -112,12 +113,13 @@ $this->registerJsFile('@web/js/order.js');
         </div>
 
         <div class="row form-row">
-            <!-- Поставщик (ЮЛ) -->
+            <!-- Предприятие -->
             <div class="form-col col-4">
                 <?= $form->field($model, 'supplier_id')->widget(Select2::class, [
                     'data' => LegalSubject::getList('is_own'),
                     'options' => [
                         'placeholder' => 'Не назначено',
+                        'disabled' => (bool)$model->delivery_id,
                     ],
                 ]); ?>
             </div>
@@ -139,6 +141,7 @@ $this->registerJsFile('@web/js/order.js');
                     'options' => [
                         'id' => 'executorSelect',
                         'placeholder' => 'Не назначен',
+                        'disabled' => (bool)$model->delivery_id,
                     ],
                 ]); ?>
             </div>

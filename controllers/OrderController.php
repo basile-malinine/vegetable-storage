@@ -2,6 +2,10 @@
 
 namespace app\controllers;
 
+use yii\bootstrap5\ActiveForm;
+use yii\web\Response;
+
+use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Order\Order;
 use app\models\Documents\Order\OrderItemSearch;
 use app\models\Documents\Order\OrderSearch;
@@ -51,5 +55,31 @@ class OrderController extends BaseCrudController
         }
 
         return $this->render('edit', compact('model', 'dataProviderItem'));
+    }
+
+    public function actionAddOrdersToDelivery($id)
+    {
+        $model = Delivery::findOne($id);
+        $params = [
+            'type_id' => Order::TYPE_EXECUTOR,
+            'supplier_id' => $model->company_own_id,
+            'executor_id' => $model->executor_id,
+        ];
+        $searchModel = new OrderSearch();
+        $dataProvider = $searchModel->search($params);
+
+        return $this->renderAjax('list-delivery-links', compact('model', 'dataProvider'));
+    }
+
+    public function actionSetLinkToDelivery()
+    {
+        $delivery_id = \Yii::$app->request->post('delivery_id');
+        $id = \Yii::$app->request->post('id');
+
+        $model = $this->findModel($id);
+        $model->delivery_id = $delivery_id;
+        $model->save();
+
+        return true;
     }
 }

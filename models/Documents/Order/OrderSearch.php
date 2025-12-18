@@ -16,6 +16,13 @@ class OrderSearch extends Order
     public function search($params)
     {
         $query = Order::find();
+        if ($params) {
+            $query->andWhere([
+                'type_id' => $params['type_id'],
+                'supplier_id' => $params['supplier_id'],
+                'executor_id' => $params['executor_id'],
+            ]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

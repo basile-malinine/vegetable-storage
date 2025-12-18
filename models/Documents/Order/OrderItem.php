@@ -21,6 +21,8 @@ use app\models\Base;
  *
  * @property Assortment $assortment
  * @property Order $order
+ *
+ * @property Order $label
  */
 class OrderItem extends Base
 {
@@ -87,5 +89,12 @@ class OrderItem extends Base
     public function getOrder()
     {
         return $this->hasOne(Order::class, ['id' => 'order_id']);
+    }
+
+    public function getLabel()
+    {
+        return $this->assortment->name
+            . ' ' . $this->quantity
+            . ' (' . $this->assortment->unit->name . ')';
     }
 }
