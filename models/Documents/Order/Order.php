@@ -52,6 +52,8 @@ use app\models\Stock\Stock;
  */
 class Order extends Base
 {
+    public $accepted_dist_center = null;
+
     // Типы Заказа -------------------------------------------------------------
     const TYPE_STOCK = 1;
     const TYPE_EXECUTOR = 2;
@@ -82,7 +84,7 @@ class Order extends Base
                 'delivery_id',
                 'stock_id',
                 'executor_id',
-                'accepted_dist_center',
+//                'accepted_dist_center',
                 'comment'], 'default', 'value' => null
             ],
 
@@ -194,9 +196,8 @@ class Order extends Base
             $this->weight = array_sum($weights);
         }
 
-        if ($this->accepted_dist_center) {
-            $this->accepted_dist_center = number_format($this->accepted_dist_center, 1, '.', ' ');
-        }
+        $this->accepted_dist_center = array_sum(ArrayHelper::getColumn($this->items, 'accepted_dist_center'));
+        $this->accepted_dist_center = number_format($this->accepted_dist_center, 1, '.', ' ');
     }
 
     public function beforeSave($insert)
@@ -210,10 +211,10 @@ class Order extends Base
         }
         $this->updated_at = $now;
 
-        if ($this->accepted_dist_center) {
-            $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
-            $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
-        }
+//        if ($this->accepted_dist_center) {
+//            $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
+//            $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
+//        }
 
         switch ($this->type_id) {
             case self::TYPE_STOCK:

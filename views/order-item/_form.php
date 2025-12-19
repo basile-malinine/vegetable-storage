@@ -110,7 +110,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             </div>
         </div>
 
-        <div class="row form-last-row">
+        <div class="row form-row">
             <!-- Количество -->
             <div class="form-col col-4">
                 <?= $form->field($model, 'quantity')->textInput([
@@ -125,6 +125,21 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
+            </div>
+
+            <!-- Принято на РЦ -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'accepted_dist_center')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+        </div>
+
+        <!-- Комментарий -->
+        <div class="row form-last-row">
+            <div class="form-col col">
+                <?= $form->field($model, 'comment')->textarea() ?>
             </div>
         </div>
 

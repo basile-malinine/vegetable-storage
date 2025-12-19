@@ -5,6 +5,7 @@
 use app\models\Documents\Order\Order;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\web\View;
 
 $header = 'Заказы';
@@ -179,11 +180,16 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'format' => 'raw',
                 'attribute' => 'accepted_dist_center',
                 'enableSorting' => false,
-                'value' => function ($model) {
+                'value' => function (Order $model) {
                     $val = null;
-                    if ($model->accepted_dist_center) {
-                        $model->accepted_dist_center = str_replace(' ', '', $model->accepted_dist_center);
-                        $val = number_format((float)$model->accepted_dist_center, 1, '.', ' ');
+                    if ($model->items) {
+                        $sum = array_sum(ArrayHelper::getColumn($model->items, 'accepted_dist_center'));
+                        if ($sum) {
+                            $sum = str_replace(' ', '', $sum);
+                            $val = number_format((float)$sum, 1, '.', ' ');
+                        } else {
+                            $val = '';
+                        }
                     }
 
                     return $val;
@@ -195,22 +201,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                     'style' => 'text-align: right;'
                 ],
             ],
-
-            // Дата закрытия
-//            [
-//                'attribute' => 'date_close',
-//                'label' => 'Закрыт',
-//                'enableSorting' => false,
-//                'headerOptions' => [
-//                    'style' => 'width: 100px; text-align: center;'
-//                ],
-//                'contentOptions' => [
-//                    'style' => 'text-align: center;'
-//                ],
-//                'filterInputOptions' => [
-//                    'class' => 'form-control form-control-sm',
-//                ],
-//            ],
 
             // Комментарий
             [

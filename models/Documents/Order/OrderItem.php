@@ -13,11 +13,11 @@ use app\models\Base;
  * @property int $assortment_id Номенклатурная позиция
  * @property float $quantity Количество
  * @property float $price Цена
+ * @property float|null $accepted_dist_center Принято РЦ
+ * @property string|null $comment Комментарий
+ *
  * @property float|null $price_total Сумма
  * @property int|null $weight Вес
- * // * @property int|null $quantity_fact Количество по факту
- * // * @property float|null $price_total_fact Сумма по факту
- * // * @property int|null $weight_fact Вес по факту
  *
  * @property Assortment $assortment
  * @property Order $order
@@ -38,11 +38,30 @@ class OrderItem extends Base
     public function rules()
     {
         return [
-            [['order_id'], 'default', 'value' => null],
-            [['order_id', 'assortment_id'], 'integer'],
-            [['assortment_id', 'quantity', 'price'], 'required', 'message' => 'Необходимо заполнить'],
-            [['quantity'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'],
+            [[
+                'order_id',
+                'accepted_dist_center',
+                'comment'], 'default', 'value' => null
+            ],
+
+            [[
+                'order_id',
+                'assortment_id'], 'integer'
+            ],
+
+            [[
+                'assortment_id',
+                'quantity',
+                'price'], 'required', 'message' => 'Необходимо заполнить'
+            ],
+
+            [[
+                'quantity',
+                'accepted_dist_center'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'
+            ],
+
             [['price'], 'number', 'numberPattern' => '/^\d+(\.\d{2})?$/'],
+
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
         ];
@@ -56,11 +75,10 @@ class OrderItem extends Base
             'assortment_id' => 'Позиция',
             'quantity' => 'Кол-во',
             'price' => 'Цена',
+            'accepted_dist_center' => 'Принято РЦ',
+            'comment' => 'Комментарий',
             'price_total' => 'Сумма',
-            'weight' => 'Вес кг',
-            'quantity_fact' => 'Кол-во (факт)',
-            'price_total_fact' => 'Сумма (факт)',
-            'weight_fact' => 'Вес (факт)',
+            'weight' => 'Вес',
         ];
     }
 
@@ -77,6 +95,11 @@ class OrderItem extends Base
     {
         $this->quantity = str_replace(' ', '', $this->quantity);
         $this->quantity = str_replace(',', '.', $this->quantity);
+
+        if ($this->accepted_dist_center) {
+            $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
+            $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
+        }
 
         return true;
     }

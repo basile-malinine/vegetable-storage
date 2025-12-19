@@ -41,8 +41,8 @@ use app\models\Documents\Order\Order;
             'attribute' => 'assortment',
             'value' => 'assortment.name',
             'enableSorting' => false,
-            'filterInputOptions' => [
-                'class' => 'form-control form-control-sm',
+            'headerOptions' => [
+                'style' => 'width: 200px;'
             ],
         ],
 
@@ -60,24 +60,9 @@ use app\models\Documents\Order\Order;
                 'style' => 'text-align: right;'
             ],
             'headerOptions' => [
-                'style' => 'width: 100px;'
+                'style' => 'width: 90px;'
             ],
         ],
-
-        // Единица измерения
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'unit',
-//            'label' => 'Изм',
-//            'value' => 'assortment.unit.name',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: center;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 40px;'
-//            ],
-//        ],
 
         // Цена
         [
@@ -92,7 +77,7 @@ use app\models\Documents\Order\Order;
                 'style' => 'text-align: right;'
             ],
             'headerOptions' => [
-                'style' => 'width: 100px;'
+                'style' => 'width: 70px;'
             ],
         ],
 
@@ -109,7 +94,7 @@ use app\models\Documents\Order\Order;
                 'style' => 'text-align: right;'
             ],
             'headerOptions' => [
-                'style' => 'width: 100px;'
+                'style' => 'width: 80px;'
             ],
         ],
 
@@ -126,48 +111,37 @@ use app\models\Documents\Order\Order;
                 'style' => 'text-align: right;'
             ],
             'headerOptions' => [
-                'style' => 'width: 100px;'
+                'style' => 'width: 70px;'
             ],
         ],
 
-        // Количество (факт)  ------------------------------------------ на будущее, чтобы не забыть!!!
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'quantity_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
+        // Принято РЦ
+        [
+            'format' => 'raw',
+            'attribute' => 'accepted_dist_center',
+            'label' => 'РЦ',
+            'enableSorting' => false,
+            'value' => function ($model) {
+                return $model->accepted_dist_center
+                    ? number_format($model->accepted_dist_center, 1, '.', ' ')
+                    : '';
+            },
+            'contentOptions' => [
+                'style' => 'text-align: right;'
+            ],
+            'headerOptions' => [
+                'style' => 'width: 80px;'
+            ],
+        ],
 
-        // Сумма (факт)
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'price_total_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
-
-        // Вес (факт)
-//        [
-//            'format' => 'raw',
-//            'attribute' => 'weight_fact',
-//            'enableSorting' => false,
-//            'contentOptions' => [
-//                'style' => 'text-align: right;'
-//            ],
-//            'headerOptions' => [
-//                'style' => 'width: 100px;'
-//            ],
-//        ],
+        // Комментарий
+        [
+            'attribute' => 'comment',
+            'enableSorting' => false,
+            'filterInputOptions' => [
+                'class' => 'form-control form-control-sm',
+            ],
+        ]
     ],
 ]); ?>
 <?php Pjax::end() ?>

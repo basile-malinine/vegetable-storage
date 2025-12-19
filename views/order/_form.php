@@ -85,6 +85,7 @@ $this->registerJsFile('@web/js/order.js');
             <div class="form-col col-2 d-flex justify-content-end">
                 <?= $form->field($model, 'accepted_dist_center')->textInput([
                     'class' => 'form-control form-control-sm text-end',
+                    'readonly' => true,
                 ]) ?>
             </div>
         </div>
