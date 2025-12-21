@@ -44,7 +44,7 @@ use app\models\Documents\Acceptance\Acceptance;
             'value' => 'assortment.name',
             'enableSorting' => false,
             'headerOptions' => [
-                'style' => 'width: 180px;'
+                'style' => 'width: 260px;'
             ],
         ],
 
@@ -52,6 +52,7 @@ use app\models\Documents\Acceptance\Acceptance;
         [
             'format' => 'raw',
             'attribute' => 'quantity',
+            'label' => 'Кол-во',
             'enableSorting' => false,
             'value' => function ($model) {
                 return number_format($model->quantity, 0,

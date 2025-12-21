@@ -146,7 +146,7 @@ class Acceptance extends \app\models\Base
                         $acceptanceItem = new AcceptanceItem();
                         $acceptanceItem->acceptance_id = $this->id;
                         $acceptanceItem->assortment_id = $item->assortment_id;
-                        $acceptanceItem->quantity = $item->shipped;
+                        $acceptanceItem->quantity = .0;
                         $acceptanceItem->save();
                     }
                     break;
