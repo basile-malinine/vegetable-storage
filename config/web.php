@@ -173,7 +173,7 @@ $config = [
 
                 // OrderController Заказы
                 'order/<action:(edit|delete|add-orders-to-delivery)>/<id:\d+>' => 'order/<action>',
-                // DeliveryItemController Позиция по Заказу
+                // OrderItemController Позиция по Заказу
                 'order-item/<action:(add)>/<id:\d+>' => 'order-item/<action>',
                 'order-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'order-item/<action>',
 
@@ -185,6 +185,13 @@ $config = [
 
                 // PaymentMethodController Валюты
                 'payment-method/<action:(edit|delete)>/<id:\d+>' => 'payment-method/<action>',
+
+                // AcceptanceController Приёмки
+                'acceptance/<action:(edit|delete)>/<id:\d+>' => 'acceptance/<action>',
+                // AcceptanceItemController Позиция по Приёмке
+                'acceptance-item/<action:(add)>/<id:\d+>' => 'acceptance-item/<action>',
+                'acceptance-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'acceptance-item/<action>',
+
             ],
         ],
     ],

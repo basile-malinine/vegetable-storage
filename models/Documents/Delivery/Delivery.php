@@ -2,9 +2,6 @@
 
 namespace app\models\Documents\Delivery;
 
-use app\models\Currency\Currency;
-use app\models\Documents\Order\Order;
-use app\models\PaymentMethod\PaymentMethod;
 use DateTime;
 
 use Yii;
@@ -12,8 +9,12 @@ use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
 use app\models\Base;
+use app\models\Currency\Currency;
+use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Order\Order;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
+use app\models\PaymentMethod\PaymentMethod;
 use app\models\Stock\Stock;
 
 /**
@@ -52,7 +53,9 @@ use app\models\Stock\Stock;
  * @property Manager $salesMng
  * @property Stock $stock
  * @property LegalSubject $supplier
- * @property Manager $supportMng *
+ * @property Manager $supportMng
+ * @property string $label
+ * @property Acceptance[] $acceptance
  */
 class Delivery extends Base
 {
@@ -205,8 +208,8 @@ class Delivery extends Base
     {
         parent::afterFind();
 
-        $this->shipment_date = $this->shipment_date ? date('d.m.Y H:i', strtotime($this->shipment_date)) : null;
-        $this->unloading_date = $this->unloading_date ? date('d.m.Y H:i', strtotime($this->unloading_date)) : null;
+        $this->shipment_date = $this->shipment_date ? date('d.m.Y', strtotime($this->shipment_date)) : null;
+        $this->unloading_date = $this->unloading_date ? date('d.m.Y', strtotime($this->unloading_date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
         $this->created_at = $this->created_at ? date('Y-m-d H:i', strtotime($this->created_at)) : null;
 
@@ -304,5 +307,54 @@ class Delivery extends Base
     public function getOrders()
     {
         return $this->hasMany(Order::class, ['delivery_id' => 'id']);
+    }
+
+    public function getLabel()
+    {
+        $assortment = $this->deliveryItems
+            ? $this->deliveryItems[0]->label
+            : 'Нет состава';
+
+        return '№' . $this->id
+            . ' ' . $this->shipment_date
+            . ', ' . $this->supplier->name
+            . ', ' . $assortment;
+    }
+
+    public function getShortLabel()
+    {
+        return '№' . $this->id
+            . ' ' . $this->shipment_date;
+    }
+
+    // Привязанные заказы Order[]
+    public function getAcceptance()
+    {
+        $ret = $this->hasMany(Acceptance::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Acceptance::TYPE_DELIVERY]);
+
+        return $ret;
+    }
+
+    public static function getListForAcceptance()
+    {
+        $list = self::find()
+            ->select(['id'])
+            ->where([
+                'date_close' => null,
+                'type_id' => Delivery::TYPE_STOCK,
+            ])
+            ->indexBy('id')
+            ->column();
+
+        $notAcceptedList = [];
+        foreach ($list as $item) {
+            $model = self::findOne($item);
+            if (!$model->acceptance && $model->deliveryItems) {
+                $notAcceptedList[$item] = $model->label;
+            }
+        }
+
+        return $notAcceptedList;
     }
 }

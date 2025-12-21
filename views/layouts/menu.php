@@ -203,6 +203,11 @@ echo Nav::widget([
                     'label' => 'Поставки',
                     'url' => ['/delivery'],
                 ],
+
+                [
+                    'label' => 'Приёмки',
+                    'url' => ['/acceptance'],
+                ],
             ],
         ],
 

@@ -22,6 +22,7 @@ use app\models\Base;
  *
  * @property Assortment $assortment
  * @property Delivery $delivery
+ * @property string $label
  */
 class DeliveryItem extends Base
 {
@@ -125,5 +126,12 @@ class DeliveryItem extends Base
     public function getDelivery()
     {
         return $this->hasOne(Delivery::class, ['id' => 'delivery_id']);
+    }
+
+    public function getLabel()
+    {
+        return $this->assortment->name
+            . ' ' . $this->shipped
+            . ' (' . $this->assortment->unit->name . ')';
     }
 }
