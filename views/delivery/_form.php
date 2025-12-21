@@ -23,10 +23,8 @@ use app\models\Stock\Stock;
 $actionID = Yii::$app->controller->action->id;
 
 $this->registerCssFile('@web/css/brick-list.css');
-
-if ($actionID === 'edit') {
-    $this->registerJsFile('@web/js/delivery.js');
-}
+$this->registerJs('let actionName = "' . Yii::$app->controller->action->id . '";', View::POS_HEAD);
+$this->registerJsFile('@web/js/delivery.js');
 ?>
 
 <div class="page-top-panel">

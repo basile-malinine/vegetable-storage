@@ -8,12 +8,14 @@ $(() => {
     function changeDeliveryType() {
         if ($deliveryType.val() === '1') {
             $stockDiv.removeAttr("hidden");
-            $orderListDiv.attr("hidden", true);
             $executorDiv.attr("hidden", true);
+            $orderListDiv.attr("hidden", true);
         } else {
             $executorDiv.removeAttr("hidden");
             $stockDiv.attr("hidden", true);
-            $orderListDiv.removeAttr("hidden");
+            if (actionName === 'edit') {
+                $orderListDiv.removeAttr("hidden");
+            }
         }
     }
 
