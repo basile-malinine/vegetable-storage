@@ -9,6 +9,7 @@
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+use yii\web\View;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 
@@ -22,7 +23,10 @@ use app\models\Stock\Stock;
 $actionID = Yii::$app->controller->action->id;
 
 $this->registerCssFile('@web/css/brick-list.css');
-$this->registerJsFile('@web/js/delivery.js');
+
+if ($actionID === 'edit') {
+    $this->registerJsFile('@web/js/delivery.js');
+}
 ?>
 
 <div class="page-top-panel">
