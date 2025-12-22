@@ -82,13 +82,48 @@ use app\models\Documents\Order\Order;
         ],
 
         // Сумма
+//        [
+//            'format' => 'raw',
+//            'attribute' => 'price_total',
+//            'enableSorting' => false,
+//            'value' => function ($model) {
+//                return number_format($model->price_total, 0,
+//                        '.', ' ');
+//            },
+//            'contentOptions' => [
+//                'style' => 'text-align: right;'
+//            ],
+//            'headerOptions' => [
+//                'style' => 'width: 80px;'
+//            ],
+//        ],
+
+        // Вес
+//        [
+//            'format' => 'raw',
+//            'attribute' => 'weight',
+//            'enableSorting' => false,
+//            'value' => function ($model) {
+//                return number_format($model->weight, 0,
+//                        '.', ' ');
+//            },
+//            'contentOptions' => [
+//                'style' => 'text-align: right;'
+//            ],
+//            'headerOptions' => [
+//                'style' => 'width: 70px;'
+//            ],
+//        ],
+
+        // Отгружено
         [
             'format' => 'raw',
-            'attribute' => 'price_total',
+            'attribute' => 'shipped',
             'enableSorting' => false,
             'value' => function ($model) {
-                return number_format($model->price_total, 0,
-                        '.', ' ');
+                return $model->shipped
+                    ? number_format($model->shipped, 1, '.', ' ')
+                    : '';
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'
@@ -98,28 +133,10 @@ use app\models\Documents\Order\Order;
             ],
         ],
 
-        // Вес
-        [
-            'format' => 'raw',
-            'attribute' => 'weight',
-            'enableSorting' => false,
-            'value' => function ($model) {
-                return number_format($model->weight, 0,
-                        '.', ' ');
-            },
-            'contentOptions' => [
-                'style' => 'text-align: right;'
-            ],
-            'headerOptions' => [
-                'style' => 'width: 70px;'
-            ],
-        ],
-
         // Принято РЦ
         [
             'format' => 'raw',
             'attribute' => 'accepted_dist_center',
-            'label' => 'РЦ',
             'enableSorting' => false,
             'value' => function ($model) {
                 return $model->accepted_dist_center

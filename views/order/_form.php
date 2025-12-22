@@ -79,10 +79,16 @@ $this->registerJsFile('@web/js/order.js');
                 ]); ?>
             </div>
 
-            <div class="form-col col-2 d-flex align-items-center pt-2"></div>
+            <!-- Отгружено -->
+            <div class="form-col col-2">
+                <?= $form->field($model, 'shipped')->textInput([
+                    'class' => 'form-control form-control-sm text-end',
+                    'readonly' => true,
+                ]) ?>
+            </div>
 
             <!-- Принято РЦ -->
-            <div class="form-col col-2 d-flex justify-content-end">
+            <div class="form-col col-2">
                 <?= $form->field($model, 'accepted_dist_center')->textInput([
                     'class' => 'form-control form-control-sm text-end',
                     'readonly' => true,

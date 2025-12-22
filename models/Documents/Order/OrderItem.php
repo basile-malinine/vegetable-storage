@@ -13,6 +13,7 @@ use app\models\Base;
  * @property int $assortment_id Номенклатурная позиция
  * @property float $quantity Количество
  * @property float $price Цена
+ * @property float|null $shipped Принято РЦ
  * @property float|null $accepted_dist_center Принято РЦ
  * @property string|null $comment Комментарий
  *
@@ -40,6 +41,7 @@ class OrderItem extends Base
         return [
             [[
                 'order_id',
+                'shipped',
                 'accepted_dist_center',
                 'comment'], 'default', 'value' => null
             ],
@@ -75,6 +77,7 @@ class OrderItem extends Base
             'assortment_id' => 'Позиция',
             'quantity' => 'Кол-во',
             'price' => 'Цена',
+            'shipped' => 'Отгружено',
             'accepted_dist_center' => 'Принято РЦ',
             'comment' => 'Комментарий',
             'price_total' => 'Сумма',
@@ -96,6 +99,10 @@ class OrderItem extends Base
         $this->quantity = str_replace(' ', '', $this->quantity);
         $this->quantity = str_replace(',', '.', $this->quantity);
 
+        if ($this->shipped) {
+            $this->shipped = str_replace(' ', '', $this->shipped);
+            $this->shipped = str_replace(',', '.', $this->shipped);
+        }
         if ($this->accepted_dist_center) {
             $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
             $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);

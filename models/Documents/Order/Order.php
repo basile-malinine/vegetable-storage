@@ -29,6 +29,7 @@ use app\models\Stock\Stock;
  * @property int $sales_agent_id Агент по реализации
  * @property string $date Дата
  * @property string $date_close Дата закрытия
+ * @property float|null $shipped Отгружено
  * @property float|null $accepted_dist_center Принято РЦ
  * @property float|null $price Сумма
  * @property int|null $weight Вес
@@ -52,6 +53,7 @@ use app\models\Stock\Stock;
  */
 class Order extends Base
 {
+    public $shipped = null;
     public $accepted_dist_center = null;
 
     // Типы Заказа -------------------------------------------------------------
@@ -84,11 +86,12 @@ class Order extends Base
                 'delivery_id',
                 'stock_id',
                 'executor_id',
-//                'accepted_dist_center',
                 'comment'], 'default', 'value' => null
             ],
 
-            [['accepted_dist_center'], 'safe'],
+            [[
+                'shipped',
+                'accepted_dist_center'], 'safe'],
 
             [[
                 'date',
@@ -168,6 +171,7 @@ class Order extends Base
             'sales_agent_id' => 'Агент по реализации',
             'date' => 'Дата отгрузки',
             'date_close' => 'Дата закрытия',
+            'shipped' => 'Отгружено',
             'accepted_dist_center' => 'Принято РЦ',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -196,6 +200,8 @@ class Order extends Base
             $this->weight = array_sum($weights);
         }
 
+        $this->shipped = array_sum(ArrayHelper::getColumn($this->items, 'shipped'));
+        $this->shipped = number_format($this->shipped, 1, '.', ' ');
         $this->accepted_dist_center = array_sum(ArrayHelper::getColumn($this->items, 'accepted_dist_center'));
         $this->accepted_dist_center = number_format($this->accepted_dist_center, 1, '.', ' ');
     }
@@ -210,11 +216,6 @@ class Order extends Base
             $this->created_at = $now;
         }
         $this->updated_at = $now;
-
-//        if ($this->accepted_dist_center) {
-//            $this->accepted_dist_center = str_replace(' ', '', $this->accepted_dist_center);
-//            $this->accepted_dist_center = str_replace(',', '.', $this->accepted_dist_center);
-//        }
 
         switch ($this->type_id) {
             case self::TYPE_STOCK:
