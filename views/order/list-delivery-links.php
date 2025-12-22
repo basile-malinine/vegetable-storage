@@ -41,6 +41,7 @@ $header = 'Заказы для Поставки №' . $model->id;
                                         "/order/set-link-to-delivery",
                                         {
                                             delivery_id: ' . $_GET['id'] . ',
+                                            val_delivery_id: ' . $_GET['id'] . ',
                                             id: ' . $model->id . '
                                         }, 
                                         (data) => {
@@ -50,7 +51,8 @@ $header = 'Заказы для Поставки №' . $model->id;
                                     $.post(
                                         "/order/set-link-to-delivery",
                                         {
-                                            delivery_id: null,
+                                            delivery_id: ' . $_GET['id'] . ',
+                                            val_delivery_id: null,
                                             id: ' . $model->id . '
                                         }, 
                                         (data) => {

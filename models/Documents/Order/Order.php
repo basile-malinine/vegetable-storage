@@ -326,12 +326,6 @@ class Order extends Base
     // ------------------------------------------- Label
     public function getLabel(): string
     {
-//        $assortment = $this->items
-//            ? $this->items[0]->assortment->name
-//            . ' ' . $this->items[0]->quantity
-//            . ' (' . $this->items[0]->assortment->unit->name . ')'
-//            : 'Нет состава';
-
         $assortment = $this->items
             ? $this->items[0]->label
             : 'Нет состава';

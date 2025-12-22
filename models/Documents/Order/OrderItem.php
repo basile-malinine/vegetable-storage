@@ -123,8 +123,14 @@ class OrderItem extends Base
 
     public function getLabel()
     {
+        $shipped = $this->shipped;
+        if (!$this->assortment->unit->is_weight) {
+            $shipped = number_format($shipped, 0, '.', '');
+        }
+
         return $this->assortment->name
             . ' ' . $this->quantity
-            . ' (' . $this->assortment->unit->name . ')';
+            . ' (' . $this->assortment->unit->name . ')'
+            . ', Отгружено: ' . $shipped;
     }
 }

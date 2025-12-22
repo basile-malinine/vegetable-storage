@@ -42,6 +42,9 @@ class DeliveryController extends BaseController
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
+                if ($model->orders) {
+                    $model->calculateShippedInOrders();
+                }
                 $this->redirect(['index']);
             }
         }
@@ -56,5 +59,13 @@ class DeliveryController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionCalc()
+    {
+        $id = Yii::$app->request->post('delivery_id');
+        $model = Delivery::findOne($id);
+
+        return $model->calculateShippedInOrders();
     }
 }

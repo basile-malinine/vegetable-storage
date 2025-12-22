@@ -105,7 +105,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Поставщик
+            // Предприятие
             [
                 'format' => 'raw',
                 'attribute' => 'supplier_id',
@@ -142,33 +142,46 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             ],
 
             // Сумма
-            [
-                'format' => 'raw',
-                'attribute' => 'price',
-                'enableSorting' => false,
-                'value' => function ($model) {
-                    return number_format($model->price, 0,
-                        '.', ' ');
-                },
-                'headerOptions' => [
-                    'style' => 'width: 100px;'
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: right;'
-                ],
-            ],
+//            [
+//                'format' => 'raw',
+//                'attribute' => 'price',
+//                'enableSorting' => false,
+//                'value' => function ($model) {
+//                    return number_format($model->price, 0,
+//                        '.', ' ');
+//                },
+//                'headerOptions' => [
+//                    'style' => 'width: 100px;'
+//                ],
+//                'contentOptions' => [
+//                    'style' => 'text-align: right;'
+//                ],
+//            ],
 
             // Вес
+//            [
+//                'format' => 'raw',
+//                'attribute' => 'weight',
+//                'enableSorting' => false,
+//                'value' => function ($model) {
+//                    return number_format($model->weight, 0,
+//                        '.', ' ');
+//                },
+//                'headerOptions' => [
+//                    'style' => 'width: 100px;'
+//                ],
+//                'contentOptions' => [
+//                    'style' => 'text-align: right;'
+//                ],
+//            ],
+
+            // Отгружено
             [
                 'format' => 'raw',
-                'attribute' => 'weight',
+                'attribute' => 'shipped',
                 'enableSorting' => false,
-                'value' => function ($model) {
-                    return number_format($model->weight, 0,
-                        '.', ' ');
-                },
                 'headerOptions' => [
-                    'style' => 'width: 100px;'
+                    'style' => 'width: 110px;'
                 ],
                 'contentOptions' => [
                     'style' => 'text-align: right;'
@@ -180,20 +193,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'format' => 'raw',
                 'attribute' => 'accepted_dist_center',
                 'enableSorting' => false,
-                'value' => function (Order $model) {
-                    $val = null;
-                    if ($model->items) {
-                        $sum = array_sum(ArrayHelper::getColumn($model->items, 'accepted_dist_center'));
-                        if ($sum) {
-                            $sum = str_replace(' ', '', $sum);
-                            $val = number_format((float)$sum, 1, '.', ' ');
-                        } else {
-                            $val = '';
-                        }
-                    }
-
-                    return $val;
-                },
                 'headerOptions' => [
                     'style' => 'width: 110px;'
                 ],

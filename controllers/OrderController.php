@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Documents\Order\OrderItem;
 use yii\bootstrap5\ActiveForm;
 use yii\web\Response;
 
@@ -74,11 +75,25 @@ class OrderController extends BaseCrudController
     public function actionSetLinkToDelivery()
     {
         $delivery_id = \Yii::$app->request->post('delivery_id');
+        $val_delivery_id = \Yii::$app->request->post('val_delivery_id');
         $id = \Yii::$app->request->post('id');
 
         $model = $this->findModel($id);
-        $model->delivery_id = $delivery_id;
+        $model->delivery_id = $val_delivery_id;
+        if (!$val_delivery_id) {
+            $item = OrderItem::findOne([
+                'order_id' => $model->id,
+                'assortment_id' => $model->items[0]->assortment_id,
+            ]);
+            $item->shipped = null;
+            $item->save();
+        }
         $model->save();
+
+        $delivery = Delivery::findOne($delivery_id);
+        if ($delivery) {
+            $delivery->calculateShippedInOrders();
+        }
 
         return true;
     }

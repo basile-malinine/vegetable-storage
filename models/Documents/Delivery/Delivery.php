@@ -2,6 +2,7 @@
 
 namespace app\models\Documents\Delivery;
 
+use app\models\Documents\Order\OrderItem;
 use DateTime;
 
 use Yii;
@@ -356,5 +357,35 @@ class Delivery extends Base
         }
 
         return $notAcceptedList;
+    }
+
+    public function calculateShippedInOrders()
+    {
+        // Отправлено Поставщиком
+        $deliveryShipped = array_sum(ArrayHelper::getColumn($this->deliveryItems, 'shipped'));
+
+        // Привязанные Заказы
+        $orders = $this->orders;
+
+        // Позиции по всем Заказам
+        $ordersItems = ArrayHelper::getColumn($orders, 'items');
+        // Количество по всем Заказам
+        $ordersItemsQuantitySum = array_sum(ArrayHelper::getColumn(
+            ArrayHelper::getColumn($ordersItems, 0), 'quantity'));
+
+        // Вычисляем количество для отгрузки по каждому заказу и обновляем Отгружено по позиции Заказа
+        foreach ($ordersItems as $orderItems) {
+            if ($orderItems) {
+                $shipped = $orderItems[0]->quantity / $ordersItemsQuantitySum * $deliveryShipped;
+                $model = OrderItem::findOne([
+                    'order_id' => $orderItems[0]->order_id,
+                    'assortment_id' => $orderItems[0]->assortment_id,
+                ]);
+                $model->shipped = $shipped;
+                $model->save();
+            }
+        }
+
+        return true;
     }
 }
