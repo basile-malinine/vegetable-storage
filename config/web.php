@@ -192,6 +192,11 @@ $config = [
                 'acceptance-item/<action:(add)>/<id:\d+>' => 'acceptance-item/<action>',
                 'acceptance-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'acceptance-item/<action>',
 
+                // RefundController Возвраты
+                'refund/<action:(edit|delete)>/<id:\d+>' => 'refund/<action>',
+                // RefundItemController Позиция по Возврату
+                'refund-item/<action:(add)>/<id:\d+>' => 'refund-item/<action>',
+                'refund-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'refund-item/<action>',
             ],
         ],
     ],

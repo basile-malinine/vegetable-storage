@@ -336,4 +336,22 @@ class Order extends Base
             . ', ' . $this->distributionCenter->name
             . ', ' . $assortment;
     }
+
+    public static function getListForRefundExecutor()
+    {
+        $list = self::find()
+            ->select(['id'])
+            ->where(['type_id' => Order::TYPE_EXECUTOR])
+            ->andWhere('delivery_id IS NOT NULL')
+            ->indexBy('id')
+            ->column();
+
+        $orderList = [];
+        foreach ($list as $item) {
+            $model = self::findOne($item);
+            $orderList[$item] = $model->label;
+        }
+
+        return $orderList;
+    }
 }

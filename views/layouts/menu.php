@@ -200,6 +200,11 @@ echo Nav::widget([
                 ],
 
                 [
+                    'label' => 'Возвраты',
+                    'url' => ['/refund'],
+                ],
+
+                [
                     'label' => 'Поставки',
                     'url' => ['/delivery'],
                 ],
