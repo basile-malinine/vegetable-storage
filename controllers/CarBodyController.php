@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 use app\models\CarBody\CarBody;
 use app\models\CarBody\CarBodySearch;
+use app\models\GoogleBase;
 
 class CarBodyController extends BaseController
 {
@@ -52,5 +54,14 @@ class CarBodyController extends BaseController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionGoogleUpdate()
+    {
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = new CarBody();
+        $data = GoogleBase::updateGoogleSheet($model);
+
+        return $data;
     }
 }

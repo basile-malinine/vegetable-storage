@@ -145,7 +145,7 @@ echo Nav::widget([
                         ],
 
                         [
-                            'label' => 'Типы Кузова',
+                            'label' => 'Типы Кузова +G',
                             'url' => ['/car-body'],
                         ],
                     ],

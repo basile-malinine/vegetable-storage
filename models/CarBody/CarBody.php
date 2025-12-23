@@ -2,7 +2,7 @@
 
 namespace app\models\CarBody;
 
-use app\models\Base;
+use app\models\GoogleBase;
 
 /**
  * This is the model class for table "car_body".
@@ -11,10 +11,8 @@ use app\models\Base;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class CarBody extends Base
+class CarBody extends GoogleBase
 {
-
-
     /**
      * {@inheritdoc}
      */

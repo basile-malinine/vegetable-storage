@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap5\Html;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
@@ -10,12 +11,19 @@ $header = 'Типы кузова';
 
 $this->registerJs('let controllerName = "car-body";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
+$this->registerJsFile('@web/js/google.js');
 ?>
 
 <div class="page-content">
     <div class="page-top-panel">
         <div class="page-top-panel-header d-flex">
             <?= $header ?>
+            <?= Html::a('<i class="fa fa-refresh"></i><span class="ms-2">Обновить Google</span>', null,
+                [
+                    'id' => 'google-update',
+                    'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 ms-5 pe-3',
+                ]
+            ) ?>
             <a href="/car-body/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
                 <i class="fa fa-plus"></i>
                 <span class="ms-2">Добавить</span>
