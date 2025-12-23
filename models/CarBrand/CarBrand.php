@@ -2,7 +2,7 @@
 
 namespace app\models\CarBrand;
 
-use app\models\Base;
+use app\models\GoogleBase;
 
 /**
  * This is the model class for table "car_brand".
@@ -11,7 +11,7 @@ use app\models\Base;
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
-class CarBrand extends Base
+class CarBrand extends GoogleBase
 {
     /**
      * {@inheritdoc}
