@@ -4,6 +4,11 @@ namespace app\models\Unit;
 
 use app\models\Base;
 
+/**
+ * @property string $name Название
+ * @property bool $is_weight Весовая
+ * @property float $weight Вес
+ */
 class Unit extends Base
 {
     public static function tableName()

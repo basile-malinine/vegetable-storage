@@ -17,7 +17,7 @@ use app\models\Documents\Delivery\DeliveryItem;
 
 $actionId = Yii::$app->controller->action->id;
 $assortmentList = [];
-$ids = ArrayHelper::getColumn($model->delivery->deliveryItems, 'assortment_id');
+$ids = ArrayHelper::getColumn($model->delivery->items, 'assortment_id');
 
 if ($actionId == 'add') {
     $assortmentList = Assortment::getListExceptIds($ids);

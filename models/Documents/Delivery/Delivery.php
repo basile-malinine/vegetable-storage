@@ -46,7 +46,7 @@ use app\models\Stock\Stock;
  * @property Order[] $orders
  * @property LegalSubject $companyOwn
  * @property Currency $currency
- * @property DeliveryItem[] $deliveryItems
+ * @property DeliveryItem[] $items
  * @property Manager $executor
  * @property PaymentMethod $paymentMethod
  * @property Manager $purchasingAgent
@@ -216,7 +216,7 @@ class Delivery extends Base
 
         //
         if (!$this->price_total) {
-            $items = $this->deliveryItems;
+            $items = $this->items;
             $prices = ArrayHelper::getColumn($items, 'price_total');
             $this->price_total = array_sum($prices);
         }
@@ -299,7 +299,7 @@ class Delivery extends Base
     }
 
     // Состав документа DeliveryItem[]
-    public function getDeliveryItems()
+    public function getItems()
     {
         return $this->hasMany(DeliveryItem::class, ['delivery_id' => 'id']);
     }
@@ -312,8 +312,8 @@ class Delivery extends Base
 
     public function getLabel()
     {
-        $assortment = $this->deliveryItems
-            ? $this->deliveryItems[0]->label
+        $assortment = $this->items
+            ? $this->items[0]->label
             : 'Нет состава';
 
         return '№' . $this->id
@@ -337,13 +337,14 @@ class Delivery extends Base
         return $ret;
     }
 
+    // Список документов для Приёмки
     public static function getListForAcceptance()
     {
         $list = self::find()
             ->select(['id'])
             ->where([
                 'date_close' => null,
-                'type_id' => Delivery::TYPE_STOCK,
+                'type_id' => self::TYPE_STOCK,
             ])
             ->indexBy('id')
             ->column();
@@ -351,7 +352,7 @@ class Delivery extends Base
         $notAcceptedList = [];
         foreach ($list as $item) {
             $model = self::findOne($item);
-            if (!$model->acceptance && $model->deliveryItems) {
+            if (!$model->acceptance && $model->items) {
                 $notAcceptedList[$item] = $model->label;
             }
         }
@@ -362,7 +363,7 @@ class Delivery extends Base
     public function calculateShippedInOrders()
     {
         // Отправлено Поставщиком
-        $deliveryShipped = array_sum(ArrayHelper::getColumn($this->deliveryItems, 'shipped'));
+        $deliveryShipped = array_sum(ArrayHelper::getColumn($this->items, 'shipped'));
 
         // Привязанные Заказы
         $orders = $this->orders;

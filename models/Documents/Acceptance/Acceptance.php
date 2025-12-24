@@ -142,7 +142,7 @@ class Acceptance extends \app\models\Base
             switch ($this->type_id) {
                 case self::TYPE_DELIVERY:
                     $delivery = Delivery::findOne($this->parent_doc_id);
-                    foreach ($delivery->deliveryItems as $item) {
+                    foreach ($delivery->items as $item) {
                         $acceptanceItem = new AcceptanceItem();
                         $acceptanceItem->acceptance_id = $this->id;
                         $acceptanceItem->assortment_id = $item->assortment_id;
@@ -175,7 +175,7 @@ class Acceptance extends \app\models\Base
     {
         switch ($this->type_id) {
             case self::TYPE_DELIVERY:
-                return $this->hasOne(Delivery::class, ['id' => 'delivery_id']);
+                return $this->hasOne(Delivery::class, ['id' => 'parent_doc_id']);
             default:
                 return null;
         }
