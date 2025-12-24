@@ -56,7 +56,7 @@ use app\models\Stock\Stock;
  * @property LegalSubject $supplier
  * @property Manager $supportMng
  * @property string $label
- * @property Acceptance[] $acceptance
+ * @property Acceptance $acceptance
  */
 class Delivery extends Base
 {
@@ -328,13 +328,11 @@ class Delivery extends Base
             . ' ' . $this->shipment_date;
     }
 
-    // Привязанные заказы Order[]
+    // Ссылка на Приёмку
     public function getAcceptance()
     {
-        $ret = $this->hasMany(Acceptance::class, ['parent_doc_id' => 'id'])
+        return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
             ->where(['type_id' => Acceptance::TYPE_DELIVERY]);
-
-        return $ret;
     }
 
     // Список документов для Приёмки
