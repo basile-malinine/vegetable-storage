@@ -6,7 +6,7 @@ use app\models\Documents\Refund\Refund;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
-$header = 'Возвраты';
+$header = 'Возвраты по заказам';
 
 $this->registerJs('let controllerName = "refund";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
@@ -69,7 +69,6 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             [
                 'format' => 'raw',
                 'attribute' => 'order_id',
-                'label' => 'По документу',
                 'enableSorting' => false,
                 'value' => 'order.label',
                 'headerOptions' => [

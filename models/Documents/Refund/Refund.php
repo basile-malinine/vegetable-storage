@@ -2,6 +2,7 @@
 
 namespace app\models\Documents\Refund;
 
+use app\models\Documents\Acceptance\Acceptance;
 use DateTime;
 
 use Yii;
@@ -32,6 +33,8 @@ use app\models\Stock\Stock;
  * @property Order $order
  * @property RefundItem[] $items
  * @property Stock $stock
+ * @property string $label
+ * @property Acceptance $acceptance
  */
 class Refund extends Base
 {
@@ -208,5 +211,46 @@ class Refund extends Base
     public function getStock()
     {
         return $this->hasOne(Stock::class, ['id' => 'stock_id']);
+    }
+
+    public function getLabel()
+    {
+        $assortment = $this->items
+            ? $this->items[0]->label
+            : 'Нет состава';
+
+        return '№' . $this->id
+            . ' ' . $this->refund_date
+            . ', ' . $this->companyOwn->name
+            . ', ' . $assortment;
+    }
+
+    // Ссылка на Приёмку
+    public function getAcceptance()
+    {
+        return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Acceptance::TYPE_REFUND]);
+    }
+
+    // Список документов для Приёмки
+    public static function getListForAcceptance()
+    {
+        $list = self::find()
+            ->select(['id'])
+            ->where([
+                'date_close' => null,
+            ])
+            ->indexBy('id')
+            ->column();
+
+        $notAcceptedList = [];
+        foreach ($list as $item) {
+            $model = self::findOne($item);
+            if (!$model->acceptance && $model->items) {
+                $notAcceptedList[$item] = $model->label;
+            }
+        }
+
+        return $notAcceptedList;
     }
 }

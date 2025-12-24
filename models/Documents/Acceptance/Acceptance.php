@@ -7,6 +7,7 @@ use DateTime;
 use Yii;
 
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Refund\Refund;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 
@@ -35,8 +36,10 @@ class Acceptance extends \app\models\Base
 {
     // Типы Приёмки -------------------------------------------------------------
     const TYPE_DELIVERY = 1;
+    const TYPE_REFUND = 2;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'По поставке',
+        self::TYPE_REFUND => 'По возврату'
     ];
 
     /**
@@ -139,17 +142,25 @@ class Acceptance extends \app\models\Base
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert && $this->type_id && $this->parent_doc_id && $this->company_own_id && $this->stock_id) {
+            $docItems = [];
             switch ($this->type_id) {
+                // По поставке
                 case self::TYPE_DELIVERY:
                     $delivery = Delivery::findOne($this->parent_doc_id);
-                    foreach ($delivery->items as $item) {
-                        $acceptanceItem = new AcceptanceItem();
-                        $acceptanceItem->acceptance_id = $this->id;
-                        $acceptanceItem->assortment_id = $item->assortment_id;
-                        $acceptanceItem->quantity = .0;
-                        $acceptanceItem->save();
-                    }
+                    $docItems = $delivery->items;
                     break;
+                // По возврату
+                case self::TYPE_REFUND:
+                    $refund = Refund::findOne($this->parent_doc_id);
+                    $docItems = $refund->items;
+                    break;
+            }
+            foreach ($docItems as $item) {
+                $acceptanceItem = new AcceptanceItem();
+                $acceptanceItem->acceptance_id = $this->id;
+                $acceptanceItem->assortment_id = $item->assortment_id;
+                $acceptanceItem->quantity = .0;
+                $acceptanceItem->save();
             }
         }
     }
@@ -176,6 +187,10 @@ class Acceptance extends \app\models\Base
         switch ($this->type_id) {
             case self::TYPE_DELIVERY:
                 return $this->hasOne(Delivery::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_REFUND:
+                return $this->hasOne(Refund::class, ['id' => 'parent_doc_id']);
+                break;
             default:
                 return null;
         }

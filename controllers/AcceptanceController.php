@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use yii\web\Response;
+
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Acceptance\AcceptanceItemSearch;
 use app\models\Documents\Acceptance\AcceptanceSearch;
 use app\models\Documents\Delivery\Delivery;
-use yii\web\Response;
+use app\models\Documents\Refund\Refund;
 
 class AcceptanceController extends BaseCrudController
 {
@@ -66,6 +68,9 @@ class AcceptanceController extends BaseCrudController
             case Acceptance::TYPE_DELIVERY:
                 $docList = Delivery::getListForAcceptance();
                 break;
+            case Acceptance::TYPE_REFUND:
+                $docList = Refund::getListForAcceptance();
+                break;
         }
 
         return $docList;
@@ -87,6 +92,12 @@ class AcceptanceController extends BaseCrudController
                 $delivery_id = $delivery->id;
                 $company_own_id = $delivery->company_own_id;
                 $stock_id = $delivery->stock_id;
+                break;
+            case Acceptance::TYPE_REFUND:
+                $doc = Refund::findOne($parent_doc_id);
+                $delivery_id = $doc->order->delivery_id;
+                $company_own_id = $doc->company_own_id;
+                $stock_id = $doc->stock_id;
                 break;
         }
 

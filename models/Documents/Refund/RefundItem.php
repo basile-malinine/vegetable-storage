@@ -3,6 +3,7 @@
 namespace app\models\Documents\Refund;
 
 use app\models\Assortment\Assortment;
+use app\models\Base;
 
 /**
  * This is the model class for table "refund_item".
@@ -14,8 +15,9 @@ use app\models\Assortment\Assortment;
  *
  * @property Assortment $assortment
  * @property Refund $refund
+ * @property string $label
  */
-class RefundItem extends \app\models\Base
+class RefundItem extends Base
 {
     /**
      * {@inheritdoc}
@@ -85,5 +87,11 @@ class RefundItem extends \app\models\Base
     public function getRefund()
     {
         return $this->hasOne(Refund::class, ['id' => 'refund_id']);
+    }
+    public function getLabel()
+    {
+        return $this->assortment->name
+            . ' ' . $this->quantity
+            . ' (' . $this->assortment->unit->name . ')';
     }
 }
