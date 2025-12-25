@@ -19,7 +19,7 @@ class OrderSearch extends Order
         if ($params) {
             $query->andWhere([
                 'type_id' => $params['type_id'],
-                'supplier_id' => $params['supplier_id'],
+                'company_own_id' => $params['company_own_id'],
                 'executor_id' => $params['executor_id'],
             ]);
         }

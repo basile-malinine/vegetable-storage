@@ -63,7 +63,7 @@ class OrderController extends BaseCrudController
         $model = Delivery::findOne($id);
         $params = [
             'type_id' => Order::TYPE_EXECUTOR,
-            'supplier_id' => $model->company_own_id,
+            'company_own_id' => $model->company_own_id,
             'executor_id' => $model->executor_id,
         ];
         $searchModel = new OrderSearch();

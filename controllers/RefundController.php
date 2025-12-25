@@ -83,7 +83,7 @@ class RefundController extends BaseCrudController
         switch ($type_id) {
             case Refund::TYPE_EXECUTOR:
                 $order = Order::findOne($order_id);
-                $company_own_id = $order->supplier_id;
+                $company_own_id = $order->company_own_id;
                 break;
         }
 

@@ -20,7 +20,7 @@ use app\models\Stock\Stock;
  * @property int $id
  * @property int $type_id Tип заказа
  * @property int $delivery_id Поставка
- * @property int $supplier_id Поставщик
+ * @property int $company_own_id Предприятие
  * @property int $buyer_id Сеть
  * @property int $distribution_center_id Распределительный центр
  * @property int $stock_id Склад
@@ -44,7 +44,7 @@ use app\models\Stock\Stock;
  * @property Stock $stock
  * @property Manager $executor
  * @property Manager $salesMng
- * @property LegalSubject $supplier
+ * @property LegalSubject $companyOwn
  *
  * @property Stock $stock_executor Склад / Исполнитель
  * @property array $items Состав Заказа
@@ -96,7 +96,7 @@ class Order extends Base
             [[
                 'date',
                 'type_id',
-                'supplier_id',
+                'company_own_id',
                 'buyer_id',
                 'distribution_center_id',
                 'sales_mng_id'], 'required'
@@ -105,7 +105,7 @@ class Order extends Base
             [[
                 'type_id',
                 'delivery_id',
-                'supplier_id',
+                'company_own_id',
                 'buyer_id',
                 'distribution_center_id',
                 'stock_id',
@@ -125,7 +125,7 @@ class Order extends Base
             [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['executor_id' => 'id']],
             [['sales_agent_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['sales_agent_id' => 'id']],
             [['sales_mng_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::class, 'targetAttribute' => ['sales_mng_id' => 'id']],
-            [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['supplier_id' => 'id']],
+            [['company_own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['company_own_id' => 'id']],
 
             [[
                 'stock_id',
@@ -159,7 +159,7 @@ class Order extends Base
             'id' => 'ID',
             'type_id' => 'Tип заказа',
             'delivery_id' => 'Поставка',
-            'supplier_id' => 'Предприятие',
+            'company_own_id' => 'Предприятие',
             'buyer_id' => 'Покупатель (Сеть)',
             'distribution_center_id' => 'Распределительный центр',
             'stock_id' => 'Склад',
@@ -231,7 +231,7 @@ class Order extends Base
 
     /**
      * ------------------------------------------- Поставка
-     * Gets query for [[Supplier]].
+     * Gets query for [[Delivery]].
      *
      * @return \yii\db\ActiveQuery
      */
@@ -242,18 +242,18 @@ class Order extends Base
 
     /**
      * ------------------------------------------- Поставщик
-     * Gets query for [[Supplier]].
+     * Gets query for [[LegalSubject]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSupplier()
+    public function getCompanyOwn()
     {
-        return $this->hasOne(LegalSubject::class, ['id' => 'supplier_id']);
+        return $this->hasOne(LegalSubject::class, ['id' => 'company_own_id']);
     }
 
     /**
      * ------------------------------------------- Сеть
-     * Gets query for [[Buyer]].
+     * Gets query for [[LegalSubject]].
      *
      * @return \yii\db\ActiveQuery
      */

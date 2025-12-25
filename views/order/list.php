@@ -108,7 +108,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             // Предприятие
             [
                 'format' => 'raw',
-                'attribute' => 'supplier_id',
+                'attribute' => 'company_own_id',
                 'enableSorting' => false,
                 'value' => 'supplier.name',
                 'headerOptions' => [

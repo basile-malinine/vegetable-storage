@@ -122,7 +122,7 @@ $this->registerJsFile('@web/js/order.js');
         <div class="row form-row">
             <!-- Предприятие -->
             <div class="form-col col-4">
-                <?= $form->field($model, 'supplier_id')->widget(Select2::class, [
+                <?= $form->field($model, 'company_own_id')->widget(Select2::class, [
                     'data' => LegalSubject::getList('is_own'),
                     'options' => [
                         'placeholder' => 'Не назначено',
