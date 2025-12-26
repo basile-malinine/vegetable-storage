@@ -197,6 +197,12 @@ $config = [
                 // RefundItemController Позиция по Возврату
                 'refund-item/<action:(add)>/<id:\d+>' => 'refund-item/<action>',
                 'refund-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'refund-item/<action>',
+
+                // MovingController Перемещения
+                'moving/<action:(edit|delete)>/<id:\d+>' => 'moving/<action>',
+                // MovingItemController Позиция в Перемещении
+                'moving-item/<action:(add)>/<id:\d+>' => 'moving-item/<action>',
+                'moving-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'moving-item/<action>',
             ],
         ],
     ],

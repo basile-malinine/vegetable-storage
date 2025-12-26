@@ -213,6 +213,11 @@ echo Nav::widget([
                     'label' => 'Приёмки',
                     'url' => ['/acceptance'],
                 ],
+
+                [
+                    'label' => 'Перемещения',
+                    'url' => ['/moving'],
+                ],
             ],
         ],
 

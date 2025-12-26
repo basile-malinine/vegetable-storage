@@ -31,6 +31,7 @@ use app\models\Stock\Stock;
  * @property Stock $stock
  * @property Delivery $delivery
  * @property AcceptanceItem[] $items Состав приёмки
+ * @property string $label
  */
 class Acceptance extends \app\models\Base
 {
@@ -222,5 +223,34 @@ class Acceptance extends \app\models\Base
     public function getItems()
     {
         return $this->hasMany(AcceptanceItem::class, ['acceptance_id' => 'id']);
+    }
+
+    public function getLabel()
+    {
+        $assortment = $this->items
+            ? $this->items[0]->label
+            : 'Нет состава';
+
+        return '№' . $this->id
+            . ' ' . $this->acceptance_date
+            . ', ' . $this->companyOwn->name
+            . ', ' . $this->stock->name
+            . ', ' . $assortment;
+    }
+
+    public static function getListForMoving(): array
+    {
+        $listIds = self::find()
+            ->select(['id'])
+            ->indexBy('id')
+            ->column();
+
+        $list = [];
+        foreach ($listIds as $id) {
+            $model = self::findOne($id);
+            $list[$id] = $model->label;
+        }
+
+        return $list;
     }
 }
