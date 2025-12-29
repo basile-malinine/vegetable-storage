@@ -23,7 +23,7 @@ class m251216_011752_drop_statuses_columns_from_order_table extends Migration
     {
         $this->addColumn('{{%order}}', 'status_main_id',
             $this->integer()->null()->after('sales_agent_id')->comment('Статус учёта'));
-        $this->addColumn('{{%order}}', 'status_main_id',
+        $this->addColumn('{{%order}}', 'status_additional_id',
             $this->integer()->null()->after('status_main_id')->comment('Статус реализации'));
     }
 }

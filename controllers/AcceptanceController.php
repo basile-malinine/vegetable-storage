@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use DateTime;
+
 use yii\web\Response;
 
 use app\models\Documents\Acceptance\Acceptance;
@@ -9,6 +11,7 @@ use app\models\Documents\Acceptance\AcceptanceItemSearch;
 use app\models\Documents\Acceptance\AcceptanceSearch;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Refund\Refund;
+use app\models\Remainder\Remainder;
 
 class AcceptanceController extends BaseCrudController
 {
@@ -39,7 +42,7 @@ class AcceptanceController extends BaseCrudController
             $model->loadDefaultValues();
         }
 
-         return $this->render('create', compact(['model']));
+        return $this->render('create', compact(['model']));
     }
 
     public function actionEdit($id, $id2 = null)
@@ -106,5 +109,24 @@ class AcceptanceController extends BaseCrudController
             'company_own_id' => $company_own_id,
             'stock_id' => $stock_id,
         ];
+    }
+
+    public function actionChangeClose()
+    {
+        $id = \Yii::$app->request->post('id');
+        $model = $this->findModel($id);
+
+        if (!$model->date_close) {
+            Remainder::addAcceptance($model);
+            $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+            $model->save();
+        } else {
+            if (Remainder::removeAcceptance($model)) {
+                $model->date_close = null;
+                $model->save();
+            }
+        }
+
+        $this->redirect(['acceptance/edit/' . $model->id]);
     }
 }

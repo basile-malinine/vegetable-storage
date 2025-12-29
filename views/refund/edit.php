@@ -15,11 +15,11 @@ $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
 $this->registerJsFile('@web/js/refund.js');
 
 $header = 'Возврат №' . $model->id;
-
+$docLabel = '';
 switch ($model->type_id) {
     case Refund::TYPE_EXECUTOR:
         $order = Order::findOne($model->order_id);
-        $header .= ' по Заказу ' . $order->label;
+        $docLabel = 'по Заказу ' . $order->label;
 }
 
-echo $this->render('_form', compact(['model', 'dataProviderItem', 'header']));
+echo $this->render('_form', compact(['model', 'dataProviderItem', 'header', 'docLabel']));

@@ -245,4 +245,9 @@ class Moving extends Base
     {
         return $this->hasOne(Stock::class, ['id' => 'stock_sender_id']);
     }
+
+    public static function getList($condition = null): array
+    {
+        return [];
+    }
 }

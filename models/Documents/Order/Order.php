@@ -2,6 +2,7 @@
 
 namespace app\models\Documents\Order;
 
+use app\models\Documents\Shipment\Shipment;
 use DateTime;
 
 use Yii;
@@ -39,6 +40,7 @@ use app\models\Stock\Stock;
  * @property string $updated_at Дата обновления
  *
  * @property Delivery $delivery
+ * @property Shipment $shipment Отгрузка
  * @property LegalSubject $buyer
  * @property DistributionCenter $distributionCenter
  * @property Stock $stock
@@ -241,6 +243,18 @@ class Order extends Base
     }
 
     /**
+     * ------------------------------------------- Отгрузка
+     * Gets query for [[Shipment]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShipment()
+    {
+        return $this->hasOne(Shipment::class, ['parent_doc_id' => 'id'])
+            ->andWhere(['type_id' => Shipment::TYPE_ORDER]);
+    }
+
+    /**
      * ------------------------------------------- Поставщик
      * Gets query for [[LegalSubject]].
      *
@@ -337,12 +351,18 @@ class Order extends Base
             . ', ' . $assortment;
     }
 
-    public static function getListForRefundExecutor()
+    // ------------------------------------------- Short Label
+    public function getShortLabel(): string
+    {
+        return '№' . $this->id
+            . ' ' . $this->date;
+    }
+
+    public static function getList($condition = null): array
     {
         $list = self::find()
             ->select(['id'])
-            ->where(['type_id' => Order::TYPE_EXECUTOR])
-            ->andWhere('delivery_id IS NOT NULL')
+            ->where($condition)
             ->indexBy('id')
             ->column();
 
@@ -353,5 +373,11 @@ class Order extends Base
         }
 
         return $orderList;
+    }
+
+    public static function getListForRefundExecutor()
+    {
+        return self::getList('type_id = ' . self::TYPE_EXECUTOR .
+            'delivery_id IS NOT NULL');
     }
 }

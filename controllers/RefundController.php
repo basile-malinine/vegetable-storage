@@ -65,7 +65,9 @@ class RefundController extends BaseCrudController
         $docList = [];
         switch ($type_id) {
             case Refund::TYPE_EXECUTOR:
-                $docList = Order::getListForRefundExecutor();
+                // Возврат по прямому заказу (выбираем только привязанные Заказы к Поставке)
+                $docList = Order::getList('type_id = ' . Order::TYPE_EXECUTOR
+                    . ' AND delivery_id IS NOT NULL');
                 break;
         }
 

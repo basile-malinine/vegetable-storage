@@ -130,8 +130,12 @@ class DeliveryItem extends Base
 
     public function getLabel()
     {
+        $quantity = (bool)$this->assortment->unit->is_weight
+            ? number_format($this->shipped, 1, '.', '')
+            : number_format($this->shipped, 0, '.', '');
+
         return $this->assortment->name
-            . ' ' . $this->shipped
+            . ' ' . $quantity
             . ' (' . $this->assortment->unit->name . ')';
     }
 }

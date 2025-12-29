@@ -1,26 +1,27 @@
 <?php
 
-/** @var yii\data\ActiveDataProvider $dataProviderItem */
+/** @var yii\data\ActiveDataProvider $dataProviderAcceptance */
 
-/** @var Acceptance $model */
+/** @var Shipment $model */
 
-use app\models\PalletType\PalletType;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
-use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Shipment\Shipment;
+use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\PalletType\PalletType;
 
 ?>
 
-<?php Pjax::begin(['id' => 'delivery-items']) ?>
+<?php Pjax::begin(['id' => 'shipment-acceptance-grid']) ?>
 <?= GridView::widget([
     'layout' => "{items}\n{pager}",
-    'dataProvider' => $dataProviderItem,
+    'dataProvider' => $dataProviderAcceptance,
 
-    'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
+    'rowOptions' => $model->date_close ? [] : function (ShipmentAcceptance $model, $key, $index, $grid) {
         return [
             'class' => 'contextMenuRow',
-            'data-row-id' => $model->acceptance_id . '/' . $model->assortment_id,
+            'data-row-id' => $model->shipment_id . '/' . $model->acceptance_id,
         ];
     },
 
@@ -39,9 +40,8 @@ use app\models\Documents\Acceptance\Acceptance;
         // Номенклатура
         [
             'format' => 'raw',
-            'label' => 'Номенклатура',
-            'attribute' => 'assortment',
-            'value' => 'assortment.name',
+            'attribute' => 'acceptance_id',
+            'value' => 'acceptance.label',
             'enableSorting' => false,
             'headerOptions' => [
                 'style' => 'width: 260px;'
@@ -54,12 +54,10 @@ use app\models\Documents\Acceptance\Acceptance;
             'attribute' => 'quantity',
             'label' => 'Кол-во',
             'enableSorting' => false,
-            'value' => function ($model) {
-                return $model->quantity
-                    ? number_format($model->quantity, 0,
+            'value' => function (ShipmentAcceptance $model) {
+                return number_format($model->quantity, 0,
                         '.', ' ')
-                    . ' (' . $model->assortment->unit->name . ')'
-                    : '';
+                    . ' (' . $model->acceptance->items[0]->assortment->unit->name . ')';
             },
             'contentOptions' => [
                 'style' => 'text-align: right;'

@@ -6,6 +6,7 @@
 /** @var Refund $model */
 
 /** @var string $header */
+/** @var string $docLabel */
 
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
@@ -17,12 +18,14 @@ use app\models\Stock\Stock;
 
 use app\models\Documents\Refund\Refund;
 
+$docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
 ?>
 
 <div class="page-top-panel">
     <div class="page-top-panel-header d-inline">
         <?= $header ?>
+        <div class="fs-6"<?= !$docLabel ? 'hidden' : '' ?>><?= ' ' . $docLabel ?></div>
     </div>
 </div>
 

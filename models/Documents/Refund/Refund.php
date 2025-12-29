@@ -225,6 +225,12 @@ class Refund extends Base
             . ', ' . $assortment;
     }
 
+    public function getShortLabel()
+    {
+        return '№' . $this->id
+            . ' ' . $this->refund_date;
+    }
+
     // Ссылка на Приёмку
     public function getAcceptance()
     {

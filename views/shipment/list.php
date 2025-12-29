@@ -2,13 +2,14 @@
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
-use app\models\Documents\Acceptance\Acceptance;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
-$header = 'Приёмки';
+use app\models\Documents\Shipment\Shipment;
 
-$this->registerJs('let controllerName = "acceptance";', \yii\web\View::POS_HEAD);
+$header = 'Отгрузки';
+
+$this->registerJs('let controllerName = "shipment";', \yii\web\View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
 ?>
 
@@ -16,7 +17,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
     <div class="page-top-panel">
         <div class="page-top-panel-header d-flex">
             <?= $header ?>
-            <a href="/acceptance/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
+            <a href="/shipment/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
                 <i class="fa fa-plus"></i>
                 <span class="ms-2">Добавить</span>
             </a>
@@ -26,7 +27,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
 
-        'rowOptions' => function (Acceptance $model, $key, $index, $grid) {
+        'rowOptions' => function (Shipment $model, $key, $index, $grid) {
             return [
                 'class' => 'contextMenuRow',
                 'data-row-id' => $model->id,
@@ -47,15 +48,47 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Дата приёмки
+            // Тип отгрузки
             [
-                'attribute' => 'acceptance_date',
+                'attribute' => 'type_id',
+                'enableSorting' => false,
+                'value' => function (Shipment $model) {
+                    return Shipment::TYPE_LIST[$model->type_id];
+                },
+                'headerOptions' => [
+                    'style' => 'width: 100px; text-align: center;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: center;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // По документу
+            [
+                'format' => 'raw',
+                'attribute' => 'parent_doc_id',
+                'label' => 'По документу',
+                'enableSorting' => false,
+                'value' => function (Shipment $model) {
+                    return $model->parentDoc->label;
+                },
+                'headerOptions' => [
+                    'style' => 'width: 400px;'
+                ],
+            ],
+
+            // Дата отгрузки
+            [
+                'attribute' => 'shipment_date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->acceptance_date == null) {
+                    if ($model->shipment_date == null) {
                         return '';
                     }
-                    return date("d.m.Y", strtotime($model->acceptance_date));
+                    return date("d.m.Y", strtotime($model->shipment_date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'
@@ -86,43 +119,17 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'value' => 'stock.name',
                 'headerOptions' => [
-                    'style' => 'width: 100px;'
+                    'style' => 'width: 180px;'
                 ],
             ],
 
-            //  Основание
-            [
-                'attribute' => 'type_id',
-                'label' => 'Основание',
-                'enableSorting' => false,
-                'value' => function (Acceptance $model) {
-                    return Acceptance::TYPE_LIST[$model->type_id]
-                        . ' ' . $model->parentDoc->shortLabel
-                        . ' ' . $model->parentDoc->items[0]->label;
-                },
-                'headerOptions' => [
-                    'style' => 'width: 400px; text-align: center;'
-                ],
-                'filterInputOptions' => [
-                    'class' => 'form-control form-control-sm',
-                ],
-            ],
-
-            // Принято
+            // Поставка
             [
                 'attribute' => 'delivery_id',
-                'label' => 'Принято',
                 'enableSorting' => false,
-                'value' => function (Acceptance $model) {
-                    $val = '';
-                    if ($model->date_close) {
-                        $val = $model->items[0]->label;
-                    }
-
-                    return $val;
-                },
+                'value' => 'delivery.shortLabel',
                 'headerOptions' => [
-                    'style' => 'width: 200px;'
+                    'style' => 'width: 100px;'
                 ],
             ],
 

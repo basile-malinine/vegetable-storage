@@ -2,8 +2,8 @@
 
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
-/** @var yii\data\ActiveDataProvider $dataProviderItem */
-/** @var Acceptance $model */
+/** @var yii\data\ActiveDataProvider $dataProviderAcceptance */
+/** @var Shipment $model */
 
 /** @var string $header */
 
@@ -13,8 +13,11 @@ use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
+use yii\widgets\Pjax;
 
-use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Shipment\Shipment;
+use app\models\LegalSubject\LegalSubject;
+use app\models\Stock\Stock;
 
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
@@ -42,9 +45,9 @@ $actionID = Yii::$app->controller->action->id;
         ]); ?>
 
         <div class="row form-row">
-            <!-- Дата приёмки -->
+            <!-- Дата отгрузки -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'acceptance_date')->widget(DatePicker::class, [
+                <?= $form->field($model, 'shipment_date')->widget(DatePicker::class, [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'name' => 'closed',
                     'readonly' => true,
@@ -60,18 +63,18 @@ $actionID = Yii::$app->controller->action->id;
             </div>
 
             <!-- Тип -->
-            <div class="form-col col-2" <?= $actionID == 'edit' ? 'hidden' : '' ?>>
+            <div class="form-col col-2" <?= $actionID === 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Acceptance::TYPE_LIST,
+                    'data' => Shipment::TYPE_LIST,
                     'options' => [
+                        'id' => 'shipment-type',
                         'placeholder' => 'Не назначен',
-                        'id' => 'acceptance-type',
                     ],
                 ]); ?>
             </div>
 
             <!-- По документу -->
-            <div class="form-col col-6" <?= $actionID == 'edit' ? 'hidden' : '' ?>>
+            <div class="form-col col-6" <?= $actionID === 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'parent_doc_id')->widget(Select2::class, [
                     'data' => [],
                     'options' => [
@@ -105,10 +108,46 @@ $actionID = Yii::$app->controller->action->id;
             </div>
         </div>
 
-        <!-- GridView (Состав) -->
+        <div class="row form-row" <?= $actionID === 'create' ? 'hidden' : '' ?>>
+            <!-- Предприятие -->
+            <div class="form-col col-6">
+                <?= $form->field($model, 'company_own_id')->widget(Select2::class, [
+                    'data' => LegalSubject::getList('is_own'),
+                    'options' => [
+                        'placeholder' => 'Не назначено',
+                        'disabled' => true,
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Склад -->
+            <div class="form-col col-2" id="stock-div">
+                <?= $form->field($model, 'stock_id')->widget(Select2::class, [
+                    'data' => Stock::getList(),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                        'disabled' => true,
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Кнопка добавления позиции -->
+            <div class="form-col col-2 d-flex justify-content-end align-items-end mb-3">
+                <?= Html::button('<i class="fa fa-plus"></i><span class="ms-2">Добавить приёмку</span>',
+                    [
+                        'id' => 'btn-add',
+                        'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 pe-3',
+                        'style' => 'height: 31px',
+                    ]);
+                ?>
+            </div>
+        </div>
+
+
+        <!-- GridView (Приёмки) -->
         <div class="row form-row">
             <div class="form-col col-10">
-                <?= isset($dataProviderItem) ? $this->render('_item_grid', compact(['model', 'dataProviderItem'])) : '' ?>
+                <?= isset($dataProviderAcceptance) ? $this->render('_acceptance_grid', compact(['model', 'dataProviderAcceptance'])) : '' ?>
             </div>
         </div>
 
@@ -119,14 +158,15 @@ $actionID = Yii::$app->controller->action->id;
             </div>
         </div>
 
+        <?php Pjax::begin(['id' => 'shipment-acceptance-button']) ?>
         <div class="form-group">
             <!-- 'Сохранить', 'Закрыть' или 'Открыть'-->
             <?php if ($actionID == 'create'): ?>
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>
-            <?php elseif (!$model->date_close && $model->items[0]->quantity > 0): ?>
-                <?= Html::a('Закрыть', '/acceptance/change-close', [
+            <?php elseif (!$model->date_close && $model->shipmentAcceptances): ?>
+                <?= Html::a('Закрыть', '/shipment/change-close', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
@@ -137,7 +177,7 @@ $actionID = Yii::$app->controller->action->id;
                     ],
                 ]) ?>
             <?php elseif ($model->date_close): ?>
-                <?= Html::a('Открыть', '/acceptance/change-close', [
+                <?= Html::a('Открыть', '/shipment/change-close', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
@@ -148,9 +188,10 @@ $actionID = Yii::$app->controller->action->id;
                     ],
                 ]) ?>
             <?php endif; ?>
-            <?= Html::a('К списку', '/acceptance', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
+            <?= Html::a('К списку', '/shipment', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
         </div>
-
+        <?php Pjax::end() ?>
+        
         <?php ActiveForm::end(); ?>
 
     </div>

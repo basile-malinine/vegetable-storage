@@ -39,8 +39,7 @@ class AcceptanceItem extends \app\models\Base
 
             [[
                 'acceptance_id',
-                'assortment_id',
-                'quantity'], 'required'
+                'assortment_id'], 'required'
             ],
 
             [[

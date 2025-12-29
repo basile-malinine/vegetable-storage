@@ -16,16 +16,16 @@ $this->registerJs('let docId = ' . $model->id . ';', View::POS_HEAD);
 $this->registerJsFile('@web/js/acceptance.js');
 
 $header = 'Приёмка №' . $model->id;
-
+$docLabel = '';
 switch ($model->type_id) {
     case Acceptance::TYPE_DELIVERY:
         $delivery = Delivery::findOne($model->parent_doc_id);
-        $header .= ' по Поставке ' . $delivery->label;
+        $docLabel .= ' по Поставке ' . $delivery->label;
         break;
     case Acceptance::TYPE_REFUND:
-        $delivery = Refund::findOne($model->parent_doc_id);
-        $header .= ' по Возврату ' . $delivery->label;
+        $refund = Refund::findOne($model->parent_doc_id);
+        $docLabel .= ' по Возврату ' . $refund->label;
         break;
 }
 
-echo $this->render('_form', compact(['model', 'dataProviderItem', 'header']));
+echo $this->render('_form', compact(['model', 'dataProviderItem', 'header', 'docLabel']));

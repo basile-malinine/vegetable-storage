@@ -6,9 +6,12 @@ use DateTime;
 
 use Yii;
 
+use app\models\Base;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Refund\Refund;
+use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
+use app\models\Remainder\Remainder;
 use app\models\Stock\Stock;
 
 /**
@@ -27,20 +30,25 @@ use app\models\Stock\Stock;
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
+ * @property mixed $parentDoc
  * @property LegalSubject $companyOwn
  * @property Stock $stock
  * @property Delivery $delivery
+ * @property ShipmentAcceptance[] $shipments Состав приёмки
  * @property AcceptanceItem[] $items Состав приёмки
+ * @property Remainder $remainder Остатки
  * @property string $label
  */
-class Acceptance extends \app\models\Base
+class Acceptance extends Base
 {
     // Типы Приёмки -------------------------------------------------------------
     const TYPE_DELIVERY = 1;
     const TYPE_REFUND = 2;
+    const TYPE_MOVING = 3;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'По поставке',
-        self::TYPE_REFUND => 'По возврату'
+        self::TYPE_REFUND => 'По возврату',
+        self::TYPE_MOVING => 'По перемещению',
     ];
 
     /**
@@ -108,7 +116,7 @@ class Acceptance extends \app\models\Base
             'parent_doc_id' => 'По документу',
             'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'acceptance_date' => 'Дата приёмки',
+            'acceptance_date' => 'Дата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -217,6 +225,23 @@ class Acceptance extends \app\models\Base
     public function getStock()
     {
         return $this->hasOne(Stock::class, ['id' => 'stock_id']);
+    }
+
+    /**
+     * ------------------------------------------- Остатки
+     * Gets query for [[Remainder]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRemainder()
+    {
+        return $this->hasOne(Remainder::class, ['acceptance_id' => 'id']);
+    }
+
+    // ------------------------------------------- Отгрузки ShipmentAcceptance[]
+    public function getShipments()
+    {
+        return $this->hasMany(ShipmentAcceptance::class, ['acceptance_id' => 'id']);
     }
 
     // ------------------------------------------- Состав документа AcceptanceItem[]

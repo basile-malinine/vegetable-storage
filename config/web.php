@@ -203,6 +203,12 @@ $config = [
                 // MovingItemController Позиция в Перемещении
                 'moving-item/<action:(add)>/<id:\d+>' => 'moving-item/<action>',
                 'moving-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'moving-item/<action>',
+
+                // ShipmentController Отгрузки
+                'shipment/<action:(edit|delete)>/<id:\d+>' => 'shipment/<action>',
+                // ShipmentAcceptanceController Приёмка по Отгрузке
+                'shipment-acceptance/<action:(add)>/<id:\d+>' => 'shipment-acceptance/<action>',
+                'shipment-acceptance/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'shipment-acceptance/<action>',
             ],
         ],
     ],

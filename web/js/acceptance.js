@@ -3,6 +3,8 @@ $(() => {
     $acceptanceType.on('change', changeAcceptanceType);
     const $parentDoc = $('#parent-doc');
     $parentDoc.on('change', changeParentDoc);
+    // const $btnChangeClose = $('#btn-change-close');
+    // $btnChangeClose.on('click', clickBtnChangeClose);
 
     function changeAcceptanceType() {
         $.post(
@@ -31,6 +33,19 @@ $(() => {
                 $('#delivery-id').val(data['delivery_id']);
                 $('#company-own-id').val(data['company_own_id']);
                 $('#stock-id').val(data['stock_id']);
+            }
+        );
+    }
+
+    function clickBtnChangeClose() {
+        $.post(
+            '/acceptance/change-close',
+            {
+                'id': docId
+            },
+            (data) => {
+                // alert(data);
+                return false;
             }
         );
     }
