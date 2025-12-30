@@ -83,7 +83,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Сеть
+            // Покупатель (Сеть)
             [
                 'attribute' => 'buyer_id',
                 'enableSorting' => false,
@@ -110,7 +110,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'format' => 'raw',
                 'attribute' => 'company_own_id',
                 'enableSorting' => false,
-                'value' => 'supplier.name',
+                'value' => 'companyOwn.name',
                 'headerOptions' => [
                     'style' => 'width: 200px;'
                 ],
