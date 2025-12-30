@@ -83,8 +83,11 @@ $(() => {
                                 id2: id2
                             },
                             (data) => {
-                                $.pjax.reload('#shipment-acceptance-grid');
-                                $.pjax.reload('#shipment-acceptance-button');
+                                $.pjax.reload({
+                                    container: '#shipment-acceptance-grid',
+                                    async: false
+                                });
+                                $.pjax.reload('#shipment-buttons');
                             }
                         );
                     }

@@ -92,7 +92,7 @@ class ShipmentAcceptanceController extends BaseCrudController
             $dbMessages = \Yii::$app->params['messages']['db'];
             try {
                 $model->delete();
-                return false;
+                return true;
             } catch (IntegrityException $e) {
                 if (!$this->request->isAjax) {
                     \Yii::$app->session->setFlash('error', $dbMessages['delIntegrityError']);

@@ -158,10 +158,10 @@ $actionID = Yii::$app->controller->action->id;
             </div>
         </div>
 
-        <?php Pjax::begin(['id' => 'shipment-acceptance-button']) ?>
+        <?php Pjax::begin(['id' => 'shipment-buttons']) ?>
         <div class="form-group">
             <!-- 'Сохранить', 'Закрыть' или 'Открыть'-->
-            <?php if ($actionID == 'create'): ?>
+            <?php if ($actionID == 'create' || !$model->shipmentAcceptances): ?>
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>
