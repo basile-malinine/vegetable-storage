@@ -62,4 +62,9 @@ class SiteController extends Controller
         //    $this->redirect(['user/login']);  // Начальная страница
         return $this->render('index');
     }
+
+    public function actionLogin()
+    {
+        $this->redirect(['user/login']);
+    }
 }
