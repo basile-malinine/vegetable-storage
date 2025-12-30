@@ -201,18 +201,19 @@ class Remainder extends Base
      *
      * @param $company_own_id integer Предприятие
      * @param $stock_id integer Склад
-     * @param $assortment_id integer Номенклатура
+     * @param $assortment_ids integer|array Номенклатура
      * @param $exceptIds integer[]|null Исключить ID Поставок
      * @return array Список Поставок
      */
-    public static function getListAcceptance(int $company_own_id, int $stock_id, int $assortment_id, array $exceptIds = []): array
+    public static function getListAcceptance(
+        int $company_own_id, int $stock_id, int|array $assortment_ids, array $exceptIds = []): array
     {
         $listIds = self::find()
             ->select(['acceptance_id'])
             ->where([
                 'company_own_id' => $company_own_id,
                 'stock_id' => $stock_id,
-                'assortment_id' => $assortment_id,
+                'assortment_id' => $assortment_ids,
             ])
             ->andWhere(['NOT IN', 'acceptance_id', $exceptIds])
             ->indexBy('acceptance_id')

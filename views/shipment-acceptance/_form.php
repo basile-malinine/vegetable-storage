@@ -6,8 +6,8 @@
 
 /** @var string $header */
 
-use app\models\PalletType\PalletType;
-use app\models\Remainder\Remainder;
+use app\models\Assortment\Assortment;
+use app\models\Assortment\AssortmentGroup;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\ArrayHelper;
@@ -15,31 +15,48 @@ use yii\web\JsExpression;
 
 use kartik\select2\Select2;
 
+use app\models\Documents\Shipment\Shipment;
 use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\PalletType\PalletType;
+use app\models\Remainder\Remainder;
 
 $actionId = Yii::$app->controller->action->id;
 
 $acceptanceList = [];
+// Массив ID Приёмок уже добавленных в Отгрузку, которые при добавлении нужно исключить
 $ids = ArrayHelper::getColumn($model->shipment->acceptances, 'id');
+// При редактировании добавленной Приёмки удаляем из списка исключённых Приёмок текущую
+if ($actionId === 'edit') {
+    $ids = array_diff($ids, [$model->acceptance_id]);
+}
 $company_own_id = $model->shipment->company_own_id;
 $stock_id = $model->shipment->stock_id;
 $assortment_id = $model->shipment->parentDoc->items[0]->assortment_id;
 
-if ($actionId == 'add') {
-    $acceptanceList = Remainder::getListAcceptance(
-        $company_own_id,
-        $stock_id,
-        $assortment_id,
-        $ids
-    );
-} elseif ($actionId == 'edit') {
-    $ids = array_diff($ids, [$model->acceptance_id]);
-    $acceptanceList = Remainder::getListAcceptance(
-        $company_own_id,
-        $stock_id,
-        $assortment_id,
-        $ids
-    );
+switch ($model->shipment->type_id) {
+    case Shipment::TYPE_ORDER:
+        // По Заказам выбираем любую Приёмку из подгруппы позиции в Заказе с учётом весовая / не весовая
+        $groupId = Assortment::findOne($assortment_id)->assortment_group_id;
+        $isWeight = Assortment::findOne($assortment_id)->unit->is_weight;
+        $assortmentIds = Assortment::find()->select('assortment.id')
+            ->joinWith('unit')
+            ->where(['assortment_group_id' => $groupId])
+            ->andWhere(['unit.is_weight' => $isWeight])
+            ->column();
+        $acceptanceList = Remainder::getListAcceptance(
+            $company_own_id,
+            $stock_id,
+            $assortmentIds,
+            $ids
+        );
+        break;
+    default:
+        $acceptanceList = Remainder::getListAcceptance(
+            $company_own_id,
+            $stock_id,
+            $assortment_id,
+            $ids
+        );
 }
 
 $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View::POS_HEAD]);
@@ -115,7 +132,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <!-- Тип паллет -->
             <div class="form-col col-3">
                 <div hidden>
-                    <?=  $form->field($model, 'pallet_type_id')->textInput(['id' => 'hidden-pallet-type-id']) ?>
+                    <?= $form->field($model, 'pallet_type_id')->textInput(['id' => 'hidden-pallet-type-id']) ?>
                 </div>
                 <?= $form->field($model, 'pallet_type_id')->widget(Select2::class, [
                     'data' => PalletType::getList(),
