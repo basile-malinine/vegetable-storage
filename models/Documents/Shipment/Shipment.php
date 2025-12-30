@@ -29,6 +29,7 @@ use Yii;
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
+ * @property mixed $parentDoc
  * @property Acceptance[] $acceptances
  * @property Assortment[] $assortments
  * @property LegalSubject $companyOwn

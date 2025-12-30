@@ -129,9 +129,10 @@ class ShipmentController extends BaseCrudController
             }
             $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
             $model->save();
-            $model->parentDoc->items[0]->shipped =
+            $item = $model->parentDoc->items[0];
+            $item->shipped =
                 array_sum(ArrayHelper::getColumn($model->shipmentAcceptances, 'quantity'));
-            $model->parentDoc->items[0]->save();
+            $item->save();
             \Yii::$app->session->setFlash('success', 'По Отгрузке произведено списание.');
         } else {
             foreach ($model->shipmentAcceptances as $item) {
@@ -139,8 +140,9 @@ class ShipmentController extends BaseCrudController
             }
             $model->date_close = null;
             $model->save();
-            $model->parentDoc->items[0]->shipped = null;
-            $model->parentDoc->items[0]->save();
+            $item = $model->parentDoc->items[0];
+            $item->shipped = null;
+            $item->save();
             \Yii::$app->session->setFlash('success', 'По Отгрузке произведено оприходование.');
         }
 
