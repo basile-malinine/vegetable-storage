@@ -127,7 +127,7 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
 
             <!-- Без НДС -->
             <div class="form-col col-1" style="margin-top: 31px;">
-                <?= $form->field($model, 'is_not_nds')->checkbox() ?>
+                <?= $form->field($model, 'is_not_nds')->checkbox()->label('Без НДС') ?>
             </div>
         </div>
 
