@@ -6,6 +6,7 @@ use app\models\Documents\Shipment\Shipment;
 use DateTime;
 
 use Yii;
+use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
 
 use app\models\Base;
@@ -226,6 +227,20 @@ class Order extends Base
             case self::TYPE_EXECUTOR:
                 $this->stock_id = null;
                 break;
+        }
+
+        return true;
+    }
+
+    public function beforeDelete()
+    {
+        // Если есть Отгрузка по Заказу, удаление не возможно
+        $orderShipment = Shipment::findOne([
+            'type_id' => Shipment::TYPE_ORDER,
+            'parent_doc_id' => $this->id,
+        ]);
+        if ($orderShipment) {
+            throw new IntegrityException('');
         }
 
         return true;
