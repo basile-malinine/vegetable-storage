@@ -17,6 +17,7 @@ use app\models\Base;
  *
  * @property Assortment $assortment
  * @property Moving $moving
+ * @property string $label
  */
 class MovingItem extends Base
 {
@@ -97,5 +98,18 @@ class MovingItem extends Base
     public function getMoving()
     {
         return $this->hasOne(Moving::class, ['id' => 'moving_id']);
+    }
+
+    public function getLabel()
+    {
+        $quantity = $this->quantity ? $this->quantity : .0;
+        if (!$this->assortment->unit->is_weight) {
+            $shipped = number_format($quantity, 0, '.', '');
+        }
+
+        return $this->assortment->name
+            . ' ' . $this->quantity
+            . ' (' . $this->assortment->unit->name . ')'
+            . ', Отгружено: ' . $quantity;
     }
 }

@@ -33,6 +33,7 @@ use app\models\Stock\Stock;
  * @property LegalSubject $companyOwn
  * @property PalletType $palletType
  * @property Stock $stock
+ * @property string $label
  */
 class Remainder extends Base
 {
@@ -285,5 +286,38 @@ class Remainder extends Base
         $remainder->save();
 
         return true;
+    }
+
+    public function getLabel()
+    {
+        $quantity = (bool)$this->assortment->unit->is_weight
+            ? number_format($this->quantity, 1, '.', '')
+            : number_format($this->quantity, 0, '.', '');
+
+        $assortment = $this->assortment->name
+            . ' ' . $quantity
+            . ' (' . $this->assortment->unit->name . ')';
+
+        return '№' . $this->acceptance_id
+            . ' ' . $this->acceptance->acceptance_date
+            . ', ' . $this->companyOwn->name
+            . ', ' . $this->stock->name
+            . ', ' . $assortment;
+    }
+
+    public static function getListForMoving(): array
+    {
+        $listIds = self::find()
+            ->select(['acceptance_id'])
+            ->indexBy('acceptance_id')
+            ->column();
+
+        $list = [];
+        foreach ($listIds as $id) {
+            $model = self::findOne(['acceptance_id' => $id]);
+            $list[$id] = $model->label;
+        }
+
+        return $list;
     }
 }

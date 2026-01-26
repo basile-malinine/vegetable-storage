@@ -17,12 +17,14 @@ use app\models\Documents\Acceptance\Acceptance;
     'layout' => "{items}\n{pager}",
     'dataProvider' => $dataProviderItem,
 
-    'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
-        return [
-            'class' => 'contextMenuRow',
-            'data-row-id' => $model->acceptance_id . '/' . $model->assortment_id,
-        ];
-    },
+    'rowOptions' => $model->date_close || $model->type_id === Acceptance::TYPE_MOVING
+        ? []
+        : function ($model, $key, $index, $grid) {
+            return [
+                'class' => 'contextMenuRow',
+                'data-row-id' => $model->acceptance_id . '/' . $model->assortment_id,
+            ];
+        },
 
     'columns' => [
         // #

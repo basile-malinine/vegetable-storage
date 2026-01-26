@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Documents\Moving\Moving;
 use DateTime;
 
 use yii\web\Response;
@@ -74,6 +75,9 @@ class AcceptanceController extends BaseCrudController
             case Acceptance::TYPE_REFUND:
                 $docList = Refund::getListForAcceptance();
                 break;
+            case Acceptance::TYPE_MOVING:
+                $docList = Moving::getListForAcceptance();
+                break;
         }
 
         return $docList;
@@ -101,6 +105,11 @@ class AcceptanceController extends BaseCrudController
                 $delivery_id = $doc->order->delivery_id;
                 $company_own_id = $doc->company_own_id;
                 $stock_id = $doc->stock_id;
+                break;
+            case Acceptance::TYPE_MOVING:
+                $doc = Moving::findOne($parent_doc_id);
+                $company_own_id = $doc->company_recipient_id;
+                $stock_id = $doc->stock_recipient_id;
                 break;
         }
 

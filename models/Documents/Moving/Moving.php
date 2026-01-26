@@ -2,6 +2,9 @@
 
 namespace app\models\Documents\Moving;
 
+use app\models\Documents\Shipment\Shipment;
+use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\Remainder\Remainder;
 use DateTime;
 
 use Yii;
@@ -12,6 +15,7 @@ use app\models\Documents\Acceptance\Acceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use app\models\User\User;
+use yii\db\IntegrityException;
 
 /**
  * This is the model class for table "moving".
@@ -37,6 +41,8 @@ use app\models\User\User;
  * @property MovingItem[] $items
  * @property Stock $stockRecipient
  * @property Stock $stockSender
+ * @property string $label
+ * @property string $shortLabel
  */
 class Moving extends Base
 {
@@ -146,17 +152,73 @@ class Moving extends Base
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $acceptance = Acceptance::findOne($this->acceptance_id);
-            foreach ($acceptance->items as $item) {
-                $movingItem = new MovingItem();
-                $movingItem->moving_id = $this->id;
-                $movingItem->assortment_id = $item->assortment_id;
-                $movingItem->quantity = .0;
-                $movingItem->save();
-            }
+            // Отыскиваем Приёмку на остатке
+            $remainder = Remainder::findOne(['acceptance_id' => $this->acceptance_id]);
+
+            // В Перемещении создаём позицию
+            $movingItem = new MovingItem();
+            $movingItem->moving_id = $this->id;
+            $movingItem->assortment_id = $remainder->assortment_id;
+            $movingItem->quantity = $remainder->quantity;
+            $movingItem->pallet_type_id = $remainder->pallet_type_id;
+            $movingItem->quantity_pallet = $remainder->quantity_pallet;
+            $movingItem->quantity_paks = $remainder->quantity_paks;
+            $movingItem->save();
+
+            // Создаём Отгрузку с типом "По перемещению"
+            $shipment = new Shipment();
+            $shipment->type_id = Shipment::TYPE_MOVING;
+            $shipment->parent_doc_id = $this->id;
+            $shipment->company_own_id = $this->company_sender_id;
+            $shipment->stock_id = $this->stock_sender_id;
+            $shipment->shipment_date = $this->moving_date;
+            $shipment->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+            $shipment->comment = 'Created automatically';
+            $shipment->save();
+
+            // В отгрузке создаём позицию
+            $shipmentAcceptance = new ShipmentAcceptance();
+            $shipmentAcceptance->shipment_id = $shipment->id;
+            $shipmentAcceptance->acceptance_id = $this->acceptance_id;
+            $shipmentAcceptance->pallet_type_id = $remainder->pallet_type_id;
+            $shipmentAcceptance->quantity = $remainder->quantity;
+            $shipmentAcceptance->quantity_pallet = $remainder->quantity_pallet;
+            $shipmentAcceptance->quantity_paks = $remainder->quantity_paks;
+            $shipmentAcceptance->save();
+
+            // Списываем Приёмку с остатка
+            $remainder->delete();
         }
     }
 
+    public function beforeDelete()
+    {
+        // Если есть Приёмка по Перемещению, удаление не возможно
+        $movingAcceptance = Acceptance::findOne([
+            'type_id' => Acceptance::TYPE_MOVING,
+            'parent_doc_id' => $this->id,
+        ]);
+        if ($movingAcceptance) {
+            throw new IntegrityException('');
+        }
+
+        // Отыскиваем Отгрузку по Перемещению
+        $shipment = Shipment::findOne([
+            'type_id' => Shipment::TYPE_MOVING,
+            'parent_doc_id' => $this->id,
+        ]);
+
+        // Получаем позицию по Отгрузке
+        $shipmentAcceptance = $shipment->shipmentAcceptances[0];
+
+        // Восстанавливаем Приёмку на остатке
+        Remainder::acceptanceFromShipped($shipmentAcceptance);
+
+        // Удаляем Отгрузку
+        $shipment->delete();
+
+        return true;
+    }
 
     /**
      * Gets query for [[Acceptance]].
@@ -249,5 +311,48 @@ class Moving extends Base
     public static function getList($condition = null): array
     {
         return [];
+    }
+
+    // ------------------------------------------- Label
+    public function getLabel(): string
+    {
+        $assortment = $this->items
+            ? $this->items[0]->label
+            : 'Нет состава';
+
+        return '№' . $this->id
+            . ' ' . $this->moving_date
+            . ', ' . $this->companySender->name
+            . ', со склада ' . $this->stockSender->name
+            . ', на склад ' . $this->stockRecipient->name
+            . ', ' . $assortment;
+    }
+
+    public function getShortLabel()
+    {
+        return '№' . $this->id
+            . ' ' . $this->moving_date;
+    }
+
+    // Список документов для Приёмки
+    public static function getListForAcceptance()
+    {
+        $list = self::find()
+            ->select(['id'])
+            ->where([
+                'date_close' => null,
+            ])
+            ->indexBy('id')
+            ->column();
+
+        $notAcceptedList = [];
+        foreach ($list as $item) {
+            $model = self::findOne($item);
+            if ($model->items) {
+                $notAcceptedList[$item] = $model->label;
+            }
+        }
+
+        return $notAcceptedList;
     }
 }

@@ -5,6 +5,7 @@ use yii\web\View;
 
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Moving\Moving;
 use app\models\Documents\Refund\Refund;
 
 /** @var View $this */
@@ -25,6 +26,10 @@ switch ($model->type_id) {
     case Acceptance::TYPE_REFUND:
         $refund = Refund::findOne($model->parent_doc_id);
         $docLabel .= ' по Возврату ' . $refund->label;
+        break;
+    case Acceptance::TYPE_MOVING:
+        $moving = Moving::findOne($model->parent_doc_id);
+        $docLabel .= ' по Перемещению ' . $moving->label;
         break;
 }
 

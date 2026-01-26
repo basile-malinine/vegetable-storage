@@ -19,6 +19,9 @@ use app\models\Documents\Shipment\Shipment;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 
+$shipmentTypes = Shipment::TYPE_LIST;
+unset($shipmentTypes[Shipment::TYPE_MOVING]);
+
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
 ?>
@@ -65,7 +68,7 @@ $actionID = Yii::$app->controller->action->id;
             <!-- Тип -->
             <div class="form-col col-2" <?= $actionID === 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Shipment::TYPE_LIST,
+                    'data' => $shipmentTypes,
                     'options' => [
                         'id' => 'shipment-type',
                         'placeholder' => 'Не назначен',
@@ -176,7 +179,7 @@ $actionID = Yii::$app->controller->action->id;
                         ],
                     ],
                 ]) ?>
-            <?php elseif ($model->date_close): ?>
+            <?php elseif ($model->date_close && $model->type_id != Shipment::TYPE_MOVING): ?>
                 <?= Html::a('Открыть', '/shipment/change-close', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',

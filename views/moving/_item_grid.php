@@ -17,12 +17,12 @@ use app\models\PalletType\PalletType;
     'layout' => "{items}\n{pager}",
     'dataProvider' => $dataProviderItem,
 
-    'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
-        return [
-            'class' => 'contextMenuRow',
-            'data-row-id' => $model->moving_id . '/' . $model->assortment_id,
-        ];
-    },
+//    'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
+//        return [
+//            'class' => 'contextMenuRow',
+//            'data-row-id' => $model->moving_id . '/' . $model->assortment_id,
+//        ];
+//    },
 
     'columns' => [
         // #

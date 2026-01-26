@@ -62,6 +62,19 @@ class ShipmentController extends BaseCrudController
         return $this->render('edit', compact('model', 'dataProviderAcceptance'));
     }
 
+    public function actionDelete($id, $id2 = null): Response
+    {
+        $model = $this->findModel($id);
+        // Если перемещение, не удаляем
+        if ($model->type_id === Shipment::TYPE_MOVING) {
+            \Yii::$app->session->setFlash('error',
+                'Для удаления этой Отгрузки, удалите документ на Перемещение.');
+            return $this->redirect(['index']);
+        }
+
+        return parent::actionDelete($id, $id2);
+    }
+
     // При выборе Типа приёмки
     public function actionChangeType()
     {
@@ -79,9 +92,6 @@ class ShipmentController extends BaseCrudController
                         $docList[$id] = $name;
                     }
                 }
-                break;
-            case Shipment::TYPE_MOVING:
-                $docList = Moving::getList();
                 break;
         }
 

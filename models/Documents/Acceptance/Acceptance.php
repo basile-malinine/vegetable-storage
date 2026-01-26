@@ -2,6 +2,7 @@
 
 namespace app\models\Documents\Acceptance;
 
+use app\models\Documents\Moving\Moving;
 use DateTime;
 
 use Yii;
@@ -163,12 +164,23 @@ class Acceptance extends Base
                     $refund = Refund::findOne($this->parent_doc_id);
                     $docItems = $refund->items;
                     break;
+                // По перемещению
+                case self::TYPE_MOVING:
+                    $moving = Moving::findOne($this->parent_doc_id);
+                    $docItems = $moving->items;
+                    break;
             }
             foreach ($docItems as $item) {
                 $acceptanceItem = new AcceptanceItem();
                 $acceptanceItem->acceptance_id = $this->id;
-                $acceptanceItem->assortment_id = $item->assortment_id;
                 $acceptanceItem->quantity = .0;
+                $acceptanceItem->assortment_id = $item->assortment_id;
+                if ($this->type_id == self::TYPE_MOVING) {
+                    $acceptanceItem->quantity = $item->quantity;
+                    $acceptanceItem->pallet_type_id = $item->pallet_type_id;
+                    $acceptanceItem->quantity_pallet = $item->quantity_pallet;
+                    $acceptanceItem->quantity_paks = $item->quantity_paks;
+                }
                 $acceptanceItem->save();
             }
         }
@@ -199,6 +211,9 @@ class Acceptance extends Base
                 break;
             case self::TYPE_REFUND:
                 return $this->hasOne(Refund::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_MOVING:
+                return $this->hasOne(Moving::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;
@@ -263,19 +278,19 @@ class Acceptance extends Base
             . ', ' . $assortment;
     }
 
-    public static function getListForMoving(): array
-    {
-        $listIds = self::find()
-            ->select(['id'])
-            ->indexBy('id')
-            ->column();
-
-        $list = [];
-        foreach ($listIds as $id) {
-            $model = self::findOne($id);
-            $list[$id] = $model->label;
-        }
-
-        return $list;
-    }
+//    public static function getListForMoving(): array
+//    {
+//        $listIds = self::find()
+//            ->select(['id'])
+//            ->indexBy('id')
+//            ->column();
+//
+//        $list = [];
+//        foreach ($listIds as $id) {
+//            $model = self::findOne($id);
+//            $list[$id] = $model->label;
+//        }
+//
+//        return $list;
+//    }
 }

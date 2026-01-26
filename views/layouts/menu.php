@@ -218,11 +218,11 @@ echo Nav::widget([
                     'label' => 'Отгрузки',
                     'url' => ['/shipment'],
                 ],
-//
-//                [
-//                    'label' => 'Перемещения',
-//                    'url' => ['/moving'],
-//                ],
+
+                [
+                    'label' => 'Перемещения',
+                    'url' => ['/moving'],
+                ],
 
                 '<hr class="dropdown-divider">',
 

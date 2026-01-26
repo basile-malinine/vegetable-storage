@@ -69,7 +69,8 @@ class MovingController extends BaseCrudController
             $stock_recipient_list = Stock::getList('id <> ' . $stock_id);
             return compact(['company_own_id', 'stock_id', 'stock_recipient_list']);
         }
+        $stock_recipient_list = Stock::getList();
 
-        return [];
+        return compact(['stock_recipient_list']);
     }
 }

@@ -7,7 +7,6 @@
 
 /** @var string $header */
 
-use app\models\Documents\Acceptance\Acceptance;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use kartik\date\DatePicker;
@@ -15,6 +14,7 @@ use kartik\select2\Select2;
 
 use app\models\Documents\Moving\Moving;
 use app\models\LegalSubject\LegalSubject;
+use app\models\Remainder\Remainder;
 use app\models\Stock\Stock;
 
 $actionID = Yii::$app->controller->action->id;
@@ -58,13 +58,12 @@ $actionID = Yii::$app->controller->action->id;
             </div>
 
             <!-- Приёмка -->
-            <div class="form-col col-6">
+            <div class="form-col col-6" <?= $actionID === 'edit' ? "hidden" : "" ?>>
                 <?= $form->field($model, 'acceptance_id')->widget(Select2::class, [
-                    'data' => Acceptance::getListForMoving(),
+                    'data' => Remainder::getListForMoving(),
                     'options' => [
                         'id' => 'acceptance-id',
                         'placeholder' => 'Не назначена',
-                        'disabled' => $actionID === 'edit',
                     ],
                 ]); ?>
             </div>
@@ -131,7 +130,7 @@ $actionID = Yii::$app->controller->action->id;
                     'options' => [
                         'id' => 'stock-recipient-id',
                         'placeholder' => 'Не назначено',
-                        'disabled' => (bool)$model->date_close,
+                        'disabled' => $actionID === 'edit',
                     ],
                 ]); ?>
             </div>
@@ -152,7 +151,9 @@ $actionID = Yii::$app->controller->action->id;
         </div>
 
         <div class="form-group">
-            <?= Html::submitButton('Сохранить', ['class' => 'btn btn-light btn-outline-primary btn-sm me-2']) ?>
+            <?php if ($actionID === 'create'): ?>
+                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-light btn-outline-primary btn-sm me-2']) ?>
+            <?php endif ?>
             <?= Html::a('К списку', '/moving', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
         </div>
 
