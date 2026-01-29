@@ -2,18 +2,16 @@
 
 namespace app\models\Documents\Acceptance;
 
-use app\models\Documents\Moving\Moving;
-use DateTime;
-
-use Yii;
-
 use app\models\Base;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Moving\Moving;
 use app\models\Documents\Refund\Refund;
+use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
-use app\models\Remainder\Remainder;
 use app\models\Stock\Stock;
+use DateTime;
+use Yii;
 
 /**
  * This is the model class for table "acceptance".
@@ -37,7 +35,7 @@ use app\models\Stock\Stock;
  * @property Delivery $delivery
  * @property ShipmentAcceptance[] $shipments Состав приёмки
  * @property AcceptanceItem[] $items Состав приёмки
- * @property Remainder $remainder Остатки
+ * @property \app\models\Documents\Remainder\Remainder $remainder Остатки
  * @property string $label
  */
 class Acceptance extends Base

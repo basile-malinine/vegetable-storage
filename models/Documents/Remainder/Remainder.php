@@ -1,16 +1,15 @@
 <?php
 
-namespace app\models\Remainder;
-
-use app\models\Documents\Shipment\ShipmentAcceptance;
-use yii\db\Exception;
+namespace app\models\Documents\Remainder;
 
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\PalletType\PalletType;
 use app\models\Stock\Stock;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "remainder".

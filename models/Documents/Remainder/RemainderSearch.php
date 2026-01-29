@@ -1,8 +1,7 @@
 <?php
 
-namespace app\models\Remainder;
+namespace app\models\Documents\Remainder;
 
-use app\models\Remainder\Remainder;
 use yii\data\ActiveDataProvider;
 
 class RemainderSearch extends Remainder

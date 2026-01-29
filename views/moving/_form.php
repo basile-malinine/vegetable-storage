@@ -7,15 +7,14 @@
 
 /** @var string $header */
 
-use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\Html;
+use app\models\Documents\Moving\Moving;
+use app\models\Documents\Remainder\Remainder;
+use app\models\LegalSubject\LegalSubject;
+use app\models\Stock\Stock;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
-
-use app\models\Documents\Moving\Moving;
-use app\models\LegalSubject\LegalSubject;
-use app\models\Remainder\Remainder;
-use app\models\Stock\Stock;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 
 $actionID = Yii::$app->controller->action->id;
 ?>

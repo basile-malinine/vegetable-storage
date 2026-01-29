@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Documents\Acceptance\Acceptance;
-use app\models\Remainder\Remainder;
-use app\models\Remainder\RemainderSearch;
-use yii\db\Exception;
+use app\models\Documents\Remainder\Remainder;
+use app\models\Documents\Remainder\RemainderSearch;
 
 class RemainderController extends BaseCrudController
 {

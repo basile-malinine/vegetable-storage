@@ -7,18 +7,15 @@
 /** @var string $header */
 
 use app\models\Assortment\Assortment;
-use app\models\Assortment\AssortmentGroup;
+use app\models\Documents\Remainder\Remainder;
+use app\models\Documents\Shipment\Shipment;
+use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\PalletType\PalletType;
+use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\JsExpression;
-
-use kartik\select2\Select2;
-
-use app\models\Documents\Shipment\Shipment;
-use app\models\Documents\Shipment\ShipmentAcceptance;
-use app\models\PalletType\PalletType;
-use app\models\Remainder\Remainder;
 
 $actionId = Yii::$app->controller->action->id;
 

@@ -2,8 +2,8 @@
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
+use app\models\Documents\Remainder\Remainder;
 use app\models\PalletType\PalletType;
-use app\models\Remainder\Remainder;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 

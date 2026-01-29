@@ -2,19 +2,17 @@
 
 namespace app\models\Documents\Moving;
 
-use app\models\Documents\Shipment\Shipment;
-use app\models\Documents\Shipment\ShipmentAcceptance;
-use app\models\Remainder\Remainder;
-use DateTime;
-
-use Yii;
-
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Remainder\Remainder;
+use app\models\Documents\Shipment\Shipment;
+use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use app\models\User\User;
+use DateTime;
+use Yii;
 use yii\db\IntegrityException;
 
 /**
