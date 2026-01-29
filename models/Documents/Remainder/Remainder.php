@@ -147,28 +147,38 @@ class Remainder extends Base
         return $this->hasMany(ShipmentAcceptance::class, ['acceptance_id' => 'acceptance_id']);
     }
 
-    // Добавить Поставку на остаток.
-    public static function addAcceptance(Acceptance $acceptance): bool
+    // Изменить Приёмку на остатке.
+    public static function changeAcceptance(Acceptance $acceptance): bool
     {
-        $remainder = new Remainder();
-        $remainder->acceptance_id = $acceptance->id;
-        $remainder->company_own_id = $acceptance->company_own_id;
-        $remainder->stock_id = $acceptance->stock_id;
         $acceptanceItem = $acceptance->items[0];
-        $remainder->assortment_id = $acceptanceItem->assortment_id;
-        $remainder->quantity = $acceptanceItem->quantity;
-        $remainder->pallet_type_id = $acceptanceItem->pallet_type_id;
-        $remainder->quantity_pallet = $acceptanceItem->quantity_pallet;
-        $remainder->quantity_paks = $acceptanceItem->quantity_paks;
-        $remainder->comment = $acceptanceItem->comment;
+        $remainder = self::findOne(['acceptance_id' => $acceptance->id]);
+        if (!$remainder) {
+            $remainder = new Remainder();
+            $remainder->acceptance_id = $acceptance->id;
+            $remainder->company_own_id = $acceptance->company_own_id;
+            $remainder->stock_id = $acceptance->stock_id;
+            $remainder->assortment_id = $acceptanceItem->assortment_id;
+            $remainder->pallet_type_id = $acceptanceItem->pallet_type_id;
+            $remainder->comment = $acceptanceItem->comment;
+        }
+
+        $remainder->quantity = $acceptanceItem->quantity -
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity');
+        $remainder->quantity_pallet = $acceptanceItem->quantity_pallet -
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_pallet');
+        $remainder->quantity_paks = $acceptanceItem->quantity_paks -
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_paks');
+        if ($remainder->removeEmptyRow()) {
+            return true;
+        }
 
         try {
             $remainder->save();
         } catch (Exception $e) {
-            \Yii::$app->session->setFlash('error', 'Приёмку не удалось добавить на остаток.');
+            \Yii::$app->session->setFlash('error', 'Приёмку на остатке не удалось изменить.');
             return false;
         }
-        \Yii::$app->session->setFlash('success', 'Приёмка добавлена на остаток.');
+        \Yii::$app->session->setFlash('success', 'Приёмка на остатке изменена.');
 
         return true;
     }
@@ -190,8 +200,7 @@ class Remainder extends Base
             }
         }
 
-        \Yii::$app->session->setFlash('error',
-            'Приёмка на остатке не найдена.');
+        \Yii::$app->session->setFlash('error', 'Приёмка на остатке не найдена.');
 
         return false;
     }
@@ -229,23 +238,32 @@ class Remainder extends Base
         return $list;
     }
 
+    // Проверка на пустую строку. Удаление пустой строки
+    private function removeEmptyRow(): bool
+    {
+        if (!$this->quantity && !$this->quantity_pallet && !$this->quantity_paks) {
+            $this->delete();
+            return true;
+        }
+
+        return false;
+    }
+
     // Отгрузить с Приёмки
     public static function shippedFromAcceptance(ShipmentAcceptance $shipmentAcceptance): bool
     {
         $remainder = Remainder::findOne(['acceptance_id' => $shipmentAcceptance->acceptance->id]);
         $remainder->quantity -= $shipmentAcceptance->quantity;
-        if ($remainder->quantity < .1) {
-            $remainder->delete();
-            return true;
-        }
         $remainder->quantity_pallet -= $shipmentAcceptance->quantity_pallet;
         if ($remainder->quantity_pallet < 1) {
-            $remainder->pallet_type_id = null;
             $remainder->quantity_pallet = null;
         }
         $remainder->quantity_paks -= $shipmentAcceptance->quantity_paks;
         if ($remainder->quantity_paks < 1) {
             $remainder->quantity_paks = null;
+        }
+        if ($remainder->removeEmptyRow()) {
+            return true;
         }
         $remainder->save();
 
@@ -318,5 +336,14 @@ class Remainder extends Base
         }
 
         return $list;
+    }
+
+    public static function getQuantityByAcceptance($acceptance_id, $attr)
+    {
+        $qnt = self::find()
+            ->where(['acceptance_id' => $acceptance_id])
+            ->sum($attr);
+
+        return $qnt ?? 0;
     }
 }

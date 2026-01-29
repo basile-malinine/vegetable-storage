@@ -2,6 +2,11 @@
 
 namespace app\controllers;
 
+use DateTime;
+
+use Yii;
+use yii\web\Response;
+
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Acceptance\AcceptanceItemSearch;
 use app\models\Documents\Acceptance\AcceptanceSearch;
@@ -9,8 +14,6 @@ use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Refund\Refund;
 use app\models\Documents\Remainder\Remainder;
-use DateTime;
-use yii\web\Response;
 
 class AcceptanceController extends BaseCrudController
 {
@@ -118,20 +121,31 @@ class AcceptanceController extends BaseCrudController
         ];
     }
 
-    public function actionChangeClose()
+    public function actionApply()
     {
         $id = \Yii::$app->request->post('id');
         $model = $this->findModel($id);
 
-        if (!$model->date_close) {
-            Remainder::addAcceptance($model);
-            $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        Remainder::changeAcceptance($model);
+        $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        $model->save();
+        $session = Yii::$app->session;
+        if ($session->has('old_values')) {
+            $session->remove('old_values');
+        }
+
+
+        $this->redirect(['acceptance/edit/' . $model->id]);
+    }
+
+    public function actionRemoveRemainder()
+    {
+        $id = \Yii::$app->request->post('id');
+        $model = $this->findModel($id);
+
+        if (Remainder::removeAcceptance($model)) {
+            $model->date_close = null;
             $model->save();
-        } else {
-            if (Remainder::removeAcceptance($model)) {
-                $model->date_close = null;
-                $model->save();
-            }
         }
 
         $this->redirect(['acceptance/edit/' . $model->id]);

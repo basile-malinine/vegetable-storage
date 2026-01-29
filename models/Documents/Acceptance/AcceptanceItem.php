@@ -3,6 +3,10 @@
 namespace app\models\Documents\Acceptance;
 
 use app\models\Assortment\Assortment;
+use app\models\Base;
+use app\models\Documents\Remainder\Remainder;
+use app\models\Documents\Shipment\ShipmentAcceptance;
+use Yii;
 
 /**
  * This is the model class for table "acceptance_item".
@@ -19,7 +23,7 @@ use app\models\Assortment\Assortment;
  * @property Assortment $assortment
  * @property string $label
  */
-class AcceptanceItem extends \app\models\Base
+class AcceptanceItem extends Base
 {
     /**
      * {@inheritdoc}
@@ -62,7 +66,32 @@ class AcceptanceItem extends \app\models\Base
 
             [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
+
+            [[
+                'quantity',
+                'quantity_pallet',
+                'quantity_paks'], 'testQuantity', 'skipOnEmpty' => true],
         ];
+    }
+
+    public function testQuantity($attribute, $params)
+    {
+        $qntShipment = ShipmentAcceptance::getQuantityByAcceptance($this->acceptance_id, $attribute);
+        $qnt = 0;
+        switch ($attribute) {
+            case 'quantity':
+                $qnt = $this->quantity;
+                break;
+            case 'quantity_pallet':
+                $qnt = $this->quantity_pallet;
+                break;
+            case 'quantity_paks':
+                $qnt = $this->quantity_paks;
+                break;
+        }
+        if ($qnt < $qntShipment) {
+            $this->addError($attribute, 'Минимум ' . $qntShipment);
+        }
     }
 
     /**
@@ -79,6 +108,30 @@ class AcceptanceItem extends \app\models\Base
             'quantity_paks' => 'Кол-во тары',
             'comment' => 'Комментарий',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($this->acceptance->type_id === Acceptance::TYPE_DELIVERY) {
+            $session = Yii::$app->session;
+            if ($session->has('old_values')) {
+                $session->remove('old_values');
+            }
+            if (!$insert) {
+                // Если есть изменения, пишем в сессию старые значения.
+                if ($this->oldAttributes['quantity'] != $this->quantity
+                    || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
+                    || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
+                    $session->set('old_values', [
+                        'quantity' => $this->oldAttributes['quantity'],
+                        'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
+                        'quantity_paks' => $this->oldAttributes['quantity_paks'],
+                    ]);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -110,5 +163,11 @@ class AcceptanceItem extends \app\models\Base
         return $this->assortment->name
             . ' ' . $quantity
             . ' (' . $this->assortment->unit->name . ')';
+    }
+
+    // Возвращает true, если есть изменения.
+    public function isChanges(): bool
+    {
+        return Yii::$app->session->has('old_values');
     }
 }

@@ -103,4 +103,13 @@ class ShipmentAcceptance extends Base
     {
         return $this->hasOne(Shipment::class, ['id' => 'shipment_id']);
     }
+
+    public static function getQuantityByAcceptance($acceptance_id, $attr)
+    {
+        $qnt = self::find()
+            ->where(['acceptance_id' => $acceptance_id])
+            ->sum($attr);
+
+        return $qnt ?? 0;
+    }
 }

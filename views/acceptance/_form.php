@@ -125,8 +125,8 @@ $actionID = Yii::$app->controller->action->id;
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>
-            <?php elseif (!$model->date_close && $model->items[0]->quantity > 0): ?>
-                <?= Html::a('Закрыть', '/acceptance/change-close', [
+            <?php elseif (!$model->date_close || $model->items[0]->isChanges() && $model->items[0]->quantity > 0): ?>
+                <?= Html::a('Провести', '/acceptance/apply', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
@@ -137,7 +137,7 @@ $actionID = Yii::$app->controller->action->id;
                     ],
                 ]) ?>
             <?php elseif ($model->date_close): ?>
-                <?= Html::a('Открыть', '/acceptance/change-close', [
+                <?= Html::a('Снять с остатка', '/acceptance/remove-remainder', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [

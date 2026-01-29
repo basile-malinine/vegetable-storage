@@ -45,9 +45,9 @@ class Acceptance extends Base
     const TYPE_REFUND = 2;
     const TYPE_MOVING = 3;
     const TYPE_LIST = [
-        self::TYPE_DELIVERY => 'По поставке',
-        self::TYPE_REFUND => 'По возврату',
-        self::TYPE_MOVING => 'По перемещению',
+        self::TYPE_DELIVERY => 'Поставка',
+        self::TYPE_REFUND => 'Возврат',
+        self::TYPE_MOVING => 'Перемещение',
     ];
 
     /**

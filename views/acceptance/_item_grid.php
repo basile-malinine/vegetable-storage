@@ -17,7 +17,7 @@ use app\models\Documents\Acceptance\Acceptance;
     'layout' => "{items}\n{pager}",
     'dataProvider' => $dataProviderItem,
 
-    'rowOptions' => $model->date_close || $model->type_id === Acceptance::TYPE_MOVING
+    'rowOptions' => $model->type_id === Acceptance::TYPE_MOVING
         ? []
         : function ($model, $key, $index, $grid) {
             return [

@@ -42,8 +42,8 @@ class Shipment extends Base
     const TYPE_ORDER = 1;
     const TYPE_MOVING = 2;
     const TYPE_LIST = [
-        self::TYPE_ORDER => 'По заказу',
-        self::TYPE_MOVING => 'По перемещению',
+        self::TYPE_ORDER => 'Заказ',
+        self::TYPE_MOVING => 'Перемещение',
     ];
 
     /**
