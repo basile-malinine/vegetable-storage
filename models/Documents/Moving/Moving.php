@@ -31,7 +31,8 @@ use yii\db\IntegrityException;
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
- * @property Acceptance $acceptance
+ * @property Acceptance $sourceAcceptance Исходная Приёмка (по которой делаем Перемещение)
+ * @property Acceptance $acceptance Ссылка на Приёмку
  * @property Assortment[] $assortments
  * @property LegalSubject $companyRecipient
  * @property LegalSubject $companySender
@@ -219,14 +220,25 @@ class Moving extends Base
     }
 
     /**
+     * ------------------------------------------- Исходная Приёмка (по которой делаем Перемещение)
      * Gets query for [[Acceptance]].
      *
      * @return \yii\db\ActiveQuery
      */
     public
-    function getAcceptance()
+    function getSourceAcceptance()
     {
         return $this->hasOne(Acceptance::class, ['id' => 'acceptance_id']);
+    }
+
+    /**
+     * ------------------------------------------- Ссылка на Приёмку
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAcceptance()
+    {
+        return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Acceptance::TYPE_MOVING]);
     }
 
     /**
@@ -346,7 +358,7 @@ class Moving extends Base
         $notAcceptedList = [];
         foreach ($list as $item) {
             $model = self::findOne($item);
-            if ($model->items) {
+            if (!$model->acceptance && $model->items) {
                 $notAcceptedList[$item] = $model->label;
             }
         }

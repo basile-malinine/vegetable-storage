@@ -97,11 +97,10 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'value' => function (Acceptance $model) {
                     return Acceptance::TYPE_LIST[$model->type_id]
-                        . ' ' . $model->parentDoc->shortLabel
-                        . ' ' . $model->parentDoc->items[0]->label;
+                        . ' ' . $model->parentDoc->label;
                 },
                 'headerOptions' => [
-                    'style' => 'width: 400px; text-align: center;'
+                    'style' => 'width: 450px; text-align: center;'
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',
