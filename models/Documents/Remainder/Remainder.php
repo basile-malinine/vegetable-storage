@@ -307,7 +307,7 @@ class Remainder extends Base
 
     public function getLabel()
     {
-        $quantity = (bool)$this->assortment->unit->is_weight
+        $quantity = $this->assortment->unit->is_weight
             ? number_format($this->quantity, 1, '.', '')
             : number_format($this->quantity, 0, '.', '');
 
@@ -338,6 +338,11 @@ class Remainder extends Base
         return $list;
     }
 
+    /**
+     * ------------------------------------------------------------------------- Остаток по Приёмке
+     * @param $acceptance_id int Id Приёмки
+     * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     */
     public static function getQuantityByAcceptance($acceptance_id, $attr)
     {
         $qnt = self::find()
@@ -345,5 +350,16 @@ class Remainder extends Base
             ->sum($attr);
 
         return $qnt ?? 0;
+    }
+
+    /**
+     * ------------------------------------------------------------------------- Свободно по Приёмке
+     * @param $acceptance_id int Id Приёмки
+     * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     */
+    public static function getFreeByAcceptance(int $acceptance_id, string $attr)
+    {
+        return self::getQuantityByAcceptance($acceptance_id, $attr) -
+            ShipmentAcceptance::getOpenByAcceptance($acceptance_id, $attr);
     }
 }

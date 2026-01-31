@@ -6,16 +6,18 @@
 
 /** @var string $header */
 
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
+use yii\helpers\ArrayHelper;
+use yii\web\JsExpression;
+use yii\web\View;
+use kartik\select2\Select2;
+
 use app\models\Assortment\Assortment;
 use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\Shipment;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\PalletType\PalletType;
-use kartik\select2\Select2;
-use yii\bootstrap5\ActiveForm;
-use yii\bootstrap5\Html;
-use yii\helpers\ArrayHelper;
-use yii\web\JsExpression;
 
 $actionId = Yii::$app->controller->action->id;
 
@@ -56,7 +58,6 @@ switch ($model->shipment->type_id) {
         );
 }
 
-$this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View::POS_HEAD]);
 ?>
 
 <div class="page-top-panel">
@@ -68,7 +69,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
 <div class="page-content">
     <div class="page-content-form">
         <?php $form = ActiveForm::begin([
-            'id' => 'order-item-form',
+            'id' => 'shipment-acceptance-form',
             'fieldConfig' => [
                 'template' => "{label}\n{input}\n{error}",
                 'labelOptions' => ['class' => 'col-form-label pt-0'],
@@ -90,27 +91,29 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
                             "/shipment-acceptance/change-acceptance",
                             { acceptance_id: $(this).val() },
                             (data) => {
-                                $("#quantity").val(data["quantity"]);
-                                if (data["pallet_type_id"]) {
-                                    $("#hidden-pallet-type-id").val(data["pallet_type_id"]);
-                                    $("#pallet-type-id").val(data["pallet_type_id"]).trigger("change");
-                                }
+                                $("[data-attribute = quantity]").val(data["quantity"]);
+                                $("[data-attribute = quantity]").removeClass("is-invalid");
+                                $("#hidden-pallet-type-id").val(data["pallet_type_id"]);
+                                $("#pallet-type-id").val(data["pallet_type_id"]).trigger("change");
                                 if (+data["quantity_pallet"] > 0) {
-                                    $("#quantity-pallet").val(data["quantity_pallet"]);
+                                    $("[data-attribute = quantity-pallet]").removeAttr("disabled");
+                                    $("[data-attribute = quantity-pallet]").val(data["quantity_pallet"]);
+                                    $("[data-attribute = quantity-pallet]").removeClass("is-invalid");
                                 } else {
-                                    $("#quantity-pallet").attr("disabled", true);
+                                    $("[data-attribute = quantity-pallet]").val("").trigger("change");
+                                    $("[data-attribute = quantity-pallet]").attr("disabled", true);
                                 }
                                 if (+data["quantity_paks"] > 0) {
-                                    $("#quantity-paks").val(data["quantity_paks"]);
+                                    $("[data-attribute = quantity-paks]").removeAttr("disabled");
+                                    $("[data-attribute = quantity-paks]").val(data["quantity_paks"]);
+                                    $("[data-attribute = quantity-paks]").removeClass("is-invalid");
                                 } else {
-                                    $("#quantity-paks").attr("disabled", true);
+                                    $("[data-attribute = quantity-paks]").val("").trigger("change");
+                                    $("[data-attribute = quantity-paks]").attr("disabled", true);
                                 }
+//                                $("#shipment-acceptance-form").find(".is-invalid").removeClass("is-invalid");
                             }
                         );',
-                    ],
-                    'pluginOptions' => [
-                        'matcher' => new JsExpression('matchStart'), // ф-ция из select2-helper.js
-                        'dropdownParent' => '#modal', // необходимо указать id контекста
                     ],
                 ]) ?>
             </div>
@@ -120,7 +123,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <!-- Количество -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'quantity')->textInput([
-                    'id' => 'quantity',
+                    'data-attribute' => 'quantity',
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
@@ -144,7 +147,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <!-- Количество паллет -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'quantity_pallet')->textInput([
-                    'id' => 'quantity-pallet',
+                    'data-attribute' => 'quantity-pallet',
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
@@ -153,7 +156,7 @@ $this->registerJsFile('@web/js/select2-helper.js', ['position' => \yii\web\View:
             <!-- Количество тары -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'quantity_paks')->textInput([
-                    'id' => 'quantity-paks',
+                    'data-attribute' => 'quantity-paks',
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>

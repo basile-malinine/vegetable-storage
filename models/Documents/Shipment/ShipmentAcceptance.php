@@ -4,6 +4,7 @@ namespace app\models\Documents\Shipment;
 
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Remainder\Remainder;
 
 /**
  * This is the model class for table "shipment_acceptance".
@@ -42,9 +43,9 @@ class ShipmentAcceptance extends Base
                 'comment'], 'default', 'value' => null
             ],
 
-            [['shipment_id',
-                'acceptance_id',
-                'quantity'], 'required'
+            [[
+                'shipment_id',
+                'acceptance_id'], 'required'
             ],
 
             [[
@@ -55,7 +56,7 @@ class ShipmentAcceptance extends Base
                 'quantity_paks'], 'integer'
             ],
 
-            [['quantity'], 'number'],
+            [['quantity'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'],
 
             [['comment'], 'string'],
 
@@ -63,7 +64,36 @@ class ShipmentAcceptance extends Base
 
             [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['shipment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Shipment::class, 'targetAttribute' => ['shipment_id' => 'id']],
+
+            [[
+                'quantity',
+                'quantity_pallet',
+                'quantity_paks'], 'testQuantity', 'skipOnEmpty' => true],
         ];
+    }
+
+    public function testQuantity($attribute, $params)
+    {
+        $qntFree = Remainder::getFreeByAcceptance($this->acceptance_id, $attribute);
+        if (isset($this->oldAttributes[$attribute])
+            && $this->oldAttributes['acceptance_id'] == $this->acceptance_id) {
+            $qntFree += $this->oldAttributes[$attribute];
+        }
+        $qnt = 0;
+        switch ($attribute) {
+            case 'quantity':
+                $qnt = $this->quantity;
+                break;
+            case 'quantity_pallet':
+                $qnt = $this->quantity_pallet;
+                break;
+            case 'quantity_paks':
+                $qnt = $this->quantity_paks;
+                break;
+        }
+        if ($qnt > $qntFree) {
+            $this->addError($attribute, 'Максимум ' . $qntFree);
+        }
     }
 
     /**
@@ -104,10 +134,31 @@ class ShipmentAcceptance extends Base
         return $this->hasOne(Shipment::class, ['id' => 'shipment_id']);
     }
 
-    public static function getQuantityByAcceptance($acceptance_id, $attr)
+    /**
+     * ------------------------------------------------------------------------- Всего выписано по Приёмке
+     * @param $acceptance_id int Id Приёмки
+     * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     */
+    public static function getQuantityByAcceptance(int $acceptance_id, string $attr)
     {
         $qnt = self::find()
             ->where(['acceptance_id' => $acceptance_id])
+            ->sum($attr);
+
+        return $qnt ?? 0;
+    }
+
+    /**
+     * ------------------------------------------------------------------------- Выписано, но не закрыто по Приёмке
+     * @param $acceptance_id int Id Приёмки
+     * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     */
+    public static function getOpenByAcceptance(int $acceptance_id, string $attr)
+    {
+        $qnt = self::find()
+            ->joinWith('shipment')
+            ->where(['acceptance_id' => $acceptance_id])
+            ->andWhere(['shipment.date_close' => null])
             ->sum($attr);
 
         return $qnt ?? 0;

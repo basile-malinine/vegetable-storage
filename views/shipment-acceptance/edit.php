@@ -7,6 +7,6 @@ use app\models\Documents\Shipment\ShipmentAcceptance;
 /** @var ShipmentAcceptance $model */
 
 $header = 'Приёмка (изменение)';
-?>
 
-<?= $this->render('_form', compact('model', 'header')); ?>
+
+echo $this->render('_form', compact('model', 'header'));
