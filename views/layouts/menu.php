@@ -195,6 +195,11 @@ echo Nav::widget([
             'options' => ['class' => 'ms-4'],
             'items' => [
                 [
+                    'label' => 'Поставки',
+                    'url' => ['/delivery'],
+                ],
+
+                [
                     'label' => 'Заказы',
                     'url' => ['/order'],
                 ],
@@ -204,10 +209,7 @@ echo Nav::widget([
                     'url' => ['/refund'],
                 ],
 
-                [
-                    'label' => 'Поставки',
-                    'url' => ['/delivery'],
-                ],
+                '<hr class="dropdown-divider">',
 
                 [
                     'label' => 'Приёмки',
@@ -219,10 +221,17 @@ echo Nav::widget([
                     'url' => ['/shipment'],
                 ],
 
+                '<hr class="dropdown-divider">',
+
                 [
                     'label' => 'Перемещения',
                     'url' => ['/moving'],
                 ],
+
+//                [
+//                    'label' => 'Списание',
+//                    'url' => ['/decrease'],
+//                ],
 
                 '<hr class="dropdown-divider">',
 
