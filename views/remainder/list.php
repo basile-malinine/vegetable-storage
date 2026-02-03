@@ -25,18 +25,16 @@ $header = 'Остатки';
         'dataProvider' => $dataProvider,
 
         'columns' => [
-            // № (ID)
-//            [
-//                'attribute' => 'id',
-//                'label' => '№',
-//                'enableSorting' => false,
-//                'contentOptions' => [
-//                    'style' => 'text-align: right;'
-//                ],
-//                'headerOptions' => [
-//                    'style' => 'width: 50px;'
-//                ],
-//            ],
+            // #
+            [
+                'class' => 'yii\grid\SerialColumn',
+                'headerOptions' => [
+                    'style' => 'width: 40px;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;',
+                ]
+            ],
 
             // Приёмка
             [
@@ -45,9 +43,6 @@ $header = 'Остатки';
                 'value' => 'acceptance.label',
                 'headerOptions' => [
                     'style' => 'width: 280px; text-align: center;'
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: center;'
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',
@@ -92,7 +87,26 @@ $header = 'Остатки';
 
             // Количество
             [
+                'format' => 'html',
                 'attribute' => 'quantity',
+                'value' => function (Remainder $model) {
+                    $qnt = $model->quantity;
+                    if ((int) $qnt) {
+                        $qnt = number_format($qnt, 0, '.', ' ');
+                    } else {
+                        $qnt = '';
+                    }
+                    $free = Remainder::getFreeByAcceptance($model->acceptance_id, 'quantity');
+                    if ((int) $free) {
+                        $free = number_format($free, 0, '.', ' ');
+                    } elseif($qnt === '') {
+                        $free = '';
+                    }
+                    $val = '<span>' . $qnt . '</span><br>'
+                        . '<span style="color: #0046ff">' . $free . '</span>';
+
+                    return $val;
+                },
                 'enableSorting' => false,
                 'headerOptions' => [
                     'style' => 'width: 100px;'
@@ -131,7 +145,16 @@ $header = 'Остатки';
 
             // Количество паллет
             [
+                'format' => 'html',
                 'attribute' => 'quantity_pallet',
+                'value' => function (Remainder $model) {
+                    $qnt = $model->quantity_pallet;
+                    $qnt = $qnt ? $qnt : '';
+                    $free = Remainder::getFreeByAcceptance($model->acceptance_id, 'quantity_pallet');
+                    $free = $qnt ? $free : '';
+
+                    return '<span>' . $qnt . '</span><br>' . '<span style="color: #0046ff">' . $free . '</span>';
+                },
                 'enableSorting' => false,
                 'headerOptions' => [
                     'style' => 'width: 100px;'
@@ -146,7 +169,16 @@ $header = 'Остатки';
 
             // Количество тары
             [
+                'format' => 'html',
                 'attribute' => 'quantity_paks',
+                'value' => function (Remainder $model) {
+                    $qnt = $model->quantity_paks;
+                    $qnt = $qnt ? $qnt : '';
+                    $free = Remainder::getFreeByAcceptance($model->acceptance_id, 'quantity_paks');
+                    $free = $qnt ? $free : '';
+
+                    return '<span>' . $qnt . '</span><br>' . '<span style="color: #0046ff">' . $free . '</span>';
+                },
                 'enableSorting' => false,
                 'headerOptions' => [
                     'style' => 'width: 100px;'

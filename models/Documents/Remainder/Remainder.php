@@ -147,7 +147,7 @@ class Remainder extends Base
         return $this->hasMany(ShipmentAcceptance::class, ['acceptance_id' => 'acceptance_id']);
     }
 
-    // Изменить Приёмку на остатке.
+    // Создать / изменить Приёмку на остатке.
     public static function changeAcceptance(Acceptance $acceptance): bool
     {
         $acceptanceItem = $acceptance->items[0];
@@ -163,14 +163,11 @@ class Remainder extends Base
         }
 
         $remainder->quantity = $acceptanceItem->quantity -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity');
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity', true);
         $remainder->quantity_pallet = $acceptanceItem->quantity_pallet -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_pallet');
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_pallet', true);
         $remainder->quantity_paks = $acceptanceItem->quantity_paks -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_paks');
-        if ($remainder->removeEmptyRow()) {
-            return true;
-        }
+            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_paks', true);
 
         try {
             $remainder->save();
@@ -178,6 +175,7 @@ class Remainder extends Base
             \Yii::$app->session->setFlash('error', 'Приёмку на остатке не удалось изменить.');
             return false;
         }
+        $remainder->removeEmptyRow();
         \Yii::$app->session->setFlash('success', 'Приёмка на остатке изменена.');
 
         return true;
@@ -238,10 +236,35 @@ class Remainder extends Base
         return $list;
     }
 
-    // Проверка на пустую строку. Удаление пустой строки
-    private function removeEmptyRow(): bool
+    /**
+     * Проверка: есть ли в Приёмке свободное кол-во Номенклатуры, Паллетов или Тары
+     *
+     * @param $acceptance_id int Приёмка
+     * @return bool true, если есть свободное кол-во
+     */
+    private static function testForFree(int $acceptance_id): bool
     {
-        if (!$this->quantity && !$this->quantity_pallet && !$this->quantity_paks) {
+        $q = (int)self::getFreeByAcceptance($acceptance_id, 'quantity');
+        $qp = self::getFreeByAcceptance($acceptance_id, 'quantity_pallet');
+        $qpk = self::getFreeByAcceptance($acceptance_id, 'quantity_paks');
+
+        return $q || $qp || $qpk;
+    }
+
+    /**
+     * Проверка на пустые значения Номенклатуры, Паллетов или Тары
+     *
+     * @return bool true, если все пустые
+     */
+    private function testForEmpty(): bool
+    {
+        return !($this->quantity || $this->quantity_pallet || $this->quantity_paks);
+    }
+
+    // Удаление пустой строки
+    public function removeEmptyRow(): bool
+    {
+        if ($this->testForEmpty()) {
             $this->delete();
             return true;
         }
@@ -262,10 +285,8 @@ class Remainder extends Base
         if ($remainder->quantity_paks < 1) {
             $remainder->quantity_paks = null;
         }
-        if ($remainder->removeEmptyRow()) {
-            return true;
-        }
         $remainder->save();
+        $remainder->removeEmptyRow();
 
         return true;
     }
@@ -311,8 +332,16 @@ class Remainder extends Base
             ? number_format($this->quantity, 1, '.', '')
             : number_format($this->quantity, 0, '.', '');
 
+        $free = $this->assortment->unit->is_weight
+            ? number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity'),
+                1, '.', '')
+            : number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity'),
+                0, '.', '');
+
         $assortment = $this->assortment->name
             . ' ' . $quantity
+            . ' (' . $this->assortment->unit->name . ')'
+            . ', свободно ' . $free
             . ' (' . $this->assortment->unit->name . ')';
 
         return '№' . $this->acceptance_id
@@ -331,8 +360,10 @@ class Remainder extends Base
 
         $list = [];
         foreach ($listIds as $id) {
-            $model = self::findOne(['acceptance_id' => $id]);
-            $list[$id] = $model->label;
+            if (self::testForFree($id)) {
+                $model = self::findOne(['acceptance_id' => $id]);
+                $list[$id] = $model->label;
+            }
         }
 
         return $list;

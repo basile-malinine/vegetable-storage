@@ -2,12 +2,16 @@
 
 namespace app\controllers;
 
+use DateTime;
+
+use Yii;
 use yii\web\Response;
 
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Moving\MovingItemSearch;
 use app\models\Documents\Moving\MovingSearch;
+use app\models\Documents\Remainder\Remainder;
 use app\models\Stock\Stock;
 
 class MovingController extends BaseCrudController
@@ -45,13 +49,13 @@ class MovingController extends BaseCrudController
     {
         $model = $this->findModel($id);
         $searchModel = new MovingItemSearch();
-        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
                 $this->redirect(['index']);
             }
         }
+        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         return $this->render('edit', compact('model', 'dataProviderItem'));
     }
@@ -72,5 +76,36 @@ class MovingController extends BaseCrudController
         $stock_recipient_list = Stock::getList();
 
         return compact(['stock_recipient_list']);
+    }
+
+    public function actionApply()
+    {
+        $id = \Yii::$app->request->post('id');
+        $model = $this->findModel($id);
+
+//        $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        if ($this->postRequestAnalysis($model)) {
+            $model->updateShipment();
+            $session = Yii::$app->session;
+            if ($session->has('old_values')) {
+                $session->remove('old_values');
+            }
+        }
+
+        $this->redirect(['moving/edit/' . $model->id]);
+    }
+
+    public function actionAddRemainder()
+    {
+        $id = \Yii::$app->request->post('id');
+        $model = $this->findModel($id);
+        $shipmentAcceptance = $model->shipment->shipmentAcceptances[0];
+
+        if (Remainder::acceptanceFromShipped($shipmentAcceptance)) {
+            $model->date_close = null;
+            $model->save();
+        }
+
+        $this->redirect(['moving/edit/' . $model->id]);
     }
 }

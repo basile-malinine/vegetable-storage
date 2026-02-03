@@ -126,6 +126,10 @@ class AcceptanceController extends BaseCrudController
         $id = \Yii::$app->request->post('id');
         $model = $this->findModel($id);
 
+        if ($model->type_id === Acceptance::TYPE_MOVING) {
+            $model->parentDoc->applay();
+        }
+
         Remainder::changeAcceptance($model);
         $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
         $model->save();
@@ -133,7 +137,6 @@ class AcceptanceController extends BaseCrudController
         if ($session->has('old_values')) {
             $session->remove('old_values');
         }
-
 
         $this->redirect(['acceptance/edit/' . $model->id]);
     }
@@ -146,6 +149,10 @@ class AcceptanceController extends BaseCrudController
         if (Remainder::removeAcceptance($model)) {
             $model->date_close = null;
             $model->save();
+        }
+
+        if ($model->type_id === Acceptance::TYPE_MOVING) {
+            $model->parentDoc->cancel();
         }
 
         $this->redirect(['acceptance/edit/' . $model->id]);

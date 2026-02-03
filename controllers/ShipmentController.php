@@ -42,7 +42,7 @@ class ShipmentController extends BaseCrudController
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', compact(['model']));
+        return $this->render('create', compact('model'));
     }
 
     public function actionEdit($id, $id2 = null)
@@ -57,7 +57,7 @@ class ShipmentController extends BaseCrudController
             }
         }
 
-        return $this->render('edit', compact('model', 'dataProviderAcceptance'));
+        return $this->render('edit', compact(['model', 'dataProviderAcceptance']));
     }
 
     public function actionDelete($id, $id2 = null): Response
@@ -135,22 +135,31 @@ class ShipmentController extends BaseCrudController
             foreach ($model->shipmentAcceptances as $item) {
                 Remainder::shippedFromAcceptance($item);
             }
-            $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+            $now = (new DateTime('now'))->format('Y-m-d H:i');
+            switch ($model->type_id) {
+                case Shipment::TYPE_ORDER:
+                    $item = $model->parentDoc->items[0];
+                    $item->shipped =
+                        array_sum(ArrayHelper::getColumn($model->shipmentAcceptances, 'quantity'));
+                    $item->save();
+                    break;
+            }
+            $model->date_close = $now;
             $model->save();
-            $item = $model->parentDoc->items[0];
-            $item->shipped =
-                array_sum(ArrayHelper::getColumn($model->shipmentAcceptances, 'quantity'));
-            $item->save();
             \Yii::$app->session->setFlash('success', 'По Отгрузке произведено списание.');
         } else {
             foreach ($model->shipmentAcceptances as $item) {
                 Remainder::acceptanceFromShipped($item);
             }
-            $model->date_close = null;
-            $model->save();
-            $item = $model->parentDoc->items[0];
-            $item->shipped = null;
-            $item->save();
+            switch ($model->type_id) {
+                case Shipment::TYPE_ORDER:
+                    $model->date_close = null;
+                    $model->save();
+                    $item = $model->parentDoc->items[0];
+                    $item->shipped = null;
+                    $item->save();
+                    break;
+            }
             \Yii::$app->session->setFlash('success', 'По Отгрузке произведено оприходование.');
         }
 

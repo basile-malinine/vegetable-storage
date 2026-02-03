@@ -1,5 +1,7 @@
 <?php
 
+/** @var Shipment $model */
+
 /** @var ActiveDataProvider $dataProvider Данные */
 
 use yii\data\ActiveDataProvider;
@@ -28,7 +30,8 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
         'dataProvider' => $dataProvider,
 
         'rowOptions' => function (Shipment $model, $key, $index, $grid) {
-            return [
+            // Если Отгрузка по Перемещению, контекстное меню в списке Отгрузок отключено
+            return $model->type_id === Shipment::TYPE_MOVING ? [] : [
                 'class' => 'contextMenuRow',
                 'data-row-id' => $model->id,
             ];
@@ -48,9 +51,32 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
+            // Дата отгрузки
+            [
+                'attribute' => 'shipment_date',
+                'label' => 'Дата',
+                'enableSorting' => false,
+                'value' => function ($model) {
+                    if ($model->shipment_date == null) {
+                        return '';
+                    }
+                    return date("d.m.Y", strtotime($model->shipment_date));
+                },
+                'headerOptions' => [
+                    'style' => 'width: 100px;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: center;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
             // Тип отгрузки
             [
                 'attribute' => 'type_id',
+                'label' => 'Тип',
                 'enableSorting' => false,
                 'value' => function (Shipment $model) {
                     return Shipment::TYPE_LIST[$model->type_id];
@@ -70,34 +96,13 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             [
                 'format' => 'raw',
                 'attribute' => 'parent_doc_id',
-                'label' => 'По документу',
+                'label' => 'Документ',
                 'enableSorting' => false,
                 'value' => function (Shipment $model) {
                     return $model->parentDoc->label;
                 },
                 'headerOptions' => [
                     'style' => 'width: 400px;'
-                ],
-            ],
-
-            // Дата отгрузки
-            [
-                'attribute' => 'shipment_date',
-                'enableSorting' => false,
-                'value' => function ($model) {
-                    if ($model->shipment_date == null) {
-                        return '';
-                    }
-                    return date("d.m.Y", strtotime($model->shipment_date));
-                },
-                'headerOptions' => [
-                    'style' => 'width: 100px;'
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: center;'
-                ],
-                'filterInputOptions' => [
-                    'class' => 'form-control form-control-sm',
                 ],
             ],
 

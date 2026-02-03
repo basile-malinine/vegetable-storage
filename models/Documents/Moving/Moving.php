@@ -32,7 +32,8 @@ use yii\db\IntegrityException;
  * @property string|null $updated_at Дата обновления
  *
  * @property Acceptance $sourceAcceptance Исходная Приёмка (по которой делаем Перемещение)
- * @property Acceptance $acceptance Ссылка на Приёмку
+ * @property Acceptance $acceptance Ссылка на Приёмку Перемещения
+ * @property Shipment $shipment Ссылка на Приёмку Перемещения
  * @property Assortment[] $assortments
  * @property LegalSubject $companyRecipient
  * @property LegalSubject $companySender
@@ -133,6 +134,15 @@ class Moving extends Base
 //        $this->created_at = $this->created_at ? date('d.m.Y', strtotime($this->created_at)) : null;
     }
 
+    public function beforeValidate()
+    {
+        if (isset($this->oldAttributes['acceptance_id'])) {
+            $this->acceptance_id = $this->oldAttributes['acceptance_id'];
+        }
+
+        return parent::beforeValidate();
+    }
+
     public function beforeSave($insert)
     {
         $this->moving_date = $this->moving_date ? date('Y-m-d H:i', strtotime($this->moving_date)) : null;
@@ -153,25 +163,32 @@ class Moving extends Base
         if ($insert) {
             // Отыскиваем Приёмку на остатке
             $remainder = Remainder::findOne(['acceptance_id' => $this->acceptance_id]);
-
             // В Перемещении создаём позицию
             $movingItem = new MovingItem();
             $movingItem->moving_id = $this->id;
             $movingItem->assortment_id = $remainder->assortment_id;
-            $movingItem->quantity = $remainder->quantity;
             $movingItem->pallet_type_id = $remainder->pallet_type_id;
-            $movingItem->quantity_pallet = $remainder->quantity_pallet;
-            $movingItem->quantity_paks = $remainder->quantity_paks;
-            $movingItem->save();
+            $movingItem->quantity = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity');
+            $movingItem->quantity_pallet = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity_pallet');
+            $movingItem->quantity_paks = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity_paks');
+        } else {
+            $movingItem = $this->items[0];
+        }
+        $movingItem->save();
 
-            // Создаём Отгрузку с типом "По перемещению"
+        // Отыскиваем Отгрузку по Перемещению
+        $shipment = $this->shipment;
+        // Если ещё не создана
+        if (!$shipment) {
+            // Создаём Отгрузку с типом Перемещение
             $shipment = new Shipment();
             $shipment->type_id = Shipment::TYPE_MOVING;
             $shipment->parent_doc_id = $this->id;
             $shipment->company_own_id = $this->company_sender_id;
             $shipment->stock_id = $this->stock_sender_id;
             $shipment->shipment_date = $this->moving_date;
-            $shipment->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+//            $shipment->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+            $shipment->date_close = null;
             $shipment->comment = 'Created automatically';
             $shipment->save();
 
@@ -179,42 +196,60 @@ class Moving extends Base
             $shipmentAcceptance = new ShipmentAcceptance();
             $shipmentAcceptance->shipment_id = $shipment->id;
             $shipmentAcceptance->acceptance_id = $this->acceptance_id;
-            $shipmentAcceptance->pallet_type_id = $remainder->pallet_type_id;
-            $shipmentAcceptance->quantity = $remainder->quantity;
-            $shipmentAcceptance->quantity_pallet = $remainder->quantity_pallet;
-            $shipmentAcceptance->quantity_paks = $remainder->quantity_paks;
-            $shipmentAcceptance->save();
-
-            // Списываем Приёмку с остатка
-            $remainder->delete();
+            $shipmentAcceptance->pallet_type_id = $movingItem->pallet_type_id;
+        } else {
+            $shipmentAcceptance = $shipment->shipmentAcceptances[0];
         }
+        $shipmentAcceptance->quantity = $movingItem->quantity;
+        $shipmentAcceptance->quantity_pallet = $movingItem->quantity_pallet;
+        $shipmentAcceptance->quantity_paks = $movingItem->quantity_paks;
+        $shipmentAcceptance->save();
+    }
+
+    // Закрытие Отгрузки по Перемещению
+    public function applay()
+    {
+        $shipment = $this->shipment;
+        if (!$shipment) {
+            return false;
+        }
+
+        if ($shipment->applay()) {
+            $this->date_close = $shipment->date_close;
+            $this->save();
+            return true;
+        }
+
+        return false;
+    }
+
+    // Отмена Перемещения
+    public function cancel()
+    {
+        $shipment = $this->shipment;
+        if (!$shipment) {
+            return false;
+        }
+
+        if ($shipment->cancel()) {
+            $this->date_close = null;
+            $this->save();
+            return true;
+        }
+
+        return false;
     }
 
     public function beforeDelete()
     {
         // Если есть Приёмка по Перемещению, удаление не возможно
-        $movingAcceptance = Acceptance::findOne([
-            'type_id' => Acceptance::TYPE_MOVING,
-            'parent_doc_id' => $this->id,
-        ]);
-        if ($movingAcceptance) {
+        if ($this->acceptance) {
             throw new IntegrityException('');
         }
-
         // Отыскиваем Отгрузку по Перемещению
-        $shipment = Shipment::findOne([
-            'type_id' => Shipment::TYPE_MOVING,
-            'parent_doc_id' => $this->id,
-        ]);
-
-        // Получаем позицию по Отгрузке
-        $shipmentAcceptance = $shipment->shipmentAcceptances[0];
-
-        // Восстанавливаем Приёмку на остатке
-        Remainder::acceptanceFromShipped($shipmentAcceptance);
-
-        // Удаляем Отгрузку
-        $shipment->delete();
+        $shipment = $this->shipment;
+        // Удаляем, если есть
+        $shipment?->delete();
 
         return true;
     }
@@ -228,17 +263,27 @@ class Moving extends Base
     public
     function getSourceAcceptance()
     {
-        return $this->hasOne(Acceptance::class, ['id' => 'acceptance_id']);
+        return $this->hasOne(Remainder::class, ['acceptance_id' => 'acceptance_id']);
     }
 
     /**
-     * ------------------------------------------- Ссылка на Приёмку
+     * ------------------------------------------- Ссылка на Приёмку Перемещения
      * @return \yii\db\ActiveQuery
      */
     public function getAcceptance()
     {
         return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
             ->where(['type_id' => Acceptance::TYPE_MOVING]);
+    }
+
+    /**
+     * ------------------------------------------- Ссылка на Отгрузку Перемещения
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShipment()
+    {
+        return $this->hasOne(Shipment::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Shipment::TYPE_MOVING]);
     }
 
     /**
@@ -312,15 +357,9 @@ class Moving extends Base
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getStockSender()
+    public function getStockSender()
     {
         return $this->hasOne(Stock::class, ['id' => 'stock_sender_id']);
-    }
-
-    public static function getList($condition = null): array
-    {
-        return [];
     }
 
     // ------------------------------------------- Label

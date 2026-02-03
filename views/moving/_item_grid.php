@@ -1,13 +1,14 @@
 <?php
 
 /** @var yii\data\ActiveDataProvider $dataProviderItem */
+/** @var Moving $model */
+/** @var bool $allowBtnSave Доступность кнопки Сохранить на форме */
 
-/** @var Acceptance $model */
-
+use app\models\Documents\Moving\MovingItem;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
-use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Moving\Moving;
 use app\models\PalletType\PalletType;
 
 ?>
@@ -16,13 +17,12 @@ use app\models\PalletType\PalletType;
 <?= GridView::widget([
     'layout' => "{items}\n{pager}",
     'dataProvider' => $dataProviderItem,
-
-//    'rowOptions' => $model->date_close ? [] : function ($model, $key, $index, $grid) {
-//        return [
-//            'class' => 'contextMenuRow',
-//            'data-row-id' => $model->moving_id . '/' . $model->assortment_id,
-//        ];
-//    },
+    'rowOptions' => !$allowBtnSave ? [] : function (MovingItem $model, $key, $index, $grid) {
+        return [
+            'class' => 'contextMenuRow',
+            'data-row-id' => $model->moving_id . '/' . $model->assortment_id,
+        ];
+    },
 
     'columns' => [
         // #

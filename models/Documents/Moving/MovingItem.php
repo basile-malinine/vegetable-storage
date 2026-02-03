@@ -4,6 +4,8 @@ namespace app\models\Documents\Moving;
 
 use app\models\Assortment\Assortment;
 use app\models\Base;
+use app\models\Documents\Remainder\Remainder;
+use Yii;
 
 /**
  * This is the model class for table "moving_item".
@@ -61,7 +63,35 @@ class MovingItem extends Base
 
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
             [['moving_id'], 'exist', 'skipOnError' => true, 'targetClass' => Moving::class, 'targetAttribute' => ['moving_id' => 'id']],
+
+            [[
+                'quantity',
+                'quantity_pallet',
+                'quantity_paks'], 'testQuantity', 'skipOnEmpty' => true],
         ];
+    }
+
+    public function testQuantity($attribute, $params)
+    {
+        $qntFree = Remainder::getFreeByAcceptance($this->moving->acceptance_id, $attribute);
+        if ($this->moving->shipment) {
+            $qntFree += $this->oldAttributes[$attribute];
+        }
+        $qnt = 0;
+        switch ($attribute) {
+            case 'quantity':
+                $qnt = $this->quantity;
+                break;
+            case 'quantity_pallet':
+                $qnt = $this->quantity_pallet;
+                break;
+            case 'quantity_paks':
+                $qnt = $this->quantity_paks;
+                break;
+        }
+        if ($qnt > $qntFree) {
+            $this->addError($attribute, 'Максимум ' . $qntFree);
+        }
     }
 
     /**
@@ -78,6 +108,28 @@ class MovingItem extends Base
             'quantity_paks' => 'Кол-во тары',
             'comment' => 'Комментарий',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        $session = Yii::$app->session;
+        if ($session->has('old_values')) {
+            $session->remove('old_values');
+        }
+        if (!$insert) {
+            // Если есть изменения, пишем в сессию старые значения.
+            if ($this->oldAttributes['quantity'] != $this->quantity
+                || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
+                || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
+                $session->set('old_values', [
+                    'quantity' => $this->oldAttributes['quantity'],
+                    'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
+                    'quantity_paks' => $this->oldAttributes['quantity_paks'],
+                ]);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -104,12 +156,23 @@ class MovingItem extends Base
     {
         $quantity = $this->quantity ? $this->quantity : .0;
         if (!$this->assortment->unit->is_weight) {
-            $shipped = number_format($quantity, 0, '.', '');
+            $quantity = number_format($quantity, 0, '.', '');
+        }
+        $shipped = .0;
+        $shipment = $this->moving->shipment ?? null;
+        if ($shipment && $shipment->date_close) {
+                $shipped = $shipment->shipmentAcceptances[0]->quantity;
         }
 
         return $this->assortment->name
-            . ' ' . $this->quantity
+            . ' ' . $quantity
             . ' (' . $this->assortment->unit->name . ')'
-            . ', Отгружено: ' . $quantity;
+            . ', Отгружено: ' . $shipped;
+    }
+
+    // Возвращает true, если есть изменения.
+    public function isChanges(): bool
+    {
+        return Yii::$app->session->has('old_values');
     }
 }

@@ -8,6 +8,7 @@ use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Order\Order;
+use app\models\Documents\Remainder\Remainder;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use DateTime;
@@ -222,5 +223,27 @@ class Shipment extends Base
     public function getStock()
     {
         return $this->hasOne(Stock::class, ['id' => 'stock_id']);
+    }
+
+    // Закрытие Отгрузки
+    public function applay()
+    {
+        // Списание Отгрузки с остатка
+        Remainder::shippedFromAcceptance($this->shipmentAcceptances[0]);
+        $this->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        $this->save();
+
+        return true;
+    }
+
+    // Отмена Отгрузки
+    public function cancel()
+    {
+        // Возврат Отгрузки на остаток
+        Remainder::acceptanceFromShipped($this->shipmentAcceptances[0]);
+        $this->date_close = null;
+        $this->save();
+
+        return true;
     }
 }

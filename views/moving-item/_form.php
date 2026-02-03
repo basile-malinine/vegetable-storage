@@ -5,6 +5,7 @@
 /** @var MovingItem $model */
 
 /** @var string $header */
+/** @var string $docLabel */
 
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
@@ -18,6 +19,7 @@ use app\models\PalletType\PalletType;
 <div class="page-top-panel">
     <div class="page-top-panel-header d-inline">
         <?= $header ?>
+        <div class="fs-6"<?= !$docLabel ? 'hidden' : '' ?>><?= ' ' . $docLabel ?></div>
     </div>
 </div>
 
@@ -49,9 +51,9 @@ use app\models\PalletType\PalletType;
                     'data' => PalletType::getList(),
                     'options' => [
                         'placeholder' => 'Не назначен',
+                        'disabled' => true,
                     ],
                     'pluginOptions' => [
-                        'allowClear' => true,
                     ],
                 ]) ?>
             </div>

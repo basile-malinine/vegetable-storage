@@ -42,5 +42,30 @@ $(() => {
         );
     }
 
+
+    // Обработка двойного клика на запись в таблице состава Доставки
+    $('.contextMenuRow').on('dblclick', function () {
+        let rowId = $(this).attr('data-row-id');
+        $('#modal').modal('show').find('#modalContent')
+            .load(`/moving-item/edit/` + rowId);
+    });
+
+    // инициализация контекстного меню для таблицы с данными
+    let menu = new BootstrapMenu('.contextMenuRow', {
+        fetchElementData: function ($rowElem) {
+            return $rowElem.data('rowId');
+        },
+        actions: [
+            {
+                name: 'Редактировать',
+                iconClass: 'fa-pen',
+                onClick: (id) => {
+                    $('#modal').modal('show').find('#modalContent')
+                        .load(`/moving-item/edit/` + id);
+                }
+            },
+        ]
+    });
+
     changeAcceptance();
 });

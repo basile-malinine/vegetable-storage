@@ -10,4 +10,6 @@ $header = $model->assortment->name
     . ', изм: ' . $model->assortment->unit->name
     . ', вес: ' . $model->assortment->weight . ' (кг)';
 
-echo $this->render('_form', compact('model', 'header'));
+$docLabel = 'Приёмка ' . $model->moving->sourceAcceptance->label;
+
+echo $this->render('_form', compact('model', 'header', 'docLabel'));

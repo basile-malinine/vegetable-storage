@@ -138,12 +138,21 @@ class ShipmentAcceptance extends Base
      * ------------------------------------------------------------------------- Всего выписано по Приёмке
      * @param $acceptance_id int Id Приёмки
      * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     * @param $isClosed bool Только закрытые Отгрузки
      */
-    public static function getQuantityByAcceptance(int $acceptance_id, string $attr)
+    public static function getQuantityByAcceptance(int $acceptance_id, string $attr, bool $isClosed = false)
     {
-        $qnt = self::find()
-            ->where(['acceptance_id' => $acceptance_id])
-            ->sum($attr);
+        if ($isClosed) {
+            $qnt = self::find()
+                ->joinWith('acceptance')
+                ->where(['acceptance_id' => $acceptance_id])
+                ->andWhere('acceptance.date_close')
+                ->sum($attr);
+        } else {
+            $qnt = self::find()
+                ->where(['acceptance_id' => $acceptance_id])
+                ->sum($attr);
+        }
 
         return $qnt ?? 0;
     }
