@@ -233,6 +233,11 @@ echo Nav::widget([
                     'url' => ['/decrease'],
                 ],
 
+                [
+                    'label' => 'Оприходование',
+                    'url' => ['/increase'],
+                ],
+
                 '<hr class="dropdown-divider">',
 
                 [

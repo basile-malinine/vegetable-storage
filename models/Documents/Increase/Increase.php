@@ -1,7 +1,8 @@
 <?php
 
-namespace app\models\Documents\Decrease;
+namespace app\models\Documents\Increase;
 
+use app\models\Documents\Acceptance\AcceptanceItem;
 use DateTime;
 
 use Yii;
@@ -10,45 +11,39 @@ use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Remainder\Remainder;
-use app\models\Documents\Shipment\Shipment;
-use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use app\models\User\User;
 
 /**
- * This is the model class for table "decrease".
+ * This is the model class for table "increase".
  *
  * @property int $id
- * @property int $type_id Тип списания
+ * @property int $type_id Тип оприходования
  * @property int $acceptance_id Приёмка
  * @property int $company_own_id Предприятие
  * @property int $stock_id Склад
- * @property string|null $date Дата списания
+ * @property string|null $date Дата оприходования
  * @property string|null $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
- * @property Acceptance $sourceAcceptance Исходная Приёмка (по которой делаем Перемещение)
- * @property Acceptance $acceptance Ссылка на Приёмку Перемещения
- * @property Shipment $shipment Ссылка на Отгрузку Перемещения
+ * @property Remainder $sourceAcceptance Исходная Приёмка на остатке (по которой делаем Оприходование)
+ * @property Acceptance $acceptance Изначальная Приёмка на приходе
+ * @property Acceptance $newAcceptance Ссылка на новую Приёмку Оприходования
  * @property Assortment[] $assortments
  * @property LegalSubject $companyOwn
  * @property User $createdBy
- * @property DecreaseItem[] $items
+ * @property IncreaseItem[] $items
  * @property Stock $stock
- * @property string $label
- * @property string $shortLabel
  */
-class Decrease extends Base
+class Increase extends Base
 {
     const TYPE_INVENTORY = 1;
-    const TYPE_REJECT = 2;
     const TYPE_LIST = [
         self::TYPE_INVENTORY => 'Инвентарка',
-        self::TYPE_REJECT => 'Отход',
     ];
 
     /**
@@ -56,7 +51,7 @@ class Decrease extends Base
      */
     public static function tableName()
     {
-        return 'decrease';
+        return 'increase';
     }
 
     /**
@@ -70,6 +65,7 @@ class Decrease extends Base
             [['type_id', 'acceptance_id', 'company_own_id', 'stock_id', 'created_by'], 'integer'],
             [['date', 'date_close', 'created_at', 'updated_at'], 'safe'],
             [['comment'], 'string'],
+            [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['company_own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['company_own_id' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['created_by' => 'id']],
             [['stock_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stock::class, 'targetAttribute' => ['stock_id' => 'id']],
@@ -83,11 +79,11 @@ class Decrease extends Base
     {
         return [
             'id' => 'ID',
-            'type_id' => 'Тип списания',
+            'type_id' => 'Тип оприходования',
             'acceptance_id' => 'Приёмка',
             'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'date' => 'Дата списания',
+            'date' => 'Дата оприходования',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -133,46 +129,46 @@ class Decrease extends Base
         if ($insert) {
             // Отыскиваем Приёмку на остатке
             $remainder = Remainder::findOne(['acceptance_id' => $this->acceptance_id]);
-            // В Перемещении создаём позицию
-            $decreaseItem = new DecreaseItem();
-            $decreaseItem->decrease_id = $this->id;
-            $decreaseItem->assortment_id = $remainder->assortment_id;
-            $decreaseItem->pallet_type_id = $remainder->pallet_type_id;
-            $decreaseItem->quantity = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity');
-            $decreaseItem->quantity_pallet = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity_pallet');
-            $decreaseItem->quantity_paks = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity_paks');
+            // В Оприходовании создаём позицию
+            $increaseItem = new IncreaseItem();
+            $increaseItem->increase_id = $this->id;
+            $increaseItem->assortment_id = $remainder->assortment_id;
+            $increaseItem->pallet_type_id = $remainder->pallet_type_id;
+            $increaseItem->quantity = .0;
+            $increaseItem->quantity_pallet = 0;
+            $increaseItem->quantity_paks = 0;
         } else {
-            $decreaseItem = $this->items[0];
+            $increaseItem = $this->items[0];
         }
-        $decreaseItem->save();
+        $increaseItem->save();
 
-        // Отыскиваем Отгрузку по Списанию
-        $shipment = $this->shipment;
+        // Отыскиваем Приёмку по Оприходованию
+        $newAcceptance = $this->newAcceptance;
         // Если ещё не создана
-        if (!$shipment) {
-            // Создаём Отгрузку с типом Перемещение
-            $shipment = new Shipment();
-            $shipment->type_id = Shipment::TYPE_DECREASE;
-            $shipment->parent_doc_id = $this->id;
-            $shipment->company_own_id = $this->company_own_id;
-            $shipment->stock_id = $this->stock_id;
-            $shipment->shipment_date = $this->date;
-            $shipment->date_close = null;
-            $shipment->comment = 'Created automatically';
-            $shipment->save();
+        if (!$newAcceptance) {
+            // Создаём Приёмку с типом Оприходование
+            $newAcceptance = new Acceptance();
+            $newAcceptance->type_id = Acceptance::TYPE_INCREASE;
+            $newAcceptance->parent_doc_id = $this->id;
+            $newAcceptance->company_own_id = $this->company_own_id;
+            $newAcceptance->stock_id = $this->stock_id;
+            $newAcceptance->acceptance_date = $this->date;
+            $newAcceptance->date_close = null;
+            $newAcceptance->comment = 'Created automatically';
+            $newAcceptance->save();
 
-            // В отгрузке создаём позицию
-            $shipmentAcceptance = new ShipmentAcceptance();
-            $shipmentAcceptance->shipment_id = $shipment->id;
-            $shipmentAcceptance->acceptance_id = $this->acceptance_id;
-            $shipmentAcceptance->pallet_type_id = $decreaseItem->pallet_type_id;
+            // В Приёмке создаём позицию
+            $newAcceptanceItem = new AcceptanceItem();
+            $newAcceptanceItem->acceptance_id = $newAcceptance->id;
+            $newAcceptanceItem->assortment_id = $increaseItem->assortment_id;
+            $newAcceptanceItem->pallet_type_id = $increaseItem->pallet_type_id;
         } else {
-            $shipmentAcceptance = $shipment->shipmentAcceptances[0];
+            $newAcceptanceItem = $newAcceptance->items[0];
         }
-        $shipmentAcceptance->quantity = $decreaseItem->quantity;
-        $shipmentAcceptance->quantity_pallet = $decreaseItem->quantity_pallet;
-        $shipmentAcceptance->quantity_paks = $decreaseItem->quantity_paks;
-        $shipmentAcceptance->save();
+        $newAcceptanceItem->quantity = $increaseItem->quantity;
+        $newAcceptanceItem->quantity_pallet = $increaseItem->quantity_pallet;
+        $newAcceptanceItem->quantity_paks = $increaseItem->quantity_paks;
+        $newAcceptanceItem->save();
     }
 
     public function beforeDelete()
@@ -180,22 +176,21 @@ class Decrease extends Base
         if ($this->date_close) {
             return false;
         }
-        $shipment = $this->shipment;
-        $shipment->delete();
+        $this->newAcceptance->delete();
 
         return true;
     }
 
-    // Закрытие Отгрузки по Списанию
+    // Закрытие Приёмки по Оприходованию (Провести)
     public function apply()
     {
-        $shipment = $this->shipment;
-        if (!$shipment) {
+        $newAcceptance = $this->newAcceptance;
+        if (!$newAcceptance) {
             return false;
         }
 
-        if ($shipment->applay()) {
-            $this->date_close = $shipment->date_close;
+        if ($newAcceptance->applayIncrease()) {
+            $this->date_close = $newAcceptance->date_close;
             $this->save();
             return true;
         }
@@ -203,21 +198,23 @@ class Decrease extends Base
         return false;
     }
 
-    public function revertRemainder()
+    // Снять с остатка
+    public function cancel()
     {
-        $shipment = $this->shipment;
-        $shipmentAcceptance = $shipment->shipmentAcceptances[0];
-
-        if (Remainder::acceptanceFromShipped($shipmentAcceptance)) {
-            $shipment->date_close = null;
-            $shipment->save();
-            $this->date_close = null;
-            $this->save();
+        $newAcceptance = $this->newAcceptance;
+        if (!$newAcceptance) {
+            return false;
         }
+
+        $newAcceptance->cancelIncrease();
+        $this->date_close = null;
+        $this->save();
+
+        return true;
     }
 
     /**
-     * ------------------------------------------- Исходная Приёмка на остатке (по которой делаем Списание)
+     * ------------------------------------------- Исходная Приёмка на остатке (по которой делаем Оприходование)
      * Gets query for [[Acceptance]].
      *
      * @return \yii\db\ActiveQuery
@@ -229,13 +226,24 @@ class Decrease extends Base
     }
 
     /**
-     * ------------------------------------------- Ссылка на Отгрузку Списания
+     * ------------------------------------------- Изначальная Приёмка на приходе
+     * Gets query for [[Acceptance]].
+     *
      * @return \yii\db\ActiveQuery
      */
-    public function getShipment()
+    public function getAcceptance()
     {
-        return $this->hasOne(Shipment::class, ['parent_doc_id' => 'id'])
-            ->where(['type_id' => Shipment::TYPE_DECREASE]);
+        return $this->hasOne(Acceptance::class, ['id' => 'acceptance_id']);
+    }
+
+    /**
+     * ------------------------------------------- Ссылка на новую Приёмку Оприходования
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewAcceptance()
+    {
+        return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Acceptance::TYPE_INCREASE]);
     }
 
     /**
@@ -243,10 +251,9 @@ class Decrease extends Base
      *
      * @return \yii\db\ActiveQuery
      */
-    public
-    function getAssortments()
+    public function getAssortments()
     {
-        return $this->hasMany(Assortment::class, ['id' => 'assortment_id'])->viaTable('decrease_item', ['decrease_id' => 'id']);
+        return $this->hasMany(Assortment::class, ['id' => 'assortment_id'])->viaTable('increase_item', ['increase_id' => 'id']);
     }
 
     /**
@@ -270,13 +277,13 @@ class Decrease extends Base
     }
 
     /**
-     * Gets query for [[DecreaseItems]].
+     * Gets query for [[IncreaseItems]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getItems()
     {
-        return $this->hasMany(DecreaseItem::class, ['decrease_id' => 'id']);
+        return $this->hasMany(IncreaseItem::class, ['increase_id' => 'id']);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace app\models\Documents\Acceptance;
 
 use app\models\Base;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Increase\Increase;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Refund\Refund;
 use app\models\Documents\Remainder\Remainder;
@@ -44,10 +45,12 @@ class Acceptance extends Base
     const TYPE_DELIVERY = 1;
     const TYPE_REFUND = 2;
     const TYPE_MOVING = 3;
+    const TYPE_INCREASE = 4;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'Поставка',
         self::TYPE_REFUND => 'Возврат',
         self::TYPE_MOVING => 'Перемещение',
+        self::TYPE_INCREASE => 'Оприходование',
     ];
 
     /**
@@ -167,13 +170,18 @@ class Acceptance extends Base
                     $moving = Moving::findOne($this->parent_doc_id);
                     $docItems = $moving->items;
                     break;
+                // По оприходованию
+                case self::TYPE_INCREASE:
+                    $increase = Increase::findOne($this->parent_doc_id);
+                    $docItems = $increase->items;
+                    break;
             }
             foreach ($docItems as $item) {
                 $acceptanceItem = new AcceptanceItem();
                 $acceptanceItem->acceptance_id = $this->id;
                 $acceptanceItem->quantity = .0;
                 $acceptanceItem->assortment_id = $item->assortment_id;
-                if ($this->type_id == self::TYPE_MOVING) {
+                if ($this->type_id == self::TYPE_MOVING || $this->type_id == self::TYPE_INCREASE) {
                     $acceptanceItem->quantity = $item->quantity;
                     $acceptanceItem->pallet_type_id = $item->pallet_type_id;
                     $acceptanceItem->quantity_pallet = $item->quantity_pallet;
@@ -212,6 +220,9 @@ class Acceptance extends Base
                 break;
             case self::TYPE_MOVING:
                 return $this->hasOne(Moving::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_INCREASE:
+                return $this->hasOne(Increase::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;
@@ -276,19 +287,37 @@ class Acceptance extends Base
             . ', ' . $assortment;
     }
 
-//    public static function getListForMoving(): array
-//    {
-//        $listIds = self::find()
-//            ->select(['id'])
-//            ->indexBy('id')
-//            ->column();
-//
-//        $list = [];
-//        foreach ($listIds as $id) {
-//            $model = self::findOne($id);
-//            $list[$id] = $model->label;
-//        }
-//
-//        return $list;
-//    }
+    // Закрытие Оприходования
+    public function applayIncrease()
+    {
+        // Отыскиваем исходную Приёмку на остатке
+        $parentDoc = $this->parentDoc;
+        $remainder = $parentDoc->sourceAcceptance;
+
+        // Проводим Оприходование
+        $remainder->applayIncrease($this->items[0]);
+
+        // Закрываем Оприходование
+        $this->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        $this->save();
+
+        return true;
+    }
+
+    // Отмена Оприходования
+    public function cancelIncrease()
+    {
+        // Отыскиваем исходную Приёмку на остатке
+        $parentDoc = $this->parentDoc;
+        $remainder = Remainder::findOne(['acceptance_id' => $parentDoc->sourceAcceptance->acceptance_id]);
+
+        // Отменяем Оприходование
+        $remainder->cancelIncrease($this->items[0]);
+
+        // Открываем Оприходование
+        $this->date_close = null;
+        $this->save();
+
+        return true;
+    }
 }

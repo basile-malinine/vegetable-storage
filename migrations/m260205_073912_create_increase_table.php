@@ -3,32 +3,46 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%decrease}}`.
+ * Handles the creation of table `{{%increase}}`.
  */
-class m260201_005115_create_decrease_table extends Migration
+class m260205_073912_create_increase_table extends Migration
 {
+    /**
+     * {@inheritdoc}
+     */
     public function safeUp()
     {
-        $this->createTable('{{%decrease}}', [
+        $this->createTable('{{%increase}}', [
             'id' => $this->primaryKey(),
-            'type_id' => $this->integer()->notNull()->comment('Тип списания'),
+            'type_id' => $this->integer()->notNull()->comment('Тип оприходования'),
             'acceptance_id' => $this->integer()->notNull()->comment('Приёмка'),
             'company_own_id' => $this->integer()->notNull()->comment('Предприятие'),
             'stock_id' => $this->integer()->notNull()->comment('Склад'),
-            'date' => $this->timestamp()->null()->comment('Дата списания'),
+            'date' => $this->timestamp()->null()->comment('Дата оприходования'),
             'date_close' => $this->timestamp()->null()->comment('Дата закрытия'),
             'comment' => $this->text()->null()->comment('Комментарий'),
             'created_by' => $this->integer()->comment('Создатель'),
             'created_at' => $this->timestamp()->comment('Дата создания'),
             'updated_at' => $this->timestamp()->comment('Дата обновления'),
         ]);
-        $this->addCommentOnTable('decrease', 'Списание');
+        $this->addCommentOnTable('increase', 'Оприходование');
+
+        // ----------------------------------------------------------- Приёмка
+        $this->createIndex('idx-increase-acceptance_id', 'increase', 'acceptance_id');
+        $this->addForeignKey(
+            'fk-increase-acceptance_id',
+            'increase',
+            'acceptance_id',
+            'acceptance',
+            'id',
+            'NO ACTION'
+        );
 
         // ----------------------------------------------------------- Предприятие
-        $this->createIndex('idx-decrease-company_own_id', '{{%decrease}}', 'company_own_id');
+        $this->createIndex('idx-increase-company_own_id', '{{%increase}}', 'company_own_id');
         $this->addForeignKey(
-            'fk-decrease-company_own_id',
-            '{{%decrease}}',
+            'fk-increase-company_own_id',
+            '{{%increase}}',
             'company_own_id',
             '{{%legal_subject}}',
             'id',
@@ -36,10 +50,10 @@ class m260201_005115_create_decrease_table extends Migration
         );
 
         // ----------------------------------------------------------- Склад
-        $this->createIndex('idx-decrease-stock_id', '{{%decrease}}', 'stock_id');
+        $this->createIndex('idx-increase-stock_id', '{{%increase}}', 'stock_id');
         $this->addForeignKey(
-            'fk-decrease-stock_id',
-            '{{%decrease}}',
+            'fk-increase-stock_id',
+            '{{%increase}}',
             'stock_id',
             '{{%stock}}',
             'id',
@@ -47,10 +61,10 @@ class m260201_005115_create_decrease_table extends Migration
         );
 
         // ----------------------------------------------------------- Создатель
-        $this->createIndex('idx-decrease-created_by', '{{%decrease}}', 'created_by');
+        $this->createIndex('idx-increase-created_by', '{{%increase}}', 'created_by');
         $this->addForeignKey(
-            'fk-decrease-created_by',
-            '{{%decrease}}',
+            'fk-increase-created_by',
+            '{{%increase}}',
             'created_by',
             '{{%user}}',
             'id',
@@ -58,8 +72,11 @@ class m260201_005115_create_decrease_table extends Migration
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function safeDown()
     {
-        $this->dropTable('{{%decrease}}');
+        $this->dropTable('{{%increase}}');
     }
 }

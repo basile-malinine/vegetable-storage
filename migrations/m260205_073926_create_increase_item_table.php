@@ -3,43 +3,43 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%decrease_item}}`.
+ * Handles the creation of table `{{%increase_item}}`.
  */
-class m260204_194354_create_decrease_item_table extends Migration
+class m260205_073926_create_increase_item_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%decrease_item}}', [
-            'decrease_id' => $this->integer()->notNull()->comment('Списание'),
+        $this->createTable('{{%increase_item}}', [
+            'increase_id' => $this->integer()->notNull()->comment('Оприходование'),
             'assortment_id' => $this->integer()->notNull()->comment('Номенклатура'),
             'pallet_type_id' => $this->integer()->null()->comment('Тип паллета'),
             'quantity' => $this->decimal(8, 1)->notNull()->comment('Количество'),
             'quantity_pallet' => $this->integer()->null()->comment('Количество паллет'),
             'quantity_paks' => $this->integer()->null()->comment('Количество тары'),
             'comment' => $this->text()->null()->comment('Комментарий'),
-            'PRIMARY KEY(decrease_id, assortment_id)',
+            'PRIMARY KEY(increase_id, assortment_id)',
         ]);
-        $this->addCommentOnTable('decrease_item', 'Позиции в Списании');
+        $this->addCommentOnTable('increase_item', 'Позиции в Оприходовании');
 
-        // Списание ------------------------------------------------------------
-        $this->createIndex('idx-decrease_item-decrease_id', '{{%decrease_item}}', 'decrease_id');
+        // Оприходование -------------------------------------------------------
+        $this->createIndex('idx-increase_item-increase_id', '{{%increase_item}}', 'increase_id');
         $this->addForeignKey(
-            'fk-decrease_item-decrease_id',
-            '{{%decrease_item}}',
-            'decrease_id',
-            '{{%decrease}}',
+            'fk-increase_item-increase_id',
+            '{{%increase_item}}',
+            'increase_id',
+            '{{%increase}}',
             'id',
             'CASCADE'
         );
 
         // Номенклатура --------------------------------------------------------
-        $this->createIndex('idx-decrease_item-assortment_id', '{{%decrease_item}}', 'assortment_id');
+        $this->createIndex('idx-increase_item-assortment_id', '{{%increase_item}}', 'assortment_id');
         $this->addForeignKey(
-            'fk-decrease_item-assortment_id',
-            '{{%decrease_item}}',
+            'fk-increase_item-assortment_id',
+            '{{%increase_item}}',
             'assortment_id',
             '{{%assortment}}',
             'id',
@@ -52,6 +52,6 @@ class m260204_194354_create_decrease_item_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%decrease_item}}');
+        $this->dropTable('{{%increase_item}}');
     }
 }

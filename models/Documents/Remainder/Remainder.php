@@ -5,6 +5,7 @@ namespace app\models\Documents\Remainder;
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Acceptance\AcceptanceItem;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\PalletType\PalletType;
@@ -325,6 +326,24 @@ class Remainder extends Base
         $remainder->save();
 
         return true;
+    }
+
+    // Оприходование
+    public function applayIncrease(AcceptanceItem $item)
+    {
+        $this->quantity += $item->quantity;
+        $this->quantity_pallet += $item->quantity_pallet;
+        $this->quantity_paks += $item->quantity_paks;
+        $this->save();
+    }
+
+    // Отмена Оприходования
+    public function cancelIncrease(AcceptanceItem $item)
+    {
+        $this->quantity -= $item->quantity;
+        $this->quantity_pallet -= $item->quantity_pallet;
+        $this->quantity_paks -= $item->quantity_paks;
+        $this->save();
     }
 
     // Описание Приёмки на остатке, $addToFree добавляет значение к свободному количеству

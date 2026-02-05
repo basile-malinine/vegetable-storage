@@ -215,6 +215,12 @@ $config = [
                 // DecreaseItemController Позиция в Списании
                 'decrease-item/<action:(add)>/<id:\d+>' => 'decrease-item/<action>',
                 'decrease-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'decrease-item/<action>',
+
+                // IncreaseController Оприходование
+                'increase/<action:(edit|delete)>/<id:\d+>' => 'increase/<action>',
+                // IncreaseItemController Позиция в Оприходовании
+                'increase-item/<action:(add)>/<id:\d+>' => 'increase-item/<action>',
+                'increase-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'increase-item/<action>',
             ],
         ],
     ],
