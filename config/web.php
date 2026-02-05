@@ -209,6 +209,12 @@ $config = [
                 // ShipmentAcceptanceController Приёмка по Отгрузке
                 'shipment-acceptance/<action:(add)>/<id:\d+>' => 'shipment-acceptance/<action>',
                 'shipment-acceptance/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'shipment-acceptance/<action>',
+
+                // DecreaseController Списание
+                'decrease/<action:(edit|delete)>/<id:\d+>' => 'decrease/<action>',
+                // DecreaseItemController Позиция в Списании
+                'decrease-item/<action:(add)>/<id:\d+>' => 'decrease-item/<action>',
+                'decrease-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'decrease-item/<action>',
             ],
         ],
     ],

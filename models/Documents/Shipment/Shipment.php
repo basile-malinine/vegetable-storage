@@ -2,9 +2,12 @@
 
 namespace app\models\Documents\Shipment;
 
+use Yii;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Decrease\Decrease;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Order\Order;
@@ -12,7 +15,6 @@ use app\models\Documents\Remainder\Remainder;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use DateTime;
-use Yii;
 
 /**
  * This is the model class for table "shipment".
@@ -42,9 +44,13 @@ class Shipment extends Base
 {
     const TYPE_ORDER = 1;
     const TYPE_MOVING = 2;
+    const TYPE_DECREASE = 3;
+    const TYPE_INCREASE = 4;
     const TYPE_LIST = [
         self::TYPE_ORDER => 'Заказ',
         self::TYPE_MOVING => 'Перемещение',
+        self::TYPE_DECREASE => 'Списание',
+        self::TYPE_INCREASE => 'Оприходование',
     ];
 
     /**
@@ -160,6 +166,9 @@ class Shipment extends Base
                 break;
             case self::TYPE_MOVING:
                 return $this->hasOne(Moving::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_DECREASE:
+                return $this->hasOne(Decrease::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;

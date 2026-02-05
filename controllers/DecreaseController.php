@@ -6,35 +6,35 @@ use Yii;
 use yii\web\Response;
 
 use app\models\Documents\Acceptance\Acceptance;
-use app\models\Documents\Moving\Moving;
-use app\models\Documents\Moving\MovingItemSearch;
-use app\models\Documents\Moving\MovingSearch;
-use app\models\Documents\Remainder\Remainder;
-use app\models\Stock\Stock;
+use app\models\Documents\Decrease\Decrease;
+use app\models\Documents\Decrease\DecreaseItemSearch;
+use app\models\Documents\Decrease\DecreaseSearch;
 
-class MovingController extends BaseCrudController
+class DecreaseController extends BaseCrudController
 {
+
     protected function getModel()
     {
-        return new Moving();
+        return new Decrease();
     }
 
     protected function getSearchModel()
     {
-        return new MovingSearch();
+        return new DecreaseSearch();
     }
 
     protected function getTwoId()
     {
+        // TODO: Implement getTwoId() method.
     }
 
     public function actionCreate()
     {
-        $model = new Moving();
+        $model = new Decrease();
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
-                $this->redirect(['moving/edit/' . $model->id]);
+                $this->redirect(['decrease/edit/' . $model->id]);
             }
         } else {
             $model->loadDefaultValues();
@@ -46,10 +46,13 @@ class MovingController extends BaseCrudController
     public function actionEdit($id, $id2 = null)
     {
         $model = $this->findModel($id);
-        $searchModel = new MovingItemSearch();
+        $searchModel = new DecreaseItemSearch();
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
+                if (!$model->date_close) {
+                    return $this->redirect(['decrease/edit/' . $id]);
+                }
                 $this->redirect(['index']);
             }
         }
@@ -68,12 +71,10 @@ class MovingController extends BaseCrudController
             $acceptance = Acceptance::findOne($acceptance_id);
             $company_own_id = $acceptance->company_own_id;
             $stock_id = $acceptance->stock_id;
-            $stock_recipient_list = Stock::getList('id <> ' . $stock_id);
-            return compact(['company_own_id', 'stock_id', 'stock_recipient_list']);
+            return compact(['company_own_id', 'stock_id']);
         }
-        $stock_recipient_list = Stock::getList();
 
-        return compact(['stock_recipient_list']);
+        return compact([]);
     }
 
     public function actionApply()
@@ -82,27 +83,22 @@ class MovingController extends BaseCrudController
         $model = $this->findModel($id);
 
         if ($this->postRequestAnalysis($model)) {
-            $model->updateShipment();
+            $model->apply();
             $session = Yii::$app->session;
             if ($session->has('old_values')) {
                 $session->remove('old_values');
             }
         }
 
-        $this->redirect(['moving/edit/' . $model->id]);
+        $this->redirect(['index']);
     }
 
-    public function actionAddRemainder()
+    public function actionRevertRemainder()
     {
         $id = \Yii::$app->request->post('id');
         $model = $this->findModel($id);
-        $shipmentAcceptance = $model->shipment->shipmentAcceptances[0];
+        $model->revertRemainder();
 
-        if (Remainder::acceptanceFromShipped($shipmentAcceptance)) {
-            $model->date_close = null;
-            $model->save();
-        }
-
-        $this->redirect(['moving/edit/' . $model->id]);
+        $this->redirect(['decrease/edit/' . $model->id]);
     }
 }

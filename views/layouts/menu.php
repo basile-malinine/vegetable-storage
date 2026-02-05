@@ -228,10 +228,10 @@ echo Nav::widget([
                     'url' => ['/moving'],
                 ],
 
-//                [
-//                    'label' => 'Списание',
-//                    'url' => ['/decrease'],
-//                ],
+                [
+                    'label' => 'Списание',
+                    'url' => ['/decrease'],
+                ],
 
                 '<hr class="dropdown-divider">',
 

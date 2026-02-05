@@ -2,6 +2,11 @@
 
 namespace app\models\Documents\Moving;
 
+use DateTime;
+
+use Yii;
+use yii\db\IntegrityException;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
@@ -11,9 +16,6 @@ use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use app\models\User\User;
-use DateTime;
-use Yii;
-use yii\db\IntegrityException;
 
 /**
  * This is the model class for table "moving".
@@ -131,7 +133,6 @@ class Moving extends Base
 
         $this->moving_date = $this->moving_date ? date('d.m.Y', strtotime($this->moving_date)) : null;
         $this->date_close = $this->date_close ? date('d.m.Y', strtotime($this->date_close)) : null;
-//        $this->created_at = $this->created_at ? date('d.m.Y', strtotime($this->created_at)) : null;
     }
 
     public function beforeValidate()
@@ -187,7 +188,6 @@ class Moving extends Base
             $shipment->company_own_id = $this->company_sender_id;
             $shipment->stock_id = $this->stock_sender_id;
             $shipment->shipment_date = $this->moving_date;
-//            $shipment->date_close = (new DateTime('now'))->format('Y-m-d H:i');
             $shipment->date_close = null;
             $shipment->comment = 'Created automatically';
             $shipment->save();

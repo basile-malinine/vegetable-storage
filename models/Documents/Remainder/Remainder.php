@@ -213,24 +213,25 @@ class Remainder extends Base
      * @return array Список Поставок
      */
     public static function getListAcceptance(
-        int $company_own_id, int $stock_id, int|array $assortment_ids, array $exceptIds = []): array
+        int $company_own_id, int $stock_id, int|array $assortment_ids = null, array $exceptIds = []): array
     {
-        $listIds = self::find()
+        $query = self::find()
             ->select(['acceptance_id'])
             ->where([
                 'company_own_id' => $company_own_id,
                 'stock_id' => $stock_id,
-                'assortment_id' => $assortment_ids,
-            ])
-            ->andWhere(['NOT IN', 'acceptance_id', $exceptIds])
+            ]);
+        if ($assortment_ids) {
+            $query->andWhere(['assortment_id' => $assortment_ids]);
+        };
+        $listIds = $query->andWhere(['NOT IN', 'acceptance_id', $exceptIds])
             ->indexBy('acceptance_id')
             ->column();
 
         $list = [];
         foreach ($listIds as $id) {
             $model = self::findOne(['acceptance_id' => $id]);
-            $list[$id] = $model->acceptance->label
-                . ' остаток: ' . $model->quantity;
+            $list[$id] = $model->label;
         }
 
         return $list;
@@ -326,16 +327,17 @@ class Remainder extends Base
         return true;
     }
 
-    public function getLabel()
+    // Описание Приёмки на остатке, $addToFree добавляет значение к свободному количеству
+    public function getLabel($addToFree = 0)
     {
         $quantity = $this->assortment->unit->is_weight
             ? number_format($this->quantity, 1, '.', '')
             : number_format($this->quantity, 0, '.', '');
 
         $free = $this->assortment->unit->is_weight
-            ? number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity'),
+            ? number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity') + $addToFree,
                 1, '.', '')
-            : number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity'),
+            : number_format(self::getFreeByAcceptance($this->acceptance_id, 'quantity') + $addToFree,
                 0, '.', '');
 
         $assortment = $this->assortment->name
