@@ -2,10 +2,11 @@
 
 namespace app\models\Documents\Moving;
 
+use Yii;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Remainder\Remainder;
-use Yii;
 
 /**
  * This is the model class for table "moving_item".
@@ -15,7 +16,8 @@ use Yii;
  * @property int $pallet_type_id Тип паллета
  * @property float $quantity Количество
  * @property int $quantity_pallet Количество паллет
- * @property int $quantity_paks Количество тары * @property string|null $comment Комментарий
+ * @property int $quantity_paks Количество тары
+ * @property string|null $comment Комментарий
  *
  * @property Assortment $assortment
  * @property Moving $moving

@@ -2,8 +2,6 @@
 
 namespace app\controllers;
 
-use DateTime;
-
 use Yii;
 use yii\web\Response;
 

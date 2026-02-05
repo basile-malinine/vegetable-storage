@@ -33,7 +33,7 @@ use yii\db\IntegrityException;
  *
  * @property Acceptance $sourceAcceptance Исходная Приёмка (по которой делаем Перемещение)
  * @property Acceptance $acceptance Ссылка на Приёмку Перемещения
- * @property Shipment $shipment Ссылка на Приёмку Перемещения
+ * @property Shipment $shipment Ссылка на Отгрузку Перемещения
  * @property Assortment[] $assortments
  * @property LegalSubject $companyRecipient
  * @property LegalSubject $companySender
