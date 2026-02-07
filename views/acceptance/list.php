@@ -27,7 +27,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
         'dataProvider' => $dataProvider,
 
         'rowOptions' => function (Acceptance $model, $key, $index, $grid) {
-            return [
+            return $model->type_id === Acceptance::TYPE_INCREASE ? [] : [
                 'class' => 'contextMenuRow',
                 'data-row-id' => $model->id,
             ];
