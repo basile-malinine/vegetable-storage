@@ -44,7 +44,7 @@ $actionID = Yii::$app->controller->action->id;
         <div class="row form-row">
             <!-- Дата приёмки -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'acceptance_date')->widget(DatePicker::class, [
+                <?= $form->field($model, 'date')->widget(DatePicker::class, [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'name' => 'closed',
                     'readonly' => true,

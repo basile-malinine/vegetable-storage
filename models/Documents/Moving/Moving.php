@@ -26,7 +26,7 @@ use app\models\User\User;
  * @property int $stock_sender_id Склад отправитель
  * @property int $company_recipient_id Предприятие получатель
  * @property int $stock_recipient_id Склад получатель
- * @property string $moving_date Дата перемещения
+ * @property string $date Дата перемещения
  * @property string $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
@@ -72,7 +72,7 @@ class Moving extends Base
 
             [[
                 'acceptance_id',
-                'moving_date',
+                'date',
                 'company_sender_id',
                 'stock_sender_id',
                 'company_recipient_id',
@@ -91,7 +91,7 @@ class Moving extends Base
             [['comment'], 'string'],
 
             [[
-                'moving_date',
+                'date',
                 'date_close',
                 'created_at',
                 'updated_at'], 'safe'
@@ -118,7 +118,7 @@ class Moving extends Base
             'stock_sender_id' => 'Со склада',
             'company_recipient_id' => 'Получатель',
             'stock_recipient_id' => 'На склад',
-            'moving_date' => 'Дата',
+            'date' => 'Дата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -131,7 +131,7 @@ class Moving extends Base
     {
         parent::afterFind();
 
-        $this->moving_date = $this->moving_date ? date('d.m.Y', strtotime($this->moving_date)) : null;
+        $this->date = $this->date ? date('d.m.Y', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('d.m.Y', strtotime($this->date_close)) : null;
     }
 
@@ -146,7 +146,7 @@ class Moving extends Base
 
     public function beforeSave($insert)
     {
-        $this->moving_date = $this->moving_date ? date('Y-m-d H:i', strtotime($this->moving_date)) : null;
+        $this->date = $this->date ? date('Y-m-d H:i', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
 
         $now = (new DateTime('now'))->format('Y-m-d');
@@ -187,7 +187,7 @@ class Moving extends Base
             $shipment->parent_doc_id = $this->id;
             $shipment->company_own_id = $this->company_sender_id;
             $shipment->stock_id = $this->stock_sender_id;
-            $shipment->shipment_date = $this->moving_date;
+            $shipment->date = $this->date;
             $shipment->date_close = null;
             $shipment->comment = 'Created automatically';
             $shipment->save();
@@ -370,7 +370,7 @@ class Moving extends Base
             : 'Нет состава';
 
         return '№' . $this->id
-            . ' ' . $this->moving_date
+            . ' ' . $this->date
             . ', ' . $this->companySender->name
             . ', со склада ' . $this->stockSender->name
             . ', на склад ' . $this->stockRecipient->name
@@ -380,7 +380,7 @@ class Moving extends Base
     public function getShortLabel()
     {
         return '№' . $this->id
-            . ' ' . $this->moving_date;
+            . ' ' . $this->date;
     }
 
     // Список документов для Приёмки

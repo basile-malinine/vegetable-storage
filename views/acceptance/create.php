@@ -8,7 +8,7 @@ use app\models\Documents\Acceptance\Acceptance;
 
 $this->registerJsFile('@web/js/acceptance.js');
 
-$model->acceptance_date = (new DateTime('now'))->format('d.m.Y');
+$model->date = (new DateTime('now'))->format('d.m.Y');
 $header = 'Приёмка (новая)';
 
 echo $this->render('_form', compact(['model', 'header']));

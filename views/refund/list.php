@@ -78,13 +78,13 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Дата возврата
             [
-                'attribute' => 'refund_date',
+                'attribute' => 'date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->refund_date == null) {
+                    if ($model->date == null) {
                         return '';
                     }
-                    return date("d.m.Y", strtotime($model->refund_date));
+                    return date("d.m.Y", strtotime($model->date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'

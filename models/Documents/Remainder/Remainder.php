@@ -366,7 +366,7 @@ class Remainder extends Base
             . ' (' . $this->assortment->unit->name . ')';
 
         return '№' . $this->acceptance_id
-            . ' ' . $this->acceptance->acceptance_date
+            . ' ' . $this->acceptance->date
             . ', ' . $this->companyOwn->name
             . ', ' . $this->stock->name
             . ', ' . $assortment;

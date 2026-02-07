@@ -21,7 +21,7 @@ use app\models\Stock\Stock;
  * @property int $order_id Заказ
  * @property int $company_own_id Предприятие
  * @property int $stock_id Склад
- * @property string|null $refund_date Дата возврата
+ * @property string|null $date Дата возврата
  * @property string|null $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
@@ -58,7 +58,7 @@ class Refund extends Base
     {
         return [
             [[
-                'refund_date',
+                'date',
                 'date_close',
                 'comment',
                 'created_by',
@@ -83,7 +83,7 @@ class Refund extends Base
             ],
 
             [[
-                'refund_date',
+                'date',
                 'date_close',
                 'created_at',
                 'updated_at'], 'safe'],
@@ -112,7 +112,7 @@ class Refund extends Base
             'order_id' => 'Заказ',
             'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'refund_date' => 'Дата возврата',
+            'date' => 'Дата возврата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -125,14 +125,14 @@ class Refund extends Base
     {
         parent::afterFind();
 
-        $this->refund_date = $this->refund_date ? date('d.m.Y', strtotime($this->refund_date)) : null;
+        $this->date = $this->date ? date('d.m.Y', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
         $this->created_at = $this->created_at ? date('Y-m-d H:i', strtotime($this->created_at)) : null;
     }
 
     public function beforeSave($insert)
     {
-        $this->refund_date = $this->refund_date ? date('Y-m-d H:i', strtotime($this->refund_date)) : null;
+        $this->date = $this->date ? date('Y-m-d H:i', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
 
         $now = (new DateTime('now'))->format('Y-m-d');
@@ -220,7 +220,7 @@ class Refund extends Base
             : 'Нет состава';
 
         return '№' . $this->id
-            . ' ' . $this->refund_date
+            . ' ' . $this->date
             . ', ' . $this->companyOwn->name
             . ', ' . $assortment;
     }
@@ -228,7 +228,7 @@ class Refund extends Base
     public function getShortLabel()
     {
         return '№' . $this->id
-            . ' ' . $this->refund_date;
+            . ' ' . $this->date;
     }
 
     // Ссылка на Приёмку

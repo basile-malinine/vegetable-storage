@@ -156,7 +156,7 @@ class Decrease extends Base
             $shipment->parent_doc_id = $this->id;
             $shipment->company_own_id = $this->company_own_id;
             $shipment->stock_id = $this->stock_id;
-            $shipment->shipment_date = $this->date;
+            $shipment->date = $this->date;
             $shipment->date_close = null;
             $shipment->comment = 'Created automatically';
             $shipment->save();

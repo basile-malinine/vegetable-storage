@@ -23,7 +23,7 @@ use Yii;
  * @property int $parent_doc_id Старший документ
  * @property int $company_own_id Предприятие
  * @property int|null $stock_id Склад
- * @property string|null $acceptance_date Дата приёмки
+ * @property string|null $date Дата приёмки
  * @property string|null $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
@@ -69,7 +69,7 @@ class Acceptance extends Base
         return [
             [[
                 'stock_id',
-                'acceptance_date',
+                'date',
                 'comment',
                 'created_by',
                 'created_at',
@@ -93,7 +93,7 @@ class Acceptance extends Base
             ],
 
             [[
-                'acceptance_date',
+                'date',
                 'date_close',
                 'created_at',
                 'updated_at'], 'safe'
@@ -118,7 +118,7 @@ class Acceptance extends Base
             'parent_doc_id' => 'По документу',
             'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'acceptance_date' => 'Дата',
+            'date' => 'Дата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -131,14 +131,14 @@ class Acceptance extends Base
     {
         parent::afterFind();
 
-        $this->acceptance_date = $this->acceptance_date
-            ? date('d.m.Y', strtotime($this->acceptance_date)) : null;
+        $this->date = $this->date
+            ? date('d.m.Y', strtotime($this->date)) : null;
     }
 
     public function beforeSave($insert)
     {
-        $this->acceptance_date = $this->acceptance_date
-            ? date('Y-m-d H:i', strtotime($this->acceptance_date)) : null;
+        $this->date = $this->date
+            ? date('Y-m-d H:i', strtotime($this->date)) : null;
 
         $now = (new DateTime('now'))->format('Y-m-d H:i');
         if ($insert) {
@@ -281,7 +281,7 @@ class Acceptance extends Base
             : 'Нет состава';
 
         return '№' . $this->id
-            . ' ' . $this->acceptance_date
+            . ' ' . $this->date
             . ', ' . $this->companyOwn->name
             . ', ' . $this->stock->name
             . ', ' . $assortment;

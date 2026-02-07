@@ -50,7 +50,7 @@ if (!$model->acceptance) {
         <div class="row form-row">
             <!-- Дата перемещения -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'moving_date')->widget(DatePicker::class, [
+                <?= $form->field($model, 'date')->widget(DatePicker::class, [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'readonly' => true,
                     'disabled' => (bool)$model->date_close,

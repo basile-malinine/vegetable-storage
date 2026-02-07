@@ -49,13 +49,13 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Дата приёмки
             [
-                'attribute' => 'acceptance_date',
+                'attribute' => 'date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->acceptance_date == null) {
+                    if ($model->date == null) {
                         return '';
                     }
-                    return date("d.m.Y", strtotime($model->acceptance_date));
+                    return date("d.m.Y", strtotime($model->date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'

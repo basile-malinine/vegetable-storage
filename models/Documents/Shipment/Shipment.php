@@ -25,7 +25,7 @@ use DateTime;
  * @property int $parent_doc_id Старший документ
  * @property int $company_own_id Предприятие
  * @property int $stock_id Склад
- * @property string|null $shipment_date Дата закрытия
+ * @property string|null $date Дата закрытия
  * @property string|null $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
@@ -81,7 +81,7 @@ class Shipment extends Base
                 'parent_doc_id',
                 'company_own_id',
                 'stock_id',
-                'shipment_date'], 'required'
+                'date'], 'required'
             ],
 
             [[
@@ -94,7 +94,7 @@ class Shipment extends Base
             ],
 
             [[
-                'shipment_date',
+                'date',
                 'date_close',
                 'created_at',
                 'updated_at'], 'safe'
@@ -120,7 +120,7 @@ class Shipment extends Base
             'parent_doc_id' => 'По документу',
             'company_own_id' => 'Предприятие',
             'stock_id' => 'Склад',
-            'shipment_date' => 'Дата отгрузки',
+            'date' => 'Дата отгрузки',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -133,14 +133,14 @@ class Shipment extends Base
     {
         parent::afterFind();
 
-        $this->shipment_date = $this->shipment_date
-            ? date('d.m.Y', strtotime($this->shipment_date)) : null;
+        $this->date = $this->date
+            ? date('d.m.Y', strtotime($this->date)) : null;
     }
 
     public function beforeSave($insert)
     {
-        $this->shipment_date = $this->shipment_date
-            ? date('Y-m-d H:i', strtotime($this->shipment_date)) : null;
+        $this->date = $this->date
+            ? date('Y-m-d H:i', strtotime($this->date)) : null;
 
         $now = (new DateTime('now'))->format('Y-m-d H:i');
         if ($insert) {

@@ -152,7 +152,7 @@ class Increase extends Base
             $newAcceptance->parent_doc_id = $this->id;
             $newAcceptance->company_own_id = $this->company_own_id;
             $newAcceptance->stock_id = $this->stock_id;
-            $newAcceptance->acceptance_date = $this->date;
+            $newAcceptance->date = $this->date;
             $newAcceptance->date_close = null;
             $newAcceptance->comment = 'Created automatically';
             $newAcceptance->save();

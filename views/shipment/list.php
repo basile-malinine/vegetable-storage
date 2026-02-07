@@ -54,14 +54,14 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Дата отгрузки
             [
-                'attribute' => 'shipment_date',
+                'attribute' => 'date',
                 'label' => 'Дата',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->shipment_date == null) {
+                    if ($model->date == null) {
                         return '';
                     }
-                    return date("d.m.Y", strtotime($model->shipment_date));
+                    return date("d.m.Y", strtotime($model->date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'

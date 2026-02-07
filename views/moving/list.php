@@ -51,10 +51,10 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Дата перемещения
             [
-                'attribute' => 'moving_date',
+                'attribute' => 'date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    return date("d.m.Y", strtotime($model->moving_date));
+                    return date("d.m.Y", strtotime($model->date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'

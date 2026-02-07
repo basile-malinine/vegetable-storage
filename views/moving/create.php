@@ -10,7 +10,7 @@ $actionID = Yii::$app->controller->action->id;
 $this->registerJs('let actionId = "' . $actionID . '";', View::POS_HEAD);
 $this->registerJsFile('@web/js/moving.js');
 
-$model->moving_date = (new DateTime('now'))->format('d.m.Y');
+$model->date = (new DateTime('now'))->format('d.m.Y');
 $header = 'Перемещение (новое)';
 
 echo $this->render('_form', compact(['model', 'header']));

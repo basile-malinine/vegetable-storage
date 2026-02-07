@@ -46,7 +46,7 @@ $actionID = Yii::$app->controller->action->id;
         <div class="row form-row">
             <!-- Дата возврата -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'refund_date')->widget(DatePicker::class, [
+                <?= $form->field($model, 'date')->widget(DatePicker::class, [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
                     'readonly' => true,
                     'disabled' => $model->date_close,
