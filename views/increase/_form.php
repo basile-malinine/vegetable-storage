@@ -164,7 +164,7 @@ if (!$model->acceptance) {
                     ],
                 ]) ?>
             <?php elseif ($model->date_close): ?>
-                <?= Html::a('Вернуть на остаток', '/increase/cancel', [
+                <?= Html::a('Снять с остатка', '/increase/cancel', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
