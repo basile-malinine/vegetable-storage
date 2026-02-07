@@ -88,7 +88,7 @@ if (!$model->acceptance) {
             </div>
             <div class="form-col col-6" <?= $actionID === 'edit' ? "hidden" : "" ?>>
                 <?= $form->field($model, 'acceptance_id')->widget(Select2::class, [
-                    'data' => Remainder::getListForMoving(),
+                    'data' => Remainder::getListAcceptance(),
                     'options' => [
                         'id' => 'acceptance-id',
                         'placeholder' => 'Не назначена',

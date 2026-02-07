@@ -207,21 +207,23 @@ class Remainder extends Base
     /**
      * Список Поставок
      *
-     * @param $company_own_id integer Предприятие
-     * @param $stock_id integer Склад
-     * @param $assortment_ids integer|array Номенклатура
+     * @param $company_own_id integer|null Предприятие
+     * @param $stock_id integer|null Склад
+     * @param $assortment_ids integer|array|null Номенклатура
      * @param $exceptIds integer[]|null Исключить ID Поставок
      * @return array Список Поставок
      */
     public static function getListAcceptance(
-        int $company_own_id, int $stock_id, int|array $assortment_ids = null, array $exceptIds = []): array
+        int $company_own_id = null, int $stock_id = null, int|array $assortment_ids = null, array $exceptIds = []): array
     {
         $query = self::find()
-            ->select(['acceptance_id'])
-            ->where([
-                'company_own_id' => $company_own_id,
-                'stock_id' => $stock_id,
-            ]);
+            ->select(['acceptance_id']);
+        if ($company_own_id) {
+            $query->andWhere(['company_own_id' => $company_own_id]);
+        };
+        if ($stock_id) {
+            $query->andWhere(['stock_id' => $stock_id]);
+        };
         if ($assortment_ids) {
             $query->andWhere(['assortment_id' => $assortment_ids]);
         };
