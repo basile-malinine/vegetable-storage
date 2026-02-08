@@ -224,6 +224,12 @@ $config = [
 
                 // QualityController Типы сортировки
                 'quality/<action:(edit|delete)>/<id:\d+>' => 'quality/<action>',
+
+                // SortingController Переборка
+                'sorting/<action:(edit|delete)>/<id:\d+>' => 'sorting/<action>',
+                // SortingItemController Позиция в Переборке
+                'sorting-item/<action:(add)>/<id:\d+>' => 'sorting-item/<action>',
+                'sorting-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'sorting-item/<action>',
             ],
         ],
     ],

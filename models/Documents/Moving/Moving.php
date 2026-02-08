@@ -168,6 +168,7 @@ class Moving extends Base
             $movingItem = new MovingItem();
             $movingItem->moving_id = $this->id;
             $movingItem->assortment_id = $remainder->assortment_id;
+            $movingItem->quality_id = $remainder->acceptance->items[0]->quality_id;
             $movingItem->pallet_type_id = $remainder->pallet_type_id;
             $movingItem->quantity = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity');
             $movingItem->quantity_pallet = Remainder::getFreeByAcceptance($remainder->acceptance_id, 'quantity_pallet');

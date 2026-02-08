@@ -385,7 +385,9 @@ class Remainder extends Base
         foreach ($listIds as $id) {
             if (self::testForFree($id)) {
                 $model = self::findOne(['acceptance_id' => $id]);
-                $list[$id] = $model->label;
+                $quality = $model->acceptance->items[0]->quality;
+                $qualitySuffix = $quality ? $quality->labelSuffix : '';
+                $list[$id] = $model->label . $qualitySuffix;
             }
         }
 

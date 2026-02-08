@@ -1,57 +1,51 @@
 <?php
 
-namespace app\models\Documents\Increase;
+namespace app\models\Documents\Sorting;
 
-use app\models\Documents\Acceptance\AcceptanceItem;
 use DateTime;
-
 use Yii;
 
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Acceptance\AcceptanceItem;
 use app\models\Documents\Remainder\Remainder;
-use app\models\LegalSubject\LegalSubject;
-use app\models\Stock\Stock;
-use app\models\User\User;
+use app\models\Documents\Shipment\Shipment;
+use app\models\Documents\Shipment\ShipmentAcceptance;
 
 /**
- * This is the model class for table "increase".
+ * This is the model class for table "sorting".
  *
  * @property int $id
- * @property int $type_id Тип оприходования
  * @property int $acceptance_id Приёмка
- * @property int $company_own_id Предприятие
- * @property int $stock_id Склад
- * @property string|null $date Дата оприходования
+ * @property string|null $date Дата
  * @property string|null $date_close Дата закрытия
  * @property string|null $comment Комментарий
  * @property int|null $created_by Создатель
  * @property string|null $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  *
- * @property Remainder $sourceAcceptance Исходная Приёмка на остатке (по которой делаем Оприходование)
+ * @property Remainder $sourceAcceptance Исходная Приёмка на остатке (по которой делаем Переборку)
  * @property Acceptance $acceptance Изначальная Приёмка на приходе
- * @property Acceptance $newAcceptance Ссылка на новую Приёмку Оприходования
+ * @property Acceptance $newAcceptance Ссылка на новую Приёмку по Переборке
+ * @property Shipment $shipment Ссылка на Отгрузку по Переборке
  * @property Assortment[] $assortments
- * @property LegalSubject $companyOwn
- * @property User $createdBy
- * @property IncreaseItem[] $items
- * @property Stock $stock
+ * @property SortingItem[] $items
+ * @property string $label
+ * @property string $shortLabel
+ *
+ * @property string|null $error Ошибка на форме
  */
-class Increase extends Base
+class Sorting extends Base
 {
-    const TYPE_INVENTORY = 1;
-    const TYPE_LIST = [
-        self::TYPE_INVENTORY => 'Инвентарка',
-    ];
+    public string $error = '';
 
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'increase';
+        return 'sorting';
     }
 
     /**
@@ -61,15 +55,21 @@ class Increase extends Base
     {
         return [
             [['date', 'date_close', 'comment', 'created_by', 'created_at', 'updated_at'], 'default', 'value' => null],
-            [['type_id', 'acceptance_id', 'company_own_id', 'stock_id'], 'required'],
-            [['type_id', 'acceptance_id', 'company_own_id', 'stock_id', 'created_by'], 'integer'],
+            [['acceptance_id'], 'required'],
+            [['acceptance_id', 'created_by'], 'integer'],
             [['date', 'date_close', 'created_at', 'updated_at'], 'safe'],
             [['comment'], 'string'],
             [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
-            [['company_own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['company_own_id' => 'id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['created_by' => 'id']],
-            [['stock_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stock::class, 'targetAttribute' => ['stock_id' => 'id']],
+
+            [['id'], 'testItem']  // Проверка корректности значений у позиции при сохранении Переборки
         ];
+    }
+
+    public function testItem($attribute)
+    {
+        if (!$this->items[0]->quality || $this->items[0]->quantity < 0.1) {
+            $this->addError('error', 'Необходимо установить Качество и Количество.');
+        }
     }
 
     /**
@@ -79,11 +79,8 @@ class Increase extends Base
     {
         return [
             'id' => 'ID',
-            'type_id' => 'Тип оприходования',
             'acceptance_id' => 'Приёмка',
-            'company_own_id' => 'Предприятие',
-            'stock_id' => 'Склад',
-            'date' => 'Дата оприходования',
+            'date' => 'Дата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
             'created_by' => 'Создатель',
@@ -129,30 +126,58 @@ class Increase extends Base
         if ($insert) {
             // Отыскиваем Приёмку на остатке
             $remainder = Remainder::findOne(['acceptance_id' => $this->acceptance_id]);
-            // В Оприходовании создаём позицию
-            $increaseItem = new IncreaseItem();
-            $increaseItem->increase_id = $this->id;
-            $increaseItem->assortment_id = $remainder->assortment_id;
-            $increaseItem->quality_id = $remainder->acceptance->items[0]->quality_id;
-            $increaseItem->pallet_type_id = $remainder->pallet_type_id;
-            $increaseItem->quantity = .0;
-            $increaseItem->quantity_pallet = 0;
-            $increaseItem->quantity_paks = 0;
+            // В Переборке создаём позицию
+            $sortingItem = new SortingItem();
+            $sortingItem->sorting_id = $this->id;
+            $sortingItem->assortment_id = $remainder->assortment_id;
+            $sortingItem->quality_id = $remainder->acceptance->items[0]->quality_id;
+            $sortingItem->pallet_type_id = $remainder->pallet_type_id;
+            $sortingItem->quantity = .0;
+            $sortingItem->quantity_pallet = 0;
+            $sortingItem->quantity_paks = 0;
         } else {
-            $increaseItem = $this->items[0];
+            $sortingItem = $this->items[0];
         }
-        $increaseItem->save();
+        $sortingItem->save();
 
-        // Отыскиваем Приёмку по Оприходованию
+        // Отыскиваем Отгрузку по Переборке
+        $shipment = $this->shipment;
+        // Если ещё не создана
+        if (!$shipment) {
+            // Создаём Отгрузку с типом Переборка
+            $shipment = new Shipment();
+            $shipment->type_id = Shipment::TYPE_SORTING;
+            $shipment->parent_doc_id = $this->id;
+            $shipment->company_own_id = $this->acceptance->company_own_id;
+            $shipment->stock_id = $this->acceptance->stock_id;
+            $shipment->date = $this->date;
+            $shipment->date_close = null;
+            $shipment->comment = 'Created automatically';
+            $shipment->save();
+
+            // В Отгрузке создаём позицию
+            $shipmentAcceptance = new ShipmentAcceptance();
+            $shipmentAcceptance->shipment_id = $shipment->id;
+            $shipmentAcceptance->acceptance_id = $this->acceptance_id;
+            $shipmentAcceptance->pallet_type_id = $sortingItem->pallet_type_id;
+        } else {
+            $shipmentAcceptance = $shipment->shipmentAcceptances[0];
+        }
+        $shipmentAcceptance->quantity = $sortingItem->quantity;
+        $shipmentAcceptance->quantity_pallet = $sortingItem->quantity_pallet;
+        $shipmentAcceptance->quantity_paks = $sortingItem->quantity_paks;
+        $shipmentAcceptance->save();
+
+        // Отыскиваем Приёмку по Переборке
         $newAcceptance = $this->newAcceptance;
         // Если ещё не создана
         if (!$newAcceptance) {
             // Создаём Приёмку с типом Оприходование
             $newAcceptance = new Acceptance();
-            $newAcceptance->type_id = Acceptance::TYPE_INCREASE;
+            $newAcceptance->type_id = Acceptance::TYPE_SORTING;
             $newAcceptance->parent_doc_id = $this->id;
-            $newAcceptance->company_own_id = $this->company_own_id;
-            $newAcceptance->stock_id = $this->stock_id;
+            $newAcceptance->company_own_id = $this->acceptance->company_own_id;
+            $newAcceptance->stock_id = $this->acceptance->stock_id;
             $newAcceptance->date = $this->date;
             $newAcceptance->date_close = null;
             $newAcceptance->comment = 'Created automatically';
@@ -161,15 +186,15 @@ class Increase extends Base
             // В Приёмке создаём позицию
             $newAcceptanceItem = new AcceptanceItem();
             $newAcceptanceItem->acceptance_id = $newAcceptance->id;
-            $newAcceptanceItem->assortment_id = $increaseItem->assortment_id;
-            $newAcceptanceItem->quality_id = $this->items[0]->quality_id;
-            $newAcceptanceItem->pallet_type_id = $increaseItem->pallet_type_id;
+            $newAcceptanceItem->assortment_id = $sortingItem->assortment_id;
+            $newAcceptanceItem->pallet_type_id = $sortingItem->pallet_type_id;
         } else {
             $newAcceptanceItem = $newAcceptance->items[0];
         }
-        $newAcceptanceItem->quantity = $increaseItem->quantity;
-        $newAcceptanceItem->quantity_pallet = $increaseItem->quantity_pallet;
-        $newAcceptanceItem->quantity_paks = $increaseItem->quantity_paks;
+        $newAcceptanceItem->quality_id = $sortingItem->quality_id;
+        $newAcceptanceItem->quantity = $sortingItem->quantity;
+        $newAcceptanceItem->quantity_pallet = $sortingItem->quantity_pallet;
+        $newAcceptanceItem->quantity_paks = $sortingItem->quantity_paks;
         $newAcceptanceItem->save();
     }
 
@@ -178,20 +203,24 @@ class Increase extends Base
         if ($this->date_close) {
             return false;
         }
+        $this->shipment->delete();
         $this->newAcceptance->delete();
 
         return true;
     }
 
-    // Закрытие Приёмки по Оприходованию (Провести)
+    // Закрытие Приёмки по Переборке (Провести)
     public function apply()
     {
+        $shipment = $this->shipment;
+        $shipment->applay();
+
         $newAcceptance = $this->newAcceptance;
         if (!$newAcceptance) {
             return false;
         }
 
-        if ($newAcceptance->applayIncrease()) {
+        if ($newAcceptance->applaySorting()) {
             $this->date_close = $newAcceptance->date_close;
             $this->save();
             return true;
@@ -203,12 +232,8 @@ class Increase extends Base
     // Снять с остатка
     public function cancel()
     {
-        $newAcceptance = $this->newAcceptance;
-        if (!$newAcceptance) {
-            return false;
-        }
-
-        $newAcceptance->cancelIncrease();
+        $this->newAcceptance->cancelSorting();
+        $this->shipment->cancel();
         $this->date_close = null;
         $this->save();
 
@@ -216,7 +241,7 @@ class Increase extends Base
     }
 
     /**
-     * ------------------------------------------- Исходная Приёмка на остатке (по которой делаем Оприходование)
+     * ------------------------------------------- Исходная Приёмка на остатке (по которой делаем Переборку)
      * Gets query for [[Acceptance]].
      *
      * @return \yii\db\ActiveQuery
@@ -239,13 +264,23 @@ class Increase extends Base
     }
 
     /**
-     * ------------------------------------------- Ссылка на новую Приёмку Оприходования
+     * ------------------------------------------- Ссылка на Отгрузку Переборки
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShipment()
+    {
+        return $this->hasOne(Shipment::class, ['parent_doc_id' => 'id'])
+            ->where(['type_id' => Shipment::TYPE_SORTING]);
+    }
+
+    /**
+     * ------------------------------------------- Ссылка на новую Приёмку Переборки
      * @return \yii\db\ActiveQuery
      */
     public function getNewAcceptance()
     {
         return $this->hasOne(Acceptance::class, ['parent_doc_id' => 'id'])
-            ->where(['type_id' => Acceptance::TYPE_INCREASE]);
+            ->where(['type_id' => Acceptance::TYPE_SORTING]);
     }
 
     /**
@@ -255,47 +290,17 @@ class Increase extends Base
      */
     public function getAssortments()
     {
-        return $this->hasMany(Assortment::class, ['id' => 'assortment_id'])->viaTable('increase_item', ['increase_id' => 'id']);
+        return $this->hasMany(Assortment::class, ['id' => 'assortment_id'])->viaTable('sorting_item', ['sorting_id' => 'id']);
     }
 
     /**
-     * Gets query for [[CompanyOwn]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompanyOwn()
-    {
-        return $this->hasOne(LegalSubject::class, ['id' => 'company_own_id']);
-    }
-
-    /**
-     * Gets query for [[CreatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(User::class, ['id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[IncreaseItems]].
+     * Gets query for [[SortingItems]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getItems()
     {
-        return $this->hasMany(IncreaseItem::class, ['increase_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Stock]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStock()
-    {
-        return $this->hasOne(Stock::class, ['id' => 'stock_id']);
+        return $this->hasMany(SortingItem::class, ['sorting_id' => 'id']);
     }
 
     // ------------------------------------------- Label
@@ -307,8 +312,8 @@ class Increase extends Base
 
         return '№' . $this->id
             . ' ' . $this->date
-            . ', ' . $this->companyOwn->name
-            . ', склад ' . $this->stock->name
+            . ', ' . $this->acceptance->companyOwn->name
+            . ', склад ' . $this->acceptance->stock->name
             . ', ' . $assortment;
     }
 

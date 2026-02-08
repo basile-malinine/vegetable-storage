@@ -74,7 +74,10 @@ $header = 'Остатки';
                 'label' => 'Номенклатура',
                 'enableSorting' => false,
                 'value' => function (Remainder $model) {
-                    return $model->assortment->name;
+                    $quality = $model->acceptance->items[0]->quality;
+                    $qualityName = $quality ? ' (' . $quality->name . ')' : '';
+
+                    return $model->assortment->name . $qualityName;
                 },
                 'headerOptions' => [
                     'style' => 'width: 220px;'

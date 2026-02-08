@@ -13,6 +13,7 @@ use app\models\Documents\Remainder\Remainder;
  *
  * @property int $moving_id Перемещение
  * @property int $assortment_id Номенклатура
+ * @property int $quality_id Качество
  * @property int $pallet_type_id Тип паллета
  * @property float $quantity Количество
  * @property int $quantity_pallet Количество паллет
@@ -50,6 +51,7 @@ class MovingItem extends Base
                 'moving_id',
                 'assortment_id',
                 'pallet_type_id',
+                'quality_id',
                 'quantity_pallet',
                 'quantity_paks'], 'integer'
             ],
@@ -104,6 +106,7 @@ class MovingItem extends Base
         return [
             'moving_id' => 'Перемещение',
             'assortment_id' => 'Номенклатура',
+            'quality_id' => 'Качество',
             'pallet_type_id' => 'Тип паллет',
             'quantity' => 'Количество',
             'quantity_pallet' => 'Кол-во паллет',

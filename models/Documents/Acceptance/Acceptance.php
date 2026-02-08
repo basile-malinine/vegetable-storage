@@ -2,6 +2,11 @@
 
 namespace app\models\Documents\Acceptance;
 
+use app\models\Documents\Sorting\Sorting;
+use DateTime;
+
+use Yii;
+
 use app\models\Base;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Increase\Increase;
@@ -11,8 +16,6 @@ use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
-use DateTime;
-use Yii;
 
 /**
  * This is the model class for table "acceptance".
@@ -36,8 +39,9 @@ use Yii;
  * @property Delivery $delivery
  * @property ShipmentAcceptance[] $shipments Состав приёмки
  * @property AcceptanceItem[] $items Состав приёмки
- * @property \app\models\Documents\Remainder\Remainder $remainder Остатки
+ * @property Remainder $remainder Остатки
  * @property string $label
+ * @property string $shortLabel
  */
 class Acceptance extends Base
 {
@@ -46,11 +50,13 @@ class Acceptance extends Base
     const TYPE_REFUND = 2;
     const TYPE_MOVING = 3;
     const TYPE_INCREASE = 4;
+    const TYPE_SORTING = 5;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'Поставка',
         self::TYPE_REFUND => 'Возврат',
         self::TYPE_MOVING => 'Перемещение',
         self::TYPE_INCREASE => 'Оприходование',
+        self::TYPE_SORTING => 'Переборка',
     ];
 
     /**
@@ -152,7 +158,7 @@ class Acceptance extends Base
 
     public function afterSave($insert, $changedAttributes)
     {
-        if ($insert && $this->type_id && $this->parent_doc_id && $this->company_own_id && $this->stock_id) {
+        if ($insert && $this->type_id/* && $this->parent_doc_id && $this->company_own_id && $this->stock_id*/) {
             $docItems = [];
             switch ($this->type_id) {
                 // По поставке
@@ -175,13 +181,24 @@ class Acceptance extends Base
                     $increase = Increase::findOne($this->parent_doc_id);
                     $docItems = $increase->items;
                     break;
+                // По переборке
+                case self::TYPE_SORTING:
+                    $sorting = Sorting::findOne($this->parent_doc_id);
+                    $docItems = $sorting->items;
+                    break;
             }
             foreach ($docItems as $item) {
                 $acceptanceItem = new AcceptanceItem();
                 $acceptanceItem->acceptance_id = $this->id;
                 $acceptanceItem->quantity = .0;
                 $acceptanceItem->assortment_id = $item->assortment_id;
-                if ($this->type_id == self::TYPE_MOVING || $this->type_id == self::TYPE_INCREASE) {
+                if (
+                    $this->type_id == self::TYPE_MOVING
+                    || $this->type_id == self::TYPE_INCREASE
+                    || $this->type_id == self::TYPE_SORTING
+                ) {
+                    // Копируем из позиции старшего документа
+                    $acceptanceItem->quality_id = $item->quality_id;
                     $acceptanceItem->quantity = $item->quantity;
                     $acceptanceItem->pallet_type_id = $item->pallet_type_id;
                     $acceptanceItem->quantity_pallet = $item->quantity_pallet;
@@ -223,6 +240,9 @@ class Acceptance extends Base
                 break;
             case self::TYPE_INCREASE:
                 return $this->hasOne(Increase::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_SORTING:
+                return $this->hasOne(Sorting::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;
@@ -287,6 +307,11 @@ class Acceptance extends Base
             . ', ' . $assortment;
     }
 
+    public function getShortLabel()
+    {
+        return '№' . $this->id . ' от ' . $this->date;
+    }
+
     // Закрытие Оприходования
     public function applayIncrease()
     {
@@ -315,6 +340,32 @@ class Acceptance extends Base
         $remainder->cancelIncrease($this->items[0]);
 
         // Открываем Оприходование
+        $this->date_close = null;
+        $this->save();
+
+        return true;
+    }
+
+    // Закрытие Переборки
+    public function applaySorting()
+    {
+        // Проводим Приёмку по Переборке
+        Remainder::changeAcceptance($this);
+
+        // Закрываем Приёмку по Переборку
+        $this->date_close = (new DateTime('now'))->format('Y-m-d H:i');
+        $this->save();
+
+        return true;
+    }
+
+    // Отмена Оприходования
+    public function cancelSorting()
+    {
+        // Отменяем Оприходование
+        Remainder::removeAcceptance($this);
+
+        // Открываем Приёмку по Переборке
         $this->date_close = null;
         $this->save();
 

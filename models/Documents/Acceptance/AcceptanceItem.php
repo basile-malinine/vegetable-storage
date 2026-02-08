@@ -6,6 +6,7 @@ use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\Quality\Quality;
 use Yii;
 
 /**
@@ -13,6 +14,7 @@ use Yii;
  *
  * @property int $acceptance_id Приёмка
  * @property int $assortment_id Номенклатура
+ * @property int $quality_id Качество
  * @property int $pallet_type_id Тип паллета
  * @property float $quantity Количество
  * @property int $quantity_pallet Количество паллет
@@ -21,6 +23,7 @@ use Yii;
  *
  * @property Acceptance $acceptance
  * @property Assortment $assortment
+ * @property Quality $quality
  * @property string $label
  */
 class AcceptanceItem extends Base
@@ -50,6 +53,7 @@ class AcceptanceItem extends Base
                 'acceptance_id',
                 'assortment_id',
                 'pallet_type_id',
+                'quality_id',
                 'quantity_pallet',
                 'quantity_paks'], 'integer'
             ],
@@ -152,6 +156,11 @@ class AcceptanceItem extends Base
     public function getAssortment()
     {
         return $this->hasOne(Assortment::class, ['id' => 'assortment_id']);
+    }
+
+    public function getQuality()
+    {
+        return $this->hasOne(Quality::class, ['id' => 'quality_id']);
     }
 
     public function getLabel()

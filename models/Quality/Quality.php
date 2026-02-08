@@ -8,6 +8,8 @@ namespace app\models\Quality;
  * @property int $id
  * @property string $name Название
  * @property string|null $comment Комментарий
+ *
+ * @property string labelSuffix Название в скобках с лидирующим пробелом
  */
 class Quality extends \app\models\Base
 {
@@ -45,4 +47,8 @@ class Quality extends \app\models\Base
         ];
     }
 
+    public function getLabelSuffix()
+    {
+        return ' (' . $this->name . ')';
+    }
 }

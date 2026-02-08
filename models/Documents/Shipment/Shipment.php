@@ -12,6 +12,7 @@ use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Order\Order;
 use app\models\Documents\Remainder\Remainder;
+use app\models\Documents\Sorting\Sorting;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 use DateTime;
@@ -45,12 +46,12 @@ class Shipment extends Base
     const TYPE_ORDER = 1;
     const TYPE_MOVING = 2;
     const TYPE_DECREASE = 3;
-    const TYPE_INCREASE = 4;
+    const TYPE_SORTING = 4;
     const TYPE_LIST = [
         self::TYPE_ORDER => 'Заказ',
         self::TYPE_MOVING => 'Перемещение',
         self::TYPE_DECREASE => 'Списание',
-        self::TYPE_INCREASE => 'Оприходование',
+        self::TYPE_SORTING => 'Переборка',
     ];
 
     /**
@@ -169,6 +170,9 @@ class Shipment extends Base
                 break;
             case self::TYPE_DECREASE:
                 return $this->hasOne(Decrease::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_SORTING:
+                return $this->hasOne(Sorting::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;

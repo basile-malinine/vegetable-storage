@@ -31,11 +31,13 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
         'rowOptions' => function (Shipment $model, $key, $index, $grid) {
             // Если Отгрузка по Перемещению, контекстное меню в списке Отгрузок отключено
-            return $model->type_id === Shipment::TYPE_MOVING || $model->type_id === Shipment::TYPE_DECREASE
+            return $model->type_id === Shipment::TYPE_MOVING
+            || $model->type_id === Shipment::TYPE_DECREASE
+            || $model->type_id === Shipment::TYPE_SORTING
                 ? [] : [
-                'class' => 'contextMenuRow',
-                'data-row-id' => $model->id,
-            ];
+                    'class' => 'contextMenuRow',
+                    'data-row-id' => $model->id,
+                ];
         },
 
         'columns' => [
