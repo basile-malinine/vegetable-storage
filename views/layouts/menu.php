@@ -86,6 +86,11 @@ echo Nav::widget([
                             'label' => 'Номенклатура',
                             'url' => ['/assortment'],
                         ],
+
+                        [
+                            'label' => 'Качество',
+                            'url' => ['/quality'],
+                        ],
                     ],
                 ],
 
@@ -236,6 +241,28 @@ echo Nav::widget([
                 [
                     'label' => 'Оприходование',
                     'url' => ['/increase'],
+                ],
+
+                [
+                    'label' => 'Работа на складе',
+                    'items' => [
+                        [
+                            'label' => 'Переборка',
+                            'url' => ['/sorting'],
+                        ],
+
+                        [
+                            'label' => 'Объединение',
+                            'url' => ['/merging'],
+                            'disabled' => true,
+                        ],
+
+                        [
+                            'label' => 'Фасовка',
+                            'url' => ['/packing'],
+                            'disabled' => true,
+                        ],
+                    ],
                 ],
 
                 '<hr class="dropdown-divider">',

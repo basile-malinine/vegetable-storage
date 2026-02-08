@@ -221,6 +221,9 @@ $config = [
                 // IncreaseItemController Позиция в Оприходовании
                 'increase-item/<action:(add)>/<id:\d+>' => 'increase-item/<action>',
                 'increase-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'increase-item/<action>',
+
+                // QualityController Типы сортировки
+                'quality/<action:(edit|delete)>/<id:\d+>' => 'quality/<action>',
             ],
         ],
     ],
