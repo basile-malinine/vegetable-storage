@@ -182,7 +182,7 @@ class Remainder extends Base
         return true;
     }
 
-    // Снять Поставку с остатка.
+    // Снять Приёмку с остатка.
     public static function removeAcceptance(Acceptance $acceptance): bool
     {
         if ($acceptance->shipments) {

@@ -45,16 +45,20 @@ class SortingController extends BaseCrudController
     {
         $model = $this->findModel($id);
         $searchModel = new SortingItemSearch();
+        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
                 if (!$model->date_close) {
-                    return $this->redirect(['sorting/edit/' . $id]);
+                    $session = Yii::$app->session;
+                    if ($session->has('old_values')) {
+                        $session->remove('old_values');
+                    }
+                    return $this->render('edit', compact('model', 'dataProviderItem'));
                 }
                 $this->redirect(['index']);
             }
         }
-        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         return $this->render('edit', compact('model', 'dataProviderItem'));
     }

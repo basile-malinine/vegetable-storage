@@ -359,11 +359,13 @@ class Acceptance extends Base
         return true;
     }
 
-    // Отмена Оприходования
+    // Отмена Переборки
     public function cancelSorting()
     {
         // Отменяем Оприходование
-        Remainder::removeAcceptance($this);
+        if (!Remainder::removeAcceptance($this)) {
+            return false;
+        }
 
         // Открываем Приёмку по Переборке
         $this->date_close = null;

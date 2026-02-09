@@ -47,16 +47,20 @@ class DecreaseController extends BaseCrudController
     {
         $model = $this->findModel($id);
         $searchModel = new DecreaseItemSearch();
+        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         if ($this->request->isPost) {
             if ($this->postRequestAnalysis($model)) {
                 if (!$model->date_close) {
-                    return $this->redirect(['decrease/edit/' . $id]);
+                    $session = Yii::$app->session;
+                    if ($session->has('old_values')) {
+                        $session->remove('old_values');
+                    }
+                    return $this->render('edit', compact('model', 'dataProviderItem'));
                 }
                 $this->redirect(['index']);
             }
         }
-        $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         return $this->render('edit', compact('model', 'dataProviderItem'));
     }

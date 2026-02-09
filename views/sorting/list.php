@@ -11,6 +11,11 @@ use app\models\Documents\Moving\Moving;
 
 $header = 'Переборка';
 
+$session = Yii::$app->session;
+if ($session->has('old_values')) {
+    $session->remove('old_values');
+}
+
 $this->registerJs('let controllerName = "sorting";', View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
 ?>

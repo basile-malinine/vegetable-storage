@@ -121,8 +121,8 @@ $header = 'Остатки';
             // Тип паллет
             [
                 'attribute' => 'pallet_type_id',
-                'value' => function ($model) {
-                    if ($model->pallet_type_id) {
+                'value' => function (Remainder $model) {
+                    if ($model->pallet_type_id && $model->quantity_pallet > 0) {
                         $val = PalletType::findOne($model->pallet_type_id)->name;
                     } else {
                         $val = '';

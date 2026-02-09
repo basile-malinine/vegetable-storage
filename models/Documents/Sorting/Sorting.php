@@ -232,7 +232,9 @@ class Sorting extends Base
     // Снять с остатка
     public function cancel()
     {
-        $this->newAcceptance->cancelSorting();
+        if (!$this->newAcceptance->cancelSorting()) {
+            return false;
+        }
         $this->shipment->cancel();
         $this->date_close = null;
         $this->save();
