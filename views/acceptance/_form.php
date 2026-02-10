@@ -16,6 +16,10 @@ use kartik\select2\Select2;
 
 use app\models\Documents\Acceptance\Acceptance;
 
+$acceptanceTypes = Acceptance::TYPE_LIST;
+unset($acceptanceTypes[Acceptance::TYPE_INCREASE]);
+unset($acceptanceTypes[Acceptance::TYPE_SORTING]);
+
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
 ?>
@@ -62,7 +66,7 @@ $actionID = Yii::$app->controller->action->id;
             <!-- Тип -->
             <div class="form-col col-2" <?= $actionID == 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Acceptance::TYPE_LIST,
+                    'data' => $acceptanceTypes,
                     'options' => [
                         'placeholder' => 'Не назначен',
                         'id' => 'acceptance-type',

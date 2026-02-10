@@ -21,6 +21,8 @@ use app\models\Stock\Stock;
 
 $shipmentTypes = Shipment::TYPE_LIST;
 unset($shipmentTypes[Shipment::TYPE_MOVING]);
+unset($shipmentTypes[Shipment::TYPE_DECREASE]);
+unset($shipmentTypes[Shipment::TYPE_SORTING]);
 
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
