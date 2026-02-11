@@ -9,6 +9,7 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use app\models\PalletType\PalletType;
+
 ?>
 
 <div class="page-top-panel">
@@ -31,14 +32,21 @@ use app\models\PalletType\PalletType;
             ],
         ]); ?>
 
-        <!-- Наименование -->
         <div class="row form-row">
-            <div class="form-col col-4">
+            <!-- Наименование -->
+            <div class="form-col col-3">
                 <?= $form->field($model, 'name')->textInput(
                     [
                         'maxlength' => true,
                     ]
                 ) ?>
+            </div>
+
+            <!-- Отгружено -->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'priority')->textInput([
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
             </div>
         </div>
 

@@ -8,6 +8,7 @@ use app\models\Base;
  * This is the model class for table "pallet_type".
  *
  * @property int $id
+ * @property int $priority
  * @property string $name Название
  * @property string|null $comment Комментарий
  */
@@ -27,7 +28,8 @@ class PalletType extends Base
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['priority'], 'integer'],
+            [['priority', 'name'], 'required'],
             [['name'], 'string', 'max' => 30],
             [['name'], 'unique'],
             [['comment'], 'string'],
@@ -42,6 +44,7 @@ class PalletType extends Base
     {
         return [
             'id' => 'ID',
+            'priority' => 'Приоритет',
             'name' => 'Название',
             'comment' => 'Комментарий',
         ];

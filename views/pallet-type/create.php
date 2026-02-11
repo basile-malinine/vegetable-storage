@@ -8,4 +8,7 @@ use app\models\PalletType\PalletType;
 
 $header = 'Тип паллета (новый)';
 
+$maxPriority = PalletType::find()->max('priority');
+$model->priority = $maxPriority + 1;
+
 echo $this->render('_form', compact(['model', 'header']));

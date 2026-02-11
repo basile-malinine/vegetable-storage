@@ -1,5 +1,6 @@
 <?php
 
+use yii\bootstrap5\Html;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 
@@ -42,7 +43,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
                 'contentOptions' => [
                     'style' => 'text-align: right;',
-                ]
+                ],
             ],
 
             // Название
@@ -51,6 +52,21 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'enableSorting' => false,
                 'headerOptions' => [
                     'style' => 'width: 280px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Приоритет
+            [
+                'attribute' => 'priority',
+                'enableSorting' => false,
+                'headerOptions' => [
+                    'style' => 'width: 100px;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;',
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',

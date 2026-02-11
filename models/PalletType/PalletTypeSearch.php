@@ -9,7 +9,7 @@ class PalletTypeSearch extends PalletType
     public function rules()
     {
         return [
-            [['name'], 'safe'],
+            [['priority', 'name'], 'safe'],
         ];
     }
 
@@ -26,7 +26,7 @@ class PalletTypeSearch extends PalletType
         }
 
         if (!isset($params['sort'])) {
-            $query->orderBy('name');
+            $query->orderBy('priority');
         }
 
         return $dataProvider;
