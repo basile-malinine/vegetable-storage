@@ -34,7 +34,9 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             return $model->type_id === Shipment::TYPE_MOVING
             || $model->type_id === Shipment::TYPE_DECREASE
             || $model->type_id === Shipment::TYPE_SORTING
-                ? [] : [
+            || $model->type_id === Shipment::TYPE_MERGING
+                ? []
+                : [
                     'class' => 'contextMenuRow',
                     'data-row-id' => $model->id,
                 ];

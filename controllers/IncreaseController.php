@@ -85,8 +85,8 @@ class IncreaseController extends BaseCrudController
         if ($this->postRequestAnalysis($model)) {
             $model->apply();
             $session = Yii::$app->session;
-            if ($session->has('old_values')) {
-                $session->remove('old_values');
+            if ($session->has('increase.old_values')) {
+                $session->remove('increase.old_values');
             }
         }
 

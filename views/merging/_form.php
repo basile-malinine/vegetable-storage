@@ -3,7 +3,7 @@
 /** @var yii\web\View $this */
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var yii\data\ActiveDataProvider $dataProviderItem */
-/** @var Decrease $model */
+/** @var Merging $model */
 
 /** @var string $header */
 
@@ -12,25 +12,13 @@ use yii\bootstrap5\Html;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 
-use app\models\Documents\Decrease\Decrease;
-use app\models\Documents\Remainder\Remainder;
+use app\models\Assortment\Assortment;
+use app\models\Documents\Merging\Merging;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
+use yii\widgets\Pjax;
 
-// Удаляем из сессии временные значения свободных остатков, если есть
-$session = Yii::$app->session;
-if ($session->has('decrease.free-qnt')) {
-    $session->remove('decrease.free-qnt');
-}
-
-$actionID = Yii::$app->controller->action->id;
-
-// Доступность кнопки Сохранить
-$allowBtnSave = false;
-// Если нет приёмки, кнопка доступна
-if (!$model->shipment) {
-    $allowBtnSave = true;
-}
+$actionId = Yii::$app->controller->action->id;
 ?>
 
 <div class="page-top-panel">
@@ -53,8 +41,9 @@ if (!$model->shipment) {
             ],
         ]); ?>
 
+        <?php Pjax::begin(['id' => 'merging-qnt-weight-info']); ?>
         <div class="row form-row">
-            <!-- Дата списания -->
+            <!-- Дата объединения -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'date')->widget(DatePicker::class, [
                     'type' => DatePicker::TYPE_COMPONENT_APPEND,
@@ -70,73 +59,100 @@ if (!$model->shipment) {
                 ]) ?>
             </div>
 
-            <!-- Тип списания -->
-            <div hidden>
-                <?= $form->field($model, 'type_id')->textInput([
-                    'id' => 'hidden-type-id',
-                ]) ?>
-            </div>
-            <div class="form-col col-2">
-                <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Decrease::TYPE_LIST,
+            <!-- Номенклатура -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'assortment_id')->widget(Select2::class, [
+                    'data' => Assortment::getList(),
                     'options' => [
-                        'id' => 'type-id',
-                        'placeholder' => 'Не назначено',
-                        'disabled' => !$allowBtnSave,
+                        'id' => 'assortment',
+                        'placeholder' => 'Не назначена',
+                        'disabled' => $actionId == 'edit',
                     ],
                 ]); ?>
             </div>
 
-            <!-- Приёмка -->
-            <div hidden>
-                <?= $form->field($model, 'acceptance_id')->textInput([
-                    'id' => 'hidden-acceptance_id',
+            <!-- Единица / Вес-->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'assortmentInfo')->textInput([
+                    'id' => 'assortment-info',
+                    'class' => 'form-control form-control-sm text-center',
+                    'disabled' => true,
                 ]) ?>
             </div>
-            <div class="form-col col-6" <?= $actionID === 'edit' ? "hidden" : "" ?>>
-                <?= $form->field($model, 'acceptance_id')->widget(Select2::class, [
-                    'data' => Remainder::getListForMoving(),
-                    'options' => [
-                        'id' => 'acceptance-id',
-                        'placeholder' => 'Не назначена',
-                    ],
-                ]); ?>
+
+            <!-- Количество -->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'quantity')->textInput([
+                    'id' => 'quantity',
+                    'class' => 'form-control form-control-sm text-end',
+                    'disabled' => true,
+                ]) ?>
+            </div>
+
+            <!-- Количество паллет -->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'quantity_pallet')->textInput([
+                    'id' => 'quantity',
+                    'class' => 'form-control form-control-sm text-end',
+                    'disabled' => true,
+                ]) ?>
+            </div>
+
+            <!-- Количество тары -->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'quantity_paks')->textInput([
+                    'id' => 'quantity',
+                    'class' => 'form-control form-control-sm text-end',
+                    'disabled' => true,
+                ]) ?>
+            </div>
+
+            <!-- Вес -->
+            <div class="form-col col-1">
+                <?= $form->field($model, 'weight')->textInput([
+                    'id' => 'weight',
+                    'class' => 'form-control form-control-sm text-end',
+                    'disabled' => true,
+                ]) ?>
             </div>
         </div>
+        <?php Pjax::end(); ?>
 
         <div class="row form-row">
             <!-- Предприятие -->
-            <div hidden>
-                <?= $form->field($model, 'company_own_id')->textInput([
-                    'id' => 'hidden-company-own-id',
-                ]) ?>
-            </div>
             <div class="form-col col-4">
                 <?= $form->field($model, 'company_own_id')->widget(Select2::class, [
                     'data' => LegalSubject::getList('is_own = true'),
                     'options' => [
                         'id' => 'company-own-id',
                         'placeholder' => 'Не назначено',
-                        'disabled' => true,
+                        'disabled' => $actionId == 'edit',
                     ],
                 ]); ?>
             </div>
 
             <!-- Склад -->
-            <div hidden>
-                <?= $form->field($model, 'stock_id')->textInput([
-                    'id' => 'hidden-stock-id',
-                ]) ?>
-            </div>
             <div class="form-col col-2">
                 <?= $form->field($model, 'stock_id')->widget(Select2::class, [
                     'data' => Stock::getList(),
                     'options' => [
-                        'id' => 'stock-id',
+                        'id' => 'stock-sender-id',
                         'placeholder' => 'Не назначено',
-                        'disabled' => true,
+                        'disabled' => $actionId == 'edit',
                     ],
                 ]); ?>
+            </div>
+
+            <!-- Кнопка добавления позиции -->
+            <div class="form-col col-4 d-flex justify-content-end align-items-end mb-3">
+                <?= Html::button('<i class="fa fa-plus"></i><span class="ms-2">Добавить приёмку</span>',
+                    [
+                        'id' => 'btn-add',
+                        'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 pe-3',
+                        'style' => 'height: 31px',
+                        'hidden' => $actionId === 'create',
+                    ]);
+                ?>
             </div>
         </div>
 
@@ -145,22 +161,27 @@ if (!$model->shipment) {
             <div class="form-col col-10">
                 <?= isset($dataProviderItem) ? $this->render('_item_grid', compact(['model', 'dataProviderItem'])) : '' ?>
             </div>
+            <div style="margin-top: -15px">
+                <?= $form->field($model, 'errorItems')->input('text', [
+                    'style' => 'display: none;',
+                ])->label(false) ?>
+            </div>
         </div>
 
         <!-- Комментарий -->
-        <div <?= $actionID === 'create' ? 'class="row form-last-row mt-2"' : 'class="row form-last-row"' ?>>
+        <div <?= $actionId === 'create' ? 'class="row form-last-row mt-2"' : 'class="row form-last-row"' ?>>
             <div class="form-col col-10">
                 <?= $form->field($model, 'comment')->textarea() ?>
             </div>
         </div>
 
         <div class="form-group">
-            <?php if ($allowBtnSave || $model->items[0]->isChanges()): ?>
+            <?php if ($model->isChanges() || !$model->items || count($model->items) < 2) : ?>
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>
-            <?php elseif (!$model->date_close || $model->items[0]->isChanges() && $model->items[0]->quantity > 0): ?>
-                <?= Html::a('Провести', '/decrease/apply', [
+            <?php elseif (!$model->date_close): ?>
+                <?= Html::a('Закрыть', '/merging/close', [
                     'id' => 'btn-change-close',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
@@ -171,8 +192,8 @@ if (!$model->shipment) {
                     ],
                 ]) ?>
             <?php elseif ($model->date_close): ?>
-                <?= Html::a('Вернуть на остаток', '/decrease/revert-remainder', [
-                    'id' => 'btn-change-close',
+                <?= Html::a('Открыть', '/merging/open', [
+                    'id' => 'btn-change-open',
                     'class' => 'btn btn-light btn-outline-secondary btn-sm',
                     'data' => [
                         'method' => 'post',
@@ -182,7 +203,7 @@ if (!$model->shipment) {
                     ],
                 ]) ?>
             <?php endif; ?>
-            <?= Html::a('К списку', '/decrease', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
+            <?= Html::a('К списку', '/merging', ['class' => 'btn btn-light btn-outline-secondary btn-sm']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

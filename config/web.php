@@ -230,6 +230,12 @@ $config = [
                 // SortingItemController Позиция в Переборке
                 'sorting-item/<action:(add)>/<id:\d+>' => 'sorting-item/<action>',
                 'sorting-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'sorting-item/<action>',
+
+                // MergingController Объединение
+                'merging/<action:(edit|delete)>/<id:\d+>' => 'merging/<action>',
+                // MergingItemController Позиция для Объединения
+                'merging-item/<action:(add)>/<id:\d+>' => 'merging-item/<action>',
+                'merging-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'merging-item/<action>',
             ],
         ],
     ],

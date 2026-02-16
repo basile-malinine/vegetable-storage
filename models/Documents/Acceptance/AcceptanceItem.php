@@ -6,6 +6,7 @@ use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\PalletType\PalletType;
 use app\models\Quality\Quality;
 use Yii;
 
@@ -24,6 +25,7 @@ use Yii;
  * @property Acceptance $acceptance
  * @property Assortment $assortment
  * @property Quality $quality
+ * @property PalletType $palletType
  * @property string $label
  */
 class AcceptanceItem extends Base
@@ -118,15 +120,15 @@ class AcceptanceItem extends Base
     {
         if ($this->acceptance->type_id === Acceptance::TYPE_DELIVERY) {
             $session = Yii::$app->session;
-            if ($session->has('old_values')) {
-                $session->remove('old_values');
+            if ($session->has('acceptance.old_values')) {
+                $session->remove('acceptance.old_values');
             }
             if (!$insert) {
                 // Если есть изменения, пишем в сессию старые значения.
                 if ($this->oldAttributes['quantity'] != $this->quantity
                     || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
                     || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
-                    $session->set('old_values', [
+                    $session->set('acceptance.old_values', [
                         'quantity' => $this->oldAttributes['quantity'],
                         'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
                         'quantity_paks' => $this->oldAttributes['quantity_paks'],
@@ -163,6 +165,11 @@ class AcceptanceItem extends Base
         return $this->hasOne(Quality::class, ['id' => 'quality_id']);
     }
 
+    public function getPalletType()
+    {
+        return $this->hasOne(PalletType::class, ['id' => 'pallet_type_id']);
+    }
+
     public function getLabel()
     {
         $quantity = (bool)$this->assortment->unit->is_weight
@@ -177,6 +184,6 @@ class AcceptanceItem extends Base
     // Возвращает true, если есть изменения.
     public function isChanges(): bool
     {
-        return Yii::$app->session->has('old_values');
+        return Yii::$app->session->has('acceptance.old_values');
     }
 }

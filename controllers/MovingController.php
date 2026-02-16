@@ -84,8 +84,8 @@ class MovingController extends BaseCrudController
         if ($this->postRequestAnalysis($model)) {
             $model->updateShipment();
             $session = Yii::$app->session;
-            if ($session->has('old_values')) {
-                $session->remove('old_values');
+            if ($session->has('moving.old_values')) {
+                $session->remove('moving.old_values');
             }
         }
 

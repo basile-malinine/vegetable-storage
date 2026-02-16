@@ -9,6 +9,7 @@ use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Decrease\Decrease;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Merging\Merging;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Order\Order;
 use app\models\Documents\Remainder\Remainder;
@@ -47,11 +48,13 @@ class Shipment extends Base
     const TYPE_MOVING = 2;
     const TYPE_DECREASE = 3;
     const TYPE_SORTING = 4;
+    const TYPE_MERGING = 5;
     const TYPE_LIST = [
         self::TYPE_ORDER => 'Заказ',
         self::TYPE_MOVING => 'Перемещение',
         self::TYPE_DECREASE => 'Списание',
         self::TYPE_SORTING => 'Переборка',
+        self::TYPE_MERGING => 'Объединение',
     ];
 
     /**
@@ -173,6 +176,9 @@ class Shipment extends Base
                 break;
             case self::TYPE_SORTING:
                 return $this->hasOne(Sorting::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_MERGING:
+                return $this->hasOne(Merging::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;

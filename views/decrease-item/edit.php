@@ -19,7 +19,7 @@ $docLabel = 'Приёмка ' . $remainderAcceptance->getLabel($model->quantity)
 
 // Записываем в сессию кол-во свободного остатка для текущего Списания
 $session = Yii::$app->session;
-$session->set('free-qnt', [
+$session->set('decrease.free-qnt', [
     'quantity' => Remainder::getFreeByAcceptance($remainderAcceptance->acceptance_id, 'quantity')
         + $model->quantity,
     'quantity_pallet' => Remainder::getFreeByAcceptance($remainderAcceptance->acceptance_id, 'quantity_pallet')

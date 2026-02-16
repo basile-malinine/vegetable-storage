@@ -51,8 +51,8 @@ class SortingController extends BaseCrudController
             if ($this->postRequestAnalysis($model)) {
                 if (!$model->date_close) {
                     $session = Yii::$app->session;
-                    if ($session->has('old_values')) {
-                        $session->remove('old_values');
+                    if ($session->has('sorting.old_values')) {
+                        $session->remove('sorting.old_values');
                     }
                     return $this->render('edit', compact('model', 'dataProviderItem'));
                 }
@@ -71,8 +71,8 @@ class SortingController extends BaseCrudController
         if ($this->postRequestAnalysis($model)) {
             $model->apply();
             $session = Yii::$app->session;
-            if ($session->has('old_values')) {
-                $session->remove('old_values');
+            if ($session->has('sorting.old_values')) {
+                $session->remove('sorting.old_values');
             }
         }
 

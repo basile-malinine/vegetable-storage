@@ -118,15 +118,15 @@ class MovingItem extends Base
     public function beforeSave($insert)
     {
         $session = Yii::$app->session;
-        if ($session->has('old_values')) {
-            $session->remove('old_values');
+        if ($session->has('moving.old_values')) {
+            $session->remove('moving.old_values');
         }
         if (!$insert) {
             // Если есть изменения, пишем в сессию старые значения.
             if ($this->oldAttributes['quantity'] != $this->quantity
                 || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
                 || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
-                $session->set('old_values', [
+                $session->set('moving.old_values', [
                     'quantity' => $this->oldAttributes['quantity'],
                     'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
                     'quantity_paks' => $this->oldAttributes['quantity_paks'],
@@ -178,6 +178,6 @@ class MovingItem extends Base
     // Возвращает true, если есть изменения.
     public function isChanges(): bool
     {
-        return Yii::$app->session->has('old_values');
+        return Yii::$app->session->has('moving.old_values');
     }
 }

@@ -71,15 +71,15 @@ class IncreaseItem extends Base
     public function beforeSave($insert)
     {
         $session = Yii::$app->session;
-        if ($session->has('old_values')) {
-            $session->remove('old_values');
+        if ($session->has('increase.old_values')) {
+            $session->remove('increase.old_values');
         }
         if (!$insert) {
             // Если есть изменения, пишем в сессию старые значения.
             if ($this->oldAttributes['quantity'] != $this->quantity
                 || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
                 || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
-                $session->set('old_values', [
+                $session->set('increase.old_values', [
                     'quantity' => $this->oldAttributes['quantity'],
                     'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
                     'quantity_paks' => $this->oldAttributes['quantity_paks'],
@@ -131,6 +131,6 @@ class IncreaseItem extends Base
     // Возвращает true, если есть изменения.
     public function isChanges(): bool
     {
-        return Yii::$app->session->has('old_values');
+        return Yii::$app->session->has('increase.old_values');
     }
 }

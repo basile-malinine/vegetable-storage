@@ -53,8 +53,8 @@ class DecreaseController extends BaseCrudController
             if ($this->postRequestAnalysis($model)) {
                 if (!$model->date_close) {
                     $session = Yii::$app->session;
-                    if ($session->has('old_values')) {
-                        $session->remove('old_values');
+                    if ($session->has('decrease.old_values')) {
+                        $session->remove('decrease.old_values');
                     }
                     return $this->render('edit', compact('model', 'dataProviderItem'));
                 }
@@ -89,8 +89,8 @@ class DecreaseController extends BaseCrudController
         if ($this->postRequestAnalysis($model)) {
             $model->apply();
             $session = Yii::$app->session;
-            if ($session->has('old_values')) {
-                $session->remove('old_values');
+            if ($session->has('decrease.old_values')) {
+                $session->remove('decrease.old_values');
             }
         }
 

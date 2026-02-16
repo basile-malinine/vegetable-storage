@@ -2,6 +2,7 @@
 
 namespace app\models\Documents\Acceptance;
 
+use app\models\Documents\Merging\Merging;
 use app\models\Documents\Sorting\Sorting;
 use DateTime;
 
@@ -42,6 +43,7 @@ use app\models\Stock\Stock;
  * @property Remainder $remainder Остатки
  * @property string $label
  * @property string $shortLabel
+ * @property string $positionWithQualityName
  */
 class Acceptance extends Base
 {
@@ -51,12 +53,14 @@ class Acceptance extends Base
     const TYPE_MOVING = 3;
     const TYPE_INCREASE = 4;
     const TYPE_SORTING = 5;
+    const TYPE_MERGING = 6;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'Поставка',
         self::TYPE_REFUND => 'Возврат',
         self::TYPE_MOVING => 'Перемещение',
         self::TYPE_INCREASE => 'Оприходование',
         self::TYPE_SORTING => 'Переборка',
+        self::TYPE_MERGING => 'Объединение',
     ];
 
     /**
@@ -158,6 +162,7 @@ class Acceptance extends Base
 
     public function afterSave($insert, $changedAttributes)
     {
+        // Создание позиции по Приёмке
         if ($insert && $this->type_id/* && $this->parent_doc_id && $this->company_own_id && $this->stock_id*/) {
             $docItems = [];
             switch ($this->type_id) {
@@ -186,6 +191,10 @@ class Acceptance extends Base
                     $sorting = Sorting::findOne($this->parent_doc_id);
                     $docItems = $sorting->items;
                     break;
+                // По объединению
+                case self::TYPE_MERGING:
+                    // Создание позиции для Приёмки по Объединению создаётся в самом док-те Объединение
+                    return false;
             }
             foreach ($docItems as $item) {
                 $acceptanceItem = new AcceptanceItem();
@@ -243,6 +252,9 @@ class Acceptance extends Base
                 break;
             case self::TYPE_SORTING:
                 return $this->hasOne(Sorting::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_MERGING:
+                return $this->hasOne(Merging::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;
@@ -312,6 +324,12 @@ class Acceptance extends Base
         return '№' . $this->id . ' от ' . $this->date;
     }
 
+    public function getPositionWithQualityName()
+    {
+        $position = $this->items[0];
+        return $position->assortment->name . ($position->quality ? $position->quality->labelSuffix : '');
+    }
+
     // Закрытие Оприходования
     public function applayIncrease()
     {
@@ -372,5 +390,15 @@ class Acceptance extends Base
         $this->save();
 
         return true;
+    }
+
+    public function applayMerging()
+    {
+        return $this->applaySorting();
+    }
+
+    public function cancelMerging()
+    {
+        return $this->cancelSorting();
     }
 }

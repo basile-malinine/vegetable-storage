@@ -71,15 +71,15 @@ class SortingItem extends Base
         $session = Yii::$app->session;
         switch ($attribute) {
             case 'quantity':
-                $qntFree = $session->has('free-qnt') ? $session->get('free-qnt')['quantity'] : $qntFree;
+                $qntFree = $session->has('sorting.free-qnt') ? $session->get('sorting.free-qnt')['quantity'] : $qntFree;
                 $qnt = $this->quantity;
                 break;
             case 'quantity_pallet':
-                $qntFree = $session->has('free-qnt') ? $session->get('free-qnt')['quantity_pallet'] : $qntFree;
+                $qntFree = $session->has('sorting.free-qnt') ? $session->get('sorting.free-qnt')['quantity_pallet'] : $qntFree;
                 $qnt = $this->quantity_pallet;
                 break;
             case 'quantity_paks':
-                $qntFree = $session->has('free-qnt') ? $session->get('free-qnt')['quantity_paks'] : $qntFree;
+                $qntFree = $session->has('sorting.free-qnt') ? $session->get('sorting.free-qnt')['quantity_paks'] : $qntFree;
                 $qnt = $this->quantity_paks;
                 break;
         }
@@ -108,15 +108,15 @@ class SortingItem extends Base
     public function beforeSave($insert)
     {
         $session = Yii::$app->session;
-        if ($session->has('old_values')) {
-            $session->remove('old_values');
+        if ($session->has('sorting.old_values')) {
+            $session->remove('sorting.old_values');
         }
         if (!$insert) {
             // Если есть изменения, пишем в сессию старые значения.
             if ($this->oldAttributes['quantity'] != $this->quantity
                 || $this->oldAttributes['quantity_pallet'] != $this->quantity_pallet
                 || $this->oldAttributes['quantity_paks'] != $this->quantity_paks) {
-                $session->set('old_values', [
+                $session->set('sorting.old_values', [
                     'quantity' => $this->oldAttributes['quantity'],
                     'quantity_pallet' => $this->oldAttributes['quantity_pallet'],
                     'quantity_paks' => $this->oldAttributes['quantity_paks'],
@@ -188,6 +188,6 @@ class SortingItem extends Base
     // Возвращает true, если есть изменения.
     public function isChanges(): bool
     {
-        return Yii::$app->session->has('old_values');
+        return Yii::$app->session->has('sorting.old_values');
     }
 }

@@ -1,21 +1,19 @@
 <?php
 
-namespace app\models\PalletType;
+namespace app\models\Documents\Merging;
 
 use yii\data\ActiveDataProvider;
 
-class PalletTypeSearch extends PalletType
+class MergingSearch extends Merging
 {
     public function rules()
     {
-        return [
-            [['priority', 'name'], 'safe'],
-        ];
+        return [[['id'], 'safe']];
     }
 
     public function search($params)
     {
-        $query = PalletType::find();
+        $query = Merging::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -23,10 +21,10 @@ class PalletTypeSearch extends PalletType
         $this->load($params);
         if (!$this->validate()) {
             return $dataProvider;
-        }
+        };
 
         if (!isset($params['sort'])) {
-            $query->orderBy('priority DESC');
+            $query->orderBy('id DESC');
         }
 
         return $dataProvider;

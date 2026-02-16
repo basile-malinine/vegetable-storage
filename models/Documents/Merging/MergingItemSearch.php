@@ -1,21 +1,26 @@
 <?php
 
-namespace app\models\PalletType;
+namespace app\models\Documents\Merging;
 
+use app\models\Documents\Merging\MergingItem;
 use yii\data\ActiveDataProvider;
 
-class PalletTypeSearch extends PalletType
+class MergingItemSearch extends MergingItem
 {
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['priority', 'name'], 'safe'],
+            [['assortment_name'], 'safe'],
         ];
     }
 
     public function search($params)
     {
-        $query = PalletType::find();
+        $query = MergingItem::find()
+            ->joinWith('merging')
+            ->joinWith('acceptance')
+            ->where(['merging.id' => $params]);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -26,9 +31,8 @@ class PalletTypeSearch extends PalletType
         }
 
         if (!isset($params['sort'])) {
-            $query->orderBy('priority DESC');
+            $query->orderBy('acceptance.id');
         }
-
         return $dataProvider;
     }
 }

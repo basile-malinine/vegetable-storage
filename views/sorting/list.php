@@ -12,8 +12,8 @@ use app\models\Documents\Moving\Moving;
 $header = 'Переборка';
 
 $session = Yii::$app->session;
-if ($session->has('old_values')) {
-    $session->remove('old_values');
+if ($session->has('sorting.old_values')) {
+    $session->remove('sorting.old_values');
 }
 
 $this->registerJs('let controllerName = "sorting";', View::POS_HEAD);

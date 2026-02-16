@@ -254,7 +254,6 @@ echo Nav::widget([
                         [
                             'label' => 'Объединение',
                             'url' => ['/merging'],
-                            'disabled' => true,
                         ],
 
                         [

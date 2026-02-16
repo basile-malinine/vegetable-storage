@@ -211,10 +211,15 @@ class Remainder extends Base
      * @param $stock_id integer|null Склад
      * @param $assortment_ids integer|array|null Номенклатура
      * @param $exceptIds integer[]|null Исключить ID Поставок
+     * @param $isFree bool|false true - Только со свободным остатком
      * @return array Список Поставок
      */
     public static function getListAcceptance(
-        int $company_own_id = null, int $stock_id = null, int|array $assortment_ids = null, array $exceptIds = []): array
+        int $company_own_id = null,
+        int $stock_id = null,
+        int|array $assortment_ids = null,
+        array $exceptIds = [],
+        bool $isFree = false): array
     {
         $query = self::find()
             ->select(['acceptance_id']);
@@ -234,7 +239,9 @@ class Remainder extends Base
         $list = [];
         foreach ($listIds as $id) {
             $model = self::findOne(['acceptance_id' => $id]);
-            $list[$id] = $model->label;
+            if ($isFree && self::testForFree($model->acceptance_id) || !$isFree) {
+                $list[$id] = $model->label;
+            }
         }
 
         return $list;

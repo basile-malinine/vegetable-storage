@@ -134,8 +134,8 @@ class AcceptanceController extends BaseCrudController
         $model->date_close = (new DateTime('now'))->format('Y-m-d H:i');
         $model->save();
         $session = Yii::$app->session;
-        if ($session->has('old_values')) {
-            $session->remove('old_values');
+        if ($session->has('acceptance.old_values')) {
+            $session->remove('acceptance.old_values');
         }
 
         $this->redirect(['acceptance/edit/' . $model->id]);
