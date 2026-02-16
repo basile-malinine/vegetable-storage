@@ -6,9 +6,11 @@ use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Acceptance\AcceptanceItem;
+use app\models\Documents\Shipment\Shipment;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\PalletType\PalletType;
+use app\models\ShipmentType\ShipmentType;
 use app\models\Stock\Stock;
 use yii\db\Exception;
 
@@ -215,11 +217,11 @@ class Remainder extends Base
      * @return array Список Поставок
      */
     public static function getListAcceptance(
-        int $company_own_id = null,
-        int $stock_id = null,
+        int       $company_own_id = null,
+        int       $stock_id = null,
         int|array $assortment_ids = null,
-        array $exceptIds = [],
-        bool $isFree = false): array
+        array     $exceptIds = [],
+        bool      $isFree = false): array
     {
         $query = self::find()
             ->select(['acceptance_id']);
@@ -311,7 +313,12 @@ class Remainder extends Base
             $remainder->acceptance_id = $shipmentAcceptance->acceptance->id;
             $remainder->company_own_id = $shipmentAcceptance->acceptance->company_own_id;
             $remainder->stock_id = $shipmentAcceptance->acceptance->stock_id;
-            $remainder->assortment_id = $shipmentAcceptance->shipment->parentDoc->items[0]->assortment_id;
+            if ($shipmentAcceptance->shipment->type_id === Shipment::TYPE_MERGING) {
+                $remainder->assortment_id = $shipmentAcceptance->shipment
+                    ->parentDoc->items[0]->acceptance->items[0]->assortment_id;
+            } else {
+                $remainder->assortment_id = $shipmentAcceptance->shipment->parentDoc->items[0]->assortment_id;
+            }
             $remainder->quantity = $shipmentAcceptance->quantity;
             $remainder->pallet_type_id = $shipmentAcceptance->pallet_type_id;
             $remainder->quantity_pallet = $shipmentAcceptance->quantity_pallet;
