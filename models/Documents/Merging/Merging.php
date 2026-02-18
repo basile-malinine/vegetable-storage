@@ -273,8 +273,8 @@ class Merging extends Base
             return false;
         }
 
-        $acceptance = $this->resultAcceptance;
-        $acceptance->delete();
+        // Удаляем, если есть
+        $this->resultAcceptance?->delete();
 
         foreach ($this->shipments as $shipment) {
             $shipment->delete();
