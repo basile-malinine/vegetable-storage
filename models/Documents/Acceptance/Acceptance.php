@@ -2,8 +2,6 @@
 
 namespace app\models\Documents\Acceptance;
 
-use app\models\Documents\Merging\Merging;
-use app\models\Documents\Sorting\Sorting;
 use DateTime;
 
 use Yii;
@@ -11,10 +9,13 @@ use Yii;
 use app\models\Base;
 use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Increase\Increase;
+use app\models\Documents\Merging\Merging;
 use app\models\Documents\Moving\Moving;
+use app\models\Documents\Packing\Packing;
 use app\models\Documents\Refund\Refund;
 use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
+use app\models\Documents\Sorting\Sorting;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 
@@ -54,6 +55,7 @@ class Acceptance extends Base
     const TYPE_INCREASE = 4;
     const TYPE_SORTING = 5;
     const TYPE_MERGING = 6;
+    const TYPE_PACKING = 7;
     const TYPE_LIST = [
         self::TYPE_DELIVERY => 'Поставка',
         self::TYPE_REFUND => 'Возврат',
@@ -61,6 +63,7 @@ class Acceptance extends Base
         self::TYPE_INCREASE => 'Оприходование',
         self::TYPE_SORTING => 'Переборка',
         self::TYPE_MERGING => 'Объединение',
+        self::TYPE_PACKING => 'Фасовка',
     ];
 
     /**
@@ -195,6 +198,10 @@ class Acceptance extends Base
                 case self::TYPE_MERGING:
                     // Создание позиции для Приёмки по Объединению создаётся в самом док-те Объединение
                     return false;
+                // По фасовке
+                case self::TYPE_PACKING:
+                    // Создание позиции для Приёмки по Фасовке создаётся в самом док-те Фасовка
+                    return false;
             }
             foreach ($docItems as $item) {
                 $acceptanceItem = new AcceptanceItem();
@@ -255,6 +262,9 @@ class Acceptance extends Base
                 break;
             case self::TYPE_MERGING:
                 return $this->hasOne(Merging::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_PACKING:
+                return $this->hasOne(Packing::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;

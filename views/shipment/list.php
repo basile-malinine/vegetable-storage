@@ -35,6 +35,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             || $model->type_id === Shipment::TYPE_DECREASE
             || $model->type_id === Shipment::TYPE_SORTING
             || $model->type_id === Shipment::TYPE_MERGING
+            || $model->type_id === Shipment::TYPE_PACKING
                 ? []
                 : [
                     'class' => 'contextMenuRow',

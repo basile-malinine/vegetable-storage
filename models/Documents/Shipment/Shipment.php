@@ -49,12 +49,14 @@ class Shipment extends Base
     const TYPE_DECREASE = 3;
     const TYPE_SORTING = 4;
     const TYPE_MERGING = 5;
+    const TYPE_PACKING = 6;
     const TYPE_LIST = [
         self::TYPE_ORDER => 'Заказ',
         self::TYPE_MOVING => 'Перемещение',
         self::TYPE_DECREASE => 'Списание',
         self::TYPE_SORTING => 'Переборка',
         self::TYPE_MERGING => 'Объединение',
+        self::TYPE_PACKING => 'Фасовка',
     ];
 
     /**

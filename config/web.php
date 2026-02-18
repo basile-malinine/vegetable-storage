@@ -236,6 +236,12 @@ $config = [
                 // MergingItemController Позиция для Объединения
                 'merging-item/<action:(add)>/<id:\d+>' => 'merging-item/<action>',
                 'merging-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'merging-item/<action>',
+
+                // PackingController Фасовка
+                'packing/<action:(edit|delete)>/<id:\d+>' => 'packing/<action>',
+                // PackingItemController Позиция для Фасовки
+                'packing-item/<action:(add)>/<id:\d+>' => 'packing-item/<action>',
+                'packing-item/<action:(edit)>/<id:\d+>/<id2:\d+>' => 'packing-item/<action>',
             ],
         ],
     ],

@@ -2,13 +2,15 @@
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
-use app\models\Documents\Acceptance\Acceptance;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
+use yii\web\View;
 
-$header = 'Приёмки';
+use app\models\Documents\Packing\Packing;
 
-$this->registerJs('let controllerName = "acceptance";', \yii\web\View::POS_HEAD);
+$header = 'Фасовка';
+
+$this->registerJs('let controllerName = "packing";', View::POS_HEAD);
 $this->registerJsFile('@web/js/contextmenu-list.js');
 ?>
 
@@ -16,7 +18,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
     <div class="page-top-panel">
         <div class="page-top-panel-header d-flex">
             <?= $header ?>
-            <a href="/acceptance/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
+            <a href="/packing/create" class="btn btn-light btn-outline-secondary btn-sm mt-1 ms-auto pe-3">
                 <i class="fa fa-plus"></i>
                 <span class="ms-2">Добавить</span>
             </a>
@@ -26,16 +28,11 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
 
-        'rowOptions' => function (Acceptance $model, $key, $index, $grid) {
-            return $model->type_id === Acceptance::TYPE_INCREASE
-            || $model->type_id === Acceptance::TYPE_SORTING
-            || $model->type_id === Acceptance::TYPE_MERGING
-            || $model->type_id === Acceptance::TYPE_PACKING
-                ? []
-                : [
-                    'class' => 'contextMenuRow',
-                    'data-row-id' => $model->id,
-                ];
+        'rowOptions' => function (Packing $model, $key, $index, $grid) {
+            return [
+                'class' => 'contextMenuRow',
+                'data-row-id' => $model->id,
+            ];
         },
 
         'columns' => [
@@ -52,21 +49,15 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
-            // Дата приёмки
+            // Дата
             [
                 'attribute' => 'date',
                 'enableSorting' => false,
                 'value' => function ($model) {
-                    if ($model->date == null) {
-                        return '';
-                    }
                     return date("d.m.Y", strtotime($model->date));
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px;'
-                ],
-                'contentOptions' => [
-                    'style' => 'text-align: center;'
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',
@@ -75,65 +66,82 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
 
             // Предприятие
             [
-                'format' => 'raw',
                 'attribute' => 'company_own_id',
                 'enableSorting' => false,
                 'value' => 'companyOwn.name',
                 'headerOptions' => [
-                    'style' => 'width: 200px;'
-                ],
-            ],
-
-            // Склад
-            [
-                'format' => 'raw',
-                'attribute' => 'stock_id',
-                'enableSorting' => false,
-                'value' => 'stock.name',
-                'headerOptions' => [
-                    'style' => 'width: 100px;'
-                ],
-            ],
-
-            //  Основание
-            [
-                'attribute' => 'type_id',
-                'label' => 'Основание',
-                'enableSorting' => false,
-                'value' => function (Acceptance $model) {
-                    return Acceptance::TYPE_LIST[$model->type_id]
-                        . ' ' . $model->parentDoc->label;
-                },
-                'headerOptions' => [
-                    'style' => 'width: 450px; text-align: center;'
+                    'style' => 'width: 180px; text-align: center;'
                 ],
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',
                 ],
             ],
 
-            // Принято
+            // Склад
             [
-                'attribute' => 'delivery_id',
-                'label' => 'Принято',
+                'attribute' => 'stock_id',
                 'enableSorting' => false,
-                'value' => function (Acceptance $model) {
-                    $val = '';
-                    if ($model->date_close) {
-                        $val = $model->items[0]->label;
+                'value' => 'stock.name',
+                'headerOptions' => [
+                    'style' => 'width: 100px; text-align: center;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Номенклатура
+            [
+                'attribute' => 'assortment_id',
+                'enableSorting' => false,
+                'value' => 'assortment.name',
+                'headerOptions' => [
+                    'style' => 'width: 180px; text-align: center;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Количество
+            [
+                'format' => 'html',
+                'attribute' => 'quantity',
+                'enableSorting' => false,
+                'value' => function (Packing $model) {
+                    $val = $model->quantity ?? 0;
+                    if ($model->assortment->unit->is_weight) {
+                        $val = number_format($val, 1, '.', ' ');
+                    } else {
+                        $val = number_format($val, 0, '.', ' ');
+                    }
+                    $val .= ' (' . $model->assortment->unit->name . ')';
+                    if (!$model->items || count($model->items) < 2) {
+                        return '<span style="color: red; font-weight: bold;">' . $val . '</span>';
                     }
 
                     return $val;
                 },
                 'headerOptions' => [
-                    'style' => 'width: 200px;'
+                    'style' => 'width: 100px;'
+                ],
+                'contentOptions' => [
+                    'style' => 'text-align: right;'
                 ],
             ],
 
             // Комментарий
             [
+                'format' => 'html',
                 'attribute' => 'comment',
                 'enableSorting' => false,
+                'value' => function (Packing $model) {
+                    if (!$model->items) {
+                        return '<span style="color: red; font-weight: bold;">У Фасовки нет состава Приёмок</span>';
+                    }
+
+                    return $model->comment;
+                },
                 'filterInputOptions' => [
                     'class' => 'form-control form-control-sm',
                 ],

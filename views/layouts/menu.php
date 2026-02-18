@@ -259,7 +259,6 @@ echo Nav::widget([
                         [
                             'label' => 'Фасовка',
                             'url' => ['/packing'],
-                            'disabled' => true,
                         ],
                     ],
                 ],
