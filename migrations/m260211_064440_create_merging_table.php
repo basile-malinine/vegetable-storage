@@ -14,9 +14,9 @@ class m260211_064440_create_merging_table extends Migration
     {
         $this->createTable('{{%merging}}', [
             'id' => $this->primaryKey(),
-            'company_own_id' => $this->integer()->notNull()->comment('Номенклатура'),
-            'stock_id' => $this->integer()->notNull()->comment('Предприятие'),
-            'assortment_id' => $this->integer()->notNull()->comment('Склад'),
+            'company_own_id' => $this->integer()->notNull()->comment('Предприятие'),
+            'stock_id' => $this->integer()->notNull()->comment('Склад'),
+            'assortment_id' => $this->integer()->notNull()->comment('Номенклатура'),
             'date' => $this->timestamp()->notNull()->comment('Дата объединения'),
             'date_close' => $this->timestamp()->null()->comment('Дата закрытия'),
             'comment' => $this->text()->null()->comment('Комментарий'),
