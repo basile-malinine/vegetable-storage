@@ -17,8 +17,12 @@ use kartik\select2\Select2;
 use app\models\Documents\Acceptance\Acceptance;
 
 $acceptanceTypes = Acceptance::TYPE_LIST;
-unset($acceptanceTypes[Acceptance::TYPE_INCREASE]);
-unset($acceptanceTypes[Acceptance::TYPE_SORTING]);
+unset(
+    $acceptanceTypes[Acceptance::TYPE_INCREASE],
+    $acceptanceTypes[Acceptance::TYPE_SORTING],
+    $acceptanceTypes[Acceptance::TYPE_MERGING],
+    $acceptanceTypes[Acceptance::TYPE_PACKING]
+);
 
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;

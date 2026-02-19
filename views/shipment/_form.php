@@ -20,9 +20,13 @@ use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
 
 $shipmentTypes = Shipment::TYPE_LIST;
-unset($shipmentTypes[Shipment::TYPE_MOVING]);
-unset($shipmentTypes[Shipment::TYPE_DECREASE]);
-unset($shipmentTypes[Shipment::TYPE_SORTING]);
+unset(
+    $shipmentTypes[Shipment::TYPE_MOVING],
+    $shipmentTypes[Shipment::TYPE_DECREASE],
+    $shipmentTypes[Shipment::TYPE_SORTING],
+    $shipmentTypes[Shipment::TYPE_MERGING],
+    $shipmentTypes[Shipment::TYPE_PACKING],
+);
 
 $docLabel = $docLabel ?? null;
 $actionID = Yii::$app->controller->action->id;
