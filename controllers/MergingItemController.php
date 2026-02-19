@@ -112,7 +112,6 @@ class MergingItemController extends BaseCrudController
     public function actionChangeAcceptance()
     {
         $acceptance_id = Yii::$app->request->post('acceptance_id');
-        $remainder = Remainder::findOne(['acceptance_id' => $acceptance_id]);
         $data['quantity'] = Remainder::getFreeByAcceptance($acceptance_id, 'quantity');
         $data['pallet_type_id'] = Remainder::getFreeByAcceptance($acceptance_id, 'pallet_type_id');
         $data['quantity_pallet'] = Remainder::getFreeByAcceptance($acceptance_id, 'quantity_pallet');
