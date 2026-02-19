@@ -51,7 +51,7 @@ class m260218_091128_create_packing_item_table extends Migration
             'shipment_id',
             '{{%shipment}}',
             'id',
-            'CASCADE'
+            'NO ACTION'
         );
     }
 
