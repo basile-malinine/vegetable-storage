@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
 use kartik\select2\Select2;
 
 use app\models\Assortment\Assortment;
+use app\models\Assortment\AssortmentGroup;
 use app\models\Documents\Merging\MergingItem;
 use app\models\Documents\Remainder\Remainder;
 use app\models\PalletType\PalletType;
@@ -32,12 +33,21 @@ $assortment = $model->merging->assortment;
 $groupId = $assortment->assortment_group_id;
 $isWeight = $assortment->unit->is_weight;
 $weight = $assortment->weight;
-$assortmentIds = Assortment::find()->select('assortment.id')
+$parentGroupId = $assortment->parent_id; // Основная группа Классификатора.
+// Получаем Ids подгрупп для основной группы.
+$assortmentGroupIds = AssortmentGroup::find()
+    ->select('id')
+    ->where(['parent_id' => $parentGroupId])
+    ->column();
+// Получаем Ids Номенклатуры из основной группы Классификатора.
+$assortmentIds = Assortment::find()
+    ->select('assortment.id')
     ->joinWith('unit')
-    ->where(['assortment_group_id' => $groupId])
+    ->andWhere(['assortment_group_id' => $assortmentGroupIds])
     ->andWhere(['unit.is_weight' => $isWeight])
     ->andWhere(['assortment.weight' => $weight])
     ->column();
+// Список Приёмок на остатке.
 $acceptanceList = Remainder::getListAcceptance(
     $company_own_id,
     $stock_id,
