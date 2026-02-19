@@ -12,6 +12,7 @@ use app\models\Documents\Delivery\Delivery;
 use app\models\Documents\Merging\Merging;
 use app\models\Documents\Moving\Moving;
 use app\models\Documents\Order\Order;
+use app\models\Documents\Packing\Packing;
 use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Sorting\Sorting;
 use app\models\LegalSubject\LegalSubject;
@@ -181,6 +182,9 @@ class Shipment extends Base
                 break;
             case self::TYPE_MERGING:
                 return $this->hasOne(Merging::class, ['id' => 'parent_doc_id']);
+                break;
+            case self::TYPE_PACKING:
+                return $this->hasOne(Packing::class, ['id' => 'parent_doc_id']);
                 break;
             default:
                 return null;

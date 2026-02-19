@@ -80,4 +80,24 @@ class PackingController extends BaseCrudController
 
         return '';
     }
+
+    public function actionClose()
+    {
+        $id = \Yii::$app->request->post('id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $this->findModel($id);
+        $model->close();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionOpen()
+    {
+        $id = \Yii::$app->request->post('id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $this->findModel($id);
+        $model->open();
+
+        return $this->redirect(['index']);
+    }
 }

@@ -62,7 +62,8 @@ $actionId = Yii::$app->controller->action->id;
             <!-- Номенклатура -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'assortment_id')->widget(Select2::class, [
-                    'data' => Assortment::getList(),
+                    // Временно, пока не разработан алгоритм для штучной Номенклатуры...
+                    'data' => Assortment::getList(['weight' => 1.0]),
                     'options' => [
                         'id' => 'assortment',
                         'placeholder' => 'Не назначена',
@@ -151,8 +152,6 @@ $actionId = Yii::$app->controller->action->id;
                         'class' => 'btn btn-light btn-outline-secondary btn-sm mt-1 pe-3',
                         'style' => 'height: 31px',
                         'hidden' => $actionId === 'create',
-
-                        'disabled' => $actionId == 'edit', // Временно, до реализации
                     ]);
                 ?>
             </div>
@@ -178,7 +177,7 @@ $actionId = Yii::$app->controller->action->id;
         </div>
 
         <div class="form-group">
-            <?php if ($model->isChanges() || !$model->items || count($model->items) < 2) : ?>
+            <?php if ($model->isChanges() || !$model->items) : ?>
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>

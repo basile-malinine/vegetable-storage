@@ -116,7 +116,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                         $val = number_format($val, 0, '.', ' ');
                     }
                     $val .= ' (' . $model->assortment->unit->name . ')';
-                    if (!$model->items || count($model->items) < 2) {
+                    if (!$model->items) {
                         return '<span style="color: red; font-weight: bold;">' . $val . '</span>';
                     }
 
