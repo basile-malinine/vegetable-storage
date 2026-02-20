@@ -47,7 +47,8 @@ $acceptanceList = Remainder::getListAcceptance(
     $stock_id,
     $assortmentIds,
     $ids,
-    true
+    true,
+    $model->quantity && 0
 );
 
 $this->registerJsFile('@web/js/packing-item.js');

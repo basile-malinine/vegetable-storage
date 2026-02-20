@@ -214,6 +214,7 @@ class Remainder extends Base
      * @param $assortment_ids integer|array|null Номенклатура
      * @param $exceptIds integer[]|null Исключить ID Поставок
      * @param $isFree bool|false true - Только со свободным остатком
+     * @param $addFree float|int Добавить к свободному
      * @return array Список Поставок
      */
     public static function getListAcceptance(
@@ -221,7 +222,8 @@ class Remainder extends Base
         int       $stock_id = null,
         int|array $assortment_ids = null,
         array     $exceptIds = [],
-        bool      $isFree = false): array
+        bool      $isFree = false,
+        float|int $addFree = 0): array
     {
         $query = self::find()
             ->select(['acceptance_id']);
@@ -241,8 +243,8 @@ class Remainder extends Base
         $list = [];
         foreach ($listIds as $id) {
             $model = self::findOne(['acceptance_id' => $id]);
-            if ($isFree && self::testForFree($model->acceptance_id) || !$isFree) {
-                $list[$id] = $model->label;
+            if ($isFree && self::testForFree($model->acceptance_id, $addFree) || !$isFree) {
+                $list[$id] = $model->getLabel($addFree);
             }
         }
 
@@ -252,16 +254,17 @@ class Remainder extends Base
     /**
      * Проверка: есть ли в Приёмке свободное кол-во Номенклатуры, Паллетов или Тары
      *
-     * @param $acceptance_id int Приёмка
+     * @param int $acceptance_id Приёмка
+     * @param float|int $addFree Добавить к свободному
      * @return bool true, если есть свободное кол-во
      */
-    private static function testForFree(int $acceptance_id): bool
+    private static function testForFree(int $acceptance_id, float|int $addFree = 0): bool
     {
-        $q = (int)self::getFreeByAcceptance($acceptance_id, 'quantity');
+        $q = (int)self::getFreeByAcceptance($acceptance_id, 'quantity', $addFree);
         $qp = self::getFreeByAcceptance($acceptance_id, 'quantity_pallet');
         $qpk = self::getFreeByAcceptance($acceptance_id, 'quantity_paks');
 
-        return $q || $qp || $qpk;
+        return $q + $addFree || $qp || $qpk;
     }
 
     /**
@@ -424,12 +427,15 @@ class Remainder extends Base
 
     /**
      * ------------------------------------------------------------------------- Свободно по Приёмке
-     * @param $acceptance_id int Id Приёмки
-     * @param $attr string Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     * @param int $acceptance_id Id Приёмки
+     * @param string $attr Атрибут ('quantity' | 'quantity_pallet' | 'quantity_paks')
+     * @param float|int $addFree Добавить к свободному
+     *
+     * @return bool|int|mixed|string
      */
-    public static function getFreeByAcceptance(int $acceptance_id, string $attr)
+    public static function getFreeByAcceptance(int $acceptance_id, string $attr, float|int $addFree = 0)
     {
         return self::getQuantityByAcceptance($acceptance_id, $attr) -
-            ShipmentAcceptance::getOpenByAcceptance($acceptance_id, $attr);
+            ShipmentAcceptance::getOpenByAcceptance($acceptance_id, $attr) + $addFree;
     }
 }
