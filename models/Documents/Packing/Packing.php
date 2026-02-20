@@ -138,8 +138,10 @@ class Packing extends Base
             $this->assortmentInfo = $this->assortment->unit->name . ' / ' . $this->assortment->weight;
         }
         // Если есть состав
+        foreach ($this->items as $item) {
+            $this->quantity += $item->weight / $this->assortment->weight;
+        }
         if ($this->items) {
-            $this->quantity = array_sum(ArrayHelper::getColumn($this->items, 'weight'));
             $this->quantity_pallet = array_sum(ArrayHelper::getColumn($this->items, 'quantity_pallet'));
             $this->quantity_paks = array_sum(ArrayHelper::getColumn($this->items, 'quantity_paks'));
             $this->weight = $this->quantity * $this->assortment->weight;

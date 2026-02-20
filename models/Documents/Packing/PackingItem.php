@@ -2,10 +2,12 @@
 
 namespace app\models\Documents\Packing;
 
-use app\models\Assortment\Assortment;
 use Yii;
 
+use app\models\Assortment\Assortment;
+use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
+use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\Shipment;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 
@@ -25,10 +27,12 @@ use app\models\Documents\Shipment\ShipmentAcceptance;
  * @property Packing $packing
  * @property Shipment $shipment
  */
-class PackingItem extends \app\models\Base
+class PackingItem extends Base
 {
     public int|null $pallet_type_id = null;
     public float|null $weight = null;
+    public Assortment|null $assortment;
+    public string $error_qnt = '';
 
     /**
      * {@inheritdoc}
@@ -63,14 +67,63 @@ class PackingItem extends \app\models\Base
 
             [['quantity'], 'number'],
 
-            [['comment'], 'string'],
+            [['comment', 'error_qnt'], 'string'],
 
             [['packing_id', 'acceptance_id'], 'unique', 'targetAttribute' => ['packing_id', 'acceptance_id']],
 
             [['acceptance_id'], 'exist', 'skipOnError' => true, 'targetClass' => Acceptance::class, 'targetAttribute' => ['acceptance_id' => 'id']],
             [['packing_id'], 'exist', 'skipOnError' => true, 'targetClass' => Packing::class, 'targetAttribute' => ['packing_id' => 'id']],
             [['shipment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Shipment::class, 'targetAttribute' => ['shipment_id' => 'id']],
+
+            [[
+                'quantity',
+                'quantity_pallet',
+                'quantity_paks'], 'testQuantity', 'skipOnEmpty' => true],
         ];
+    }
+
+    public function testQuantity($attribute, $params)
+    {
+        $qntFree = Remainder::getFreeByAcceptance($this->acceptance_id, $attribute);
+        $qnt = 0;
+        $session = Yii::$app->session;
+        switch ($attribute) {
+            case 'quantity':
+                $qntFree = $session->has('packing.free-qnt') ? $session->get('packing.free-qnt')['quantity'] : $qntFree;
+                $qnt = $this->quantity;
+                break;
+            case 'quantity_pallet':
+                $qntFree = $session->has('packing.free-qnt') ? $session->get('packing.free-qnt')['quantity_pallet'] : $qntFree;
+                $qnt = $this->quantity_pallet;
+                break;
+            case 'quantity_paks':
+                $qntFree = $session->has('packing.free-qnt') ? $session->get('packing.free-qnt')['quantity_paks'] : $qntFree;
+                $qnt = $this->quantity_paks;
+                break;
+        }
+        if ($qnt > $qntFree) {
+            $this->addError($attribute, 'Максимум ' . $qntFree);
+        } elseif ($attribute === 'quantity') {
+            $testMultiplicity =
+                $this->packing->assortment->getMultiplicityQnt($this->acceptance->items[0]->assortment, $qnt);
+            if ($testMultiplicity['min'] != $testMultiplicity['max']) {
+                $msgWeightPack = '(' . $this->packing->assortment->weight . ' кг), ближайшее количество: ';
+                if ($testMultiplicity['min']) {
+                    $msgWeightPack .= $testMultiplicity['min'];
+                }
+                if ($testMultiplicity['max'] <= $qntFree) {
+                    if (!$testMultiplicity['min']) {
+                        $msgWeightPack .= $testMultiplicity['max'];
+                    } else {
+                        $msgWeightPack .= ' или ' . $testMultiplicity['max'];
+                    }
+                }
+                $msgWeightPack .= '.';
+                $this->addError($attribute, '');
+                $this->addError('error_qnt', 'Количество должно быть кратным фасовке '
+                    . $msgWeightPack);
+            }
+        }
     }
 
     /**
@@ -98,7 +151,8 @@ class PackingItem extends \app\models\Base
 
         $item = $this->acceptance->items[0];
         $this->pallet_type_id = $item->pallet_type_id;
-        $this->weight = $this->quantity * $this->acceptance->items[0]->assortment->weight;
+        $this->assortment = $this->acceptance->items[0]->assortment;
+        $this->weight = $this->quantity * $this->assortment->weight;
     }
 
     public function beforeSave($insert)

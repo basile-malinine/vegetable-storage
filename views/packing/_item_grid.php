@@ -87,7 +87,6 @@ use app\models\PalletType\PalletType;
         [
             'format' => 'raw',
             'attribute' => 'pallet_type_id',
-            'label' => 'Тип паллет',
             'enableSorting' => false,
             'value' => function (PackingItem $model) {
                 $position = $model->acceptance->items[0];
@@ -96,7 +95,7 @@ use app\models\PalletType\PalletType;
                     : null;
             },
             'headerOptions' => [
-                'style' => 'width: 160px;'
+                'style' => 'width: 120px;'
             ],
         ],
 
@@ -106,9 +105,6 @@ use app\models\PalletType\PalletType;
             'attribute' => 'quantity_pallet',
             'label' => 'Кол-во паллет',
             'enableSorting' => false,
-            'value' => function (PackingItem $model) {
-                return $model->quantity_pallet;
-            },
             'contentOptions' => [
                 'style' => 'text-align: right;'
             ],
@@ -123,14 +119,24 @@ use app\models\PalletType\PalletType;
             'attribute' => 'quantity_paks',
             'label' => 'Кол-во тары',
             'enableSorting' => false,
-            'value' => function (PackingItem $model) {
-                return $model->quantity_paks;
-            },
             'contentOptions' => [
                 'style' => 'text-align: right;'
             ],
             'headerOptions' => [
                 'style' => 'width: 100px;'
+            ],
+        ],
+
+        // Вес
+        [
+            'format' => 'raw',
+            'attribute' => 'weight',
+            'enableSorting' => false,
+            'contentOptions' => [
+                'style' => 'text-align: right;'
+            ],
+            'headerOptions' => [
+                'style' => 'width: 80px;'
             ],
         ],
 

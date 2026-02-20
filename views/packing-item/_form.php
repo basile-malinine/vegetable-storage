@@ -136,7 +136,13 @@ $this->registerJsFile('@web/js/packing-item.js');
                     'disabled' => $model->acceptance && !$model->acceptance->items[0]->quantity_paks,
                 ]) ?>
             </div>
+
         </div>
+            <div style="margin-top: -15px">
+                <?= $form->field($model, 'error_qnt', ['enableAjaxValidation' => true])->input('text', [
+                    'style' => 'display: none;',
+                ])->label(false) ?>
+            </div>
 
         <!-- Комментарий -->
         <div class="row form-last-row">

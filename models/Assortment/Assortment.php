@@ -28,7 +28,6 @@ use app\models\User\User;
  *
  * @property Unit $unit
  * @property User $createdBy
-
  * @property ActiveQuery $group Magic
  */
 class Assortment extends Base
@@ -168,5 +167,37 @@ class Assortment extends Base
             ->indexBy('id')
             ->orderBy(['name' => SORT_ASC])
             ->column();
+    }
+
+    /**
+     * Возвращает ближайшие кратные значения по позиции $assortment для количества $quantity
+     *
+     * @param Assortment $assortment
+     * @param float|int $quantity
+     * @return float[]|int[] ['min' => $min, 'max' => $max], где $min - кратное меньше $quantity, $max - кратное больше $quantity
+     */
+    public function getMultiplicityQnt(Assortment $assortment, float|int $quantity): array
+    {
+        $min = $max = .0;
+        $weightSelf = $this->weight; // Собственный вес
+        $weightAssortment = $assortment->weight; // Вес тестируемой позиции
+        $weightQuantity = $assortment->weight * $quantity; // Вес тестируемого количества
+
+        $kResult = $this->weight == 1 ? 1 : 10;
+        $kSource = $weightAssortment == 1 ? 1 : 10;
+        $k = $kResult != $kSource ? 10 : $kResult;
+        // Наименьшее кратное
+        $lcm = (float)gmp_lcm($weightSelf * $kResult, $weightAssortment * $kSource) / $k;
+        if (($weightQuantity * 1000) % ($lcm * 1000) == 0) {
+            $min = $max = $quantity;
+        } else {
+            $min = (int)($weightQuantity / $lcm) * $lcm / $weightAssortment;
+            $max = (int)($weightQuantity / $lcm + 1) * $lcm / $weightAssortment;
+        }
+
+        return [
+            'min' => $min,
+            'max' => $max,
+        ];
     }
 }

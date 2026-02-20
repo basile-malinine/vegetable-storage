@@ -62,8 +62,7 @@ $actionId = Yii::$app->controller->action->id;
             <!-- Номенклатура -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'assortment_id')->widget(Select2::class, [
-                    // Временно, пока не разработан алгоритм для штучной Номенклатуры...
-                    'data' => Assortment::getList(['weight' => 1.0]),
+                    'data' => Assortment::getList(),
                     'options' => [
                         'id' => 'assortment',
                         'placeholder' => 'Не назначена',
