@@ -4,6 +4,11 @@ namespace app\models;
 
 use yii\db\ActiveRecord;
 
+/**
+ * @property int $acceptance_id
+ * @property float|int $quantity
+ */
+
 class Base extends ActiveRecord
 {
     // Список Названий

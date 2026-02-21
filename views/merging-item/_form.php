@@ -53,7 +53,8 @@ $acceptanceList = Remainder::getListAcceptance(
     $stock_id,
     $assortmentIds,
     $ids,
-    true
+    true,
+    $model ?? null
 );
 
 $this->registerJsFile('@web/js/merging-item.js');
@@ -85,6 +86,7 @@ $this->registerJsFile('@web/js/merging-item.js');
                     'data' => $acceptanceList,
                     'options' => [
                         'placeholder' => 'Не назначена',
+                        'disabled' => $actionId === 'edit',
                     ],
                 ]) ?>
             </div>
