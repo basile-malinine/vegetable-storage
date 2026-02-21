@@ -48,8 +48,7 @@ $acceptanceList = Remainder::getListAcceptance(
     $assortmentIds,
     $ids,
     true,
-    $model->quantity && 0
-);
+    $model ?? null);
 
 $this->registerJsFile('@web/js/packing-item.js');
 ?>
@@ -80,6 +79,7 @@ $this->registerJsFile('@web/js/packing-item.js');
                     'data' => $acceptanceList,
                     'options' => [
                         'placeholder' => 'Не назначена',
+                        'disabled' => $actionId === 'edit',
                     ],
                 ]) ?>
             </div>
