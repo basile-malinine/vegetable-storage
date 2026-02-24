@@ -2,11 +2,12 @@
 
 namespace app\controllers;
 
+use yii\web\Response;
+
 use app\models\Documents\Order\Order;
 use app\models\Documents\Refund\Refund;
 use app\models\Documents\Refund\RefundItemSearch;
 use app\models\Documents\Refund\RefundSearch;
-use yii\web\Response;
 
 class RefundController extends BaseCrudController
 {
@@ -60,14 +61,20 @@ class RefundController extends BaseCrudController
     public function actionChangeType()
     {
         $type_id = \Yii::$app->request->post('type_id');
+        $company_id = \Yii::$app->request->post('company_id');
+        $stock_id = \Yii::$app->request->post('stock_id');
+        $executor_id = \Yii::$app->request->post('executor_id');
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $docList = [];
         switch ($type_id) {
-            case Refund::TYPE_EXECUTOR:
-                // Возврат по прямому заказу (выбираем только привязанные Заказы к Поставке)
-                $docList = Order::getList('type_id = ' . Order::TYPE_EXECUTOR
-                    . ' AND delivery_id IS NOT NULL');
+            case Order::TYPE_STOCK:
+                // Возврат по заказу со склада
+                $docList = Order::getListForRefund($type_id, $company_id, $stock_id, null);
+                break;
+            case Order::TYPE_EXECUTOR:
+                // Возврат по прямому заказу
+                $docList = Order::getListForRefund($type_id, $company_id, null, $executor_id);
                 break;
         }
 
@@ -82,15 +89,15 @@ class RefundController extends BaseCrudController
         \Yii::$app->response->format = Response::FORMAT_JSON;
 
         $company_own_id = null;
-        switch ($type_id) {
-            case Refund::TYPE_EXECUTOR:
-                $order = Order::findOne($order_id);
-                $company_own_id = $order->company_own_id;
-                break;
-        }
+        $order = Order::findOne($order_id);
+        $company_own_id = $order?->company_own_id;
+        $stock_id = $order?->stock_id;
+        $executor_id = $order?->executor_id;
 
         return [
             'company_own_id' => $company_own_id,
+            'stock_id' => $stock_id,
+            'executor_id' => $executor_id
         ];
     }
 }

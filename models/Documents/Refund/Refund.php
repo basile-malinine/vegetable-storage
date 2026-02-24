@@ -2,13 +2,13 @@
 
 namespace app\models\Documents\Refund;
 
-use app\models\Documents\Acceptance\Acceptance;
 use DateTime;
 
 use Yii;
 
 use app\models\Assortment\Assortment;
 use app\models\Base;
+use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Order\Order;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Stock\Stock;
@@ -18,6 +18,10 @@ use app\models\Stock\Stock;
  *
  * @property int $id
  * @property int $type_id Тип возврата
+ * @property int $order_company_own_id Предприятие в заказе
+ * @property int $order_stock_id Склад в заказе
+ * @property int $order_executor_id Исполнитель в заказе
+ * @property int $status_id Статус возврата
  * @property int $order_id Заказ
  * @property int $company_own_id Предприятие
  * @property int $stock_id Склад
@@ -38,9 +42,13 @@ use app\models\Stock\Stock;
  */
 class Refund extends Base
 {
-    const TYPE_EXECUTOR = 2;
-    const TYPE_LIST = [
-        self::TYPE_EXECUTOR => 'Исполнитель',
+    public float|int $accepted = .0;
+
+    const STATUS_REFUND = 1;
+    const STATUS_REFUND_FROM_REMAINDER = 2;
+    const STATUS_LIST = [
+        self::STATUS_REFUND => 'Возврат',
+        self::STATUS_REFUND_FROM_REMAINDER => 'Возврат с остатка',
     ];
 
     /**
@@ -66,10 +74,10 @@ class Refund extends Base
                 'updated_at'], 'default', 'value' => null
             ],
 
-            [['company_own_id'], 'validateCompanyOwn', 'skipOnEmpty' => false],
-
             [[
                 'type_id',
+                'order_company_own_id',
+                'status_id',
                 'order_id',
                 'stock_id'], 'required'
             ],
@@ -77,6 +85,10 @@ class Refund extends Base
             [[
                 'type_id',
                 'order_id',
+                'order_company_own_id',
+                'order_stock_id',
+                'order_executor_id',
+                'status_id',
                 'company_own_id',
                 'stock_id',
                 'created_by'], 'integer'
@@ -96,11 +108,6 @@ class Refund extends Base
         ];
     }
 
-    public function validateCompanyOwn($attribute, $params)
-    {
-        $attr = $attribute;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -108,10 +115,14 @@ class Refund extends Base
     {
         return [
             'id' => 'ID',
-            'type_id' => 'Тип возврата',
+            'type_id' => 'Тип заказа',
+            'status_id' => 'Статус возврата',
             'order_id' => 'Заказ',
-            'company_own_id' => 'Предприятие',
-            'stock_id' => 'Склад',
+            'order_company_own_id' => 'Предприятие в заказе',
+            'order_stock_id' => 'Склад в заказе',
+            'order_executor_id' => 'Исполнитель в заказе',
+            'company_own_id' => 'Предприятие получатель',
+            'stock_id' => 'Склад получатель',
             'date' => 'Дата возврата',
             'date_close' => 'Дата закрытия',
             'comment' => 'Комментарий',
@@ -149,7 +160,8 @@ class Refund extends Base
     {
         if ($insert && $this->type_id && $this->order_id && $this->company_own_id && $this->stock_id) {
             switch ($this->type_id) {
-                case self::TYPE_EXECUTOR:
+                case Order::TYPE_STOCK:
+                case Order::TYPE_EXECUTOR:
                     $order = Order::findOne($this->order_id);
                     foreach ($order->items as $item) {
                         $refundItem = new RefundItem();
@@ -161,6 +173,19 @@ class Refund extends Base
                     break;
             }
         }
+    }
+
+    public function beforeDelete() {
+        if ($this->acceptance) {
+            if ($this->acceptance->date_close) {
+                Yii::$app->session->setFlash('error', 'Удаление не возможно. По Возврату закрыта Приёмка.');
+                return false;
+            } else {
+                $this->acceptance->delete();
+            }
+        }
+
+        return true;
     }
 
     /**

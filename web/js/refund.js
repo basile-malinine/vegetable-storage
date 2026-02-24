@@ -1,27 +1,56 @@
 $(() => {
-    const $refundType = $('#refund-type');
-    $refundType.on('change', changeRefundType);
+    const $orderType = $('#order-type');
+    const $orderCompany = $('#order-company-own-id');
+    const $orderStock = $('#order-stock-id');
+    const $divStock = $('#div-order-stock')
+    const $orderExecutor = $('#order-executor-id');
+    const $divExecutor = $('#div-order-executor');
+
+    function OnChangeOrderType() {
+        $orderType.on('change', changeOrderType);
+        $orderCompany.on('change', changeOrderType);
+        $orderStock.on('change', changeOrderType);
+        $orderExecutor.on('change', changeOrderType);
+    }
+
+    function OffChangeOrderType() {
+        $orderType.off('change', changeOrderType);
+        $orderCompany.off('change', changeOrderType);
+        $orderStock.off('change', changeOrderType);
+        $orderExecutor.off('change', changeOrderType);
+    }
+
     const $order = $('#order-id');
     $order.on('change', changeOrder);
 
-    function changeRefundType() {
+    function changeOrderType() {
         $.post(
             '/refund/change-type',
             {
-                'type_id': $refundType.val()
+                'type_id': $orderType.val(),
+                'company_id': $orderCompany.val(),
+                'stock_id': $orderStock.val(),
+                'executor_id': $orderExecutor.val(),
             },
             (data) => {
+                if (+$orderType.val() === 1) {
+                    $divExecutor.hide();
+                    $divStock.show();
+                } else if (+$orderType.val() === 2) {
+                    $divStock.hide();
+                    $divExecutor.show();
+                } else {
+                    $divStock.hide();
+                    $divExecutor.hide();
+                }
                 const val = $order.val() ? +$order.val() : 0;
                 $order.children("option").remove();
                 $.each(data, function (key, value) {
                     $order.append($("<option>", {'value': key, 'text': value}));
                 });
-                if (localStorage.getItem('refund-type') === $refundType.val()) {
-                    $order.val(val).trigger('change');
-                } else {
-                    $order.val(0).trigger('change');
-                    localStorage.setItem('refund-type', $refundType.val());
-                }
+                $order.off('change', changeOrder);
+                $order.val(val).trigger('change');
+                $order.on('change', changeOrder);
             }
         );
     }
@@ -30,12 +59,17 @@ $(() => {
         $.post(
             '/refund/change-order',
             {
-                'type_id': $refundType.val(),
+                'type_id': $orderType.val(),
                 'order_id': $order.val()
             },
             (data) => {
+                OffChangeOrderType();
+                $('#order-company-own-id').val(data['company_own_id']).trigger('change');
+                $('#order-stock-id').val(data['stock_id']).trigger('change');
+                $('#order-executor-id').val(data['executor_id']).trigger('change');
                 $('#hidden-company-own-id').val(data['company_own_id']);
                 $('#company-own-id').val(data['company_own_id']).trigger('change');
+                OnChangeOrderType();
             }
         );
     }
@@ -64,5 +98,6 @@ $(() => {
         ]
     });
 
-    changeRefundType();
+    OnChangeOrderType();
+    changeOrderType();
 });

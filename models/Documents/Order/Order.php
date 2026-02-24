@@ -2,7 +2,6 @@
 
 namespace app\models\Documents\Order;
 
-use app\models\Documents\Shipment\Shipment;
 use DateTime;
 
 use Yii;
@@ -12,6 +11,7 @@ use yii\helpers\ArrayHelper;
 use app\models\Base;
 use app\models\DistributionCenter\DistributionCenter;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Shipment\Shipment;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
 use app\models\Stock\Stock;
@@ -57,6 +57,7 @@ use app\models\Stock\Stock;
 class Order extends Base
 {
     public $shipped = null;
+    public $returned = null;
     public $accepted_dist_center = null;
 
     // Типы Заказа -------------------------------------------------------------
@@ -359,10 +360,13 @@ class Order extends Base
             ? $this->items[0]->label
             : 'Нет состава';
 
+        $stockExecutorName = ($this->type_id == self::TYPE_STOCK) ? $this->stock->name : $this->executor->name;
+
         return '№' . $this->id
             . ' ' . $this->date
             . ', ' . $this->buyer->name
-            . ', ' . $this->distributionCenter->name
+            . ' (' . $this->distributionCenter->name . ')'
+            . ', ' . $stockExecutorName
             . ', ' . $assortment;
     }
 
@@ -375,24 +379,53 @@ class Order extends Base
 
     public static function getList($condition = null): array
     {
-        $list = self::find()
+        $ids = self::find()
             ->select(['id'])
             ->where($condition)
             ->indexBy('id')
             ->column();
 
         $orderList = [];
-        foreach ($list as $item) {
-            $model = self::findOne($item);
-            $orderList[$item] = $model->label;
+        foreach ($ids as $id) {
+            $model = self::findOne($id);
+            $orderList[$id] = $model->label;
         }
 
         return $orderList;
     }
 
-    public static function getListForRefundExecutor()
+    public static function getListForRefund($typeId, $companyId, $stockId, $executorId, $refundId = null): array
     {
-        return self::getList('type_id = ' . self::TYPE_EXECUTOR .
-            'delivery_id IS NOT NULL');
+        $query = self::find()
+            ->select(['id']);
+
+        if ($typeId) {
+            $query->andWhere(['type_id' => $typeId]);
+            if ($typeId == self::TYPE_EXECUTOR) {
+                // Только привязанные к Поставке
+                $query->andWhere('delivery_id IS NOT NULL');
+            }
+        }
+        if ($companyId) {
+            $query->andWhere(['company_own_id' => $companyId]);
+        }
+        if ($stockId) {
+            $query->andWhere(['stock_id' => $stockId]);
+        }
+        if ($executorId) {
+            $query->andWhere(['executor_id' => $executorId]);
+        }
+
+        $ids = $query->indexBy('id')->column();
+
+        $orderList = [];
+        foreach ($ids as $id) {
+            $model = self::findOne($id);
+            if ($model && $model->shipped > 0) {
+                $orderList[$id] = $model->label;
+            }
+        }
+
+        return $orderList;
     }
 }

@@ -13,7 +13,9 @@ use yii\bootstrap5\Html;
 use kartik\date\DatePicker;
 use kartik\select2\Select2;
 
+use app\models\Documents\Order\Order;
 use app\models\LegalSubject\LegalSubject;
+use app\models\Manager\Manager;
 use app\models\Stock\Stock;
 
 use app\models\Documents\Refund\Refund;
@@ -63,29 +65,67 @@ $actionID = Yii::$app->controller->action->id;
             <!-- Тип -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
-                    'data' => Refund::TYPE_LIST,
+                    'data' => Order::TYPE_LIST,
                     'options' => [
                         'placeholder' => 'Не назначен',
-                        'id' => 'refund-type',
+                        'id' => 'order-type',
+                        'disabled' => $actionID === 'edit',
+                    ],
+                ]); ?>
+            </div>
+            <!-- Предприятие в заказе -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'order_company_own_id')->widget(Select2::class, [
+                    'data' => LegalSubject::getList('is_own = true'),
+                    'options' => [
+                        'id' => 'order-company-own-id',
+                        'placeholder' => 'Не назначено',
                         'disabled' => $actionID === 'edit',
                     ],
                 ]); ?>
             </div>
 
-            <!-- Заказ -->
-            <div class="form-col col-6" <?= $actionID === 'edit' ? 'hidden' : '' ?>>
-                <?= $form->field($model, 'order_id')->widget(Select2::class, [
-                    'data' => [],
+            <!-- Склад в заказе -->
+            <div class="form-col col-2" id="div-order-stock" <?= $model->type_id === Order::TYPE_EXECUTOR ? 'hidden' : '' ?>>
+                <?= $form->field($model, 'order_stock_id')->widget(Select2::class, [
+                    'data' => Stock::getList(),
                     'options' => [
-                        'id' => 'order-id',
+                        'id' => 'order-stock-id',
                         'placeholder' => 'Не назначено',
+                        'disabled' => $actionID === 'edit',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Исполнитель в заказе -->
+            <div class="form-col col-2" id="div-order-executor"  <?= $model->type_id === Order::TYPE_STOCK ? 'hidden' : '' ?>>
+                <?= $form->field($model, 'order_executor_id')->widget(Select2::class, [
+                    'data' => Manager::getList('is_purchasing_mng'),
+                    'options' => [
+                        'id' => 'order-executor-id',
+                        'placeholder' => 'Не назначено',
+                        'disabled' => $actionID === 'edit',
                     ],
                 ]); ?>
             </div>
         </div>
 
         <div class="row form-row">
-            <!-- Предприятие -->
+            <!-- Заказ -->
+            <div class="form-col col-8">
+                <?= $form->field($model, 'order_id')->widget(Select2::class, [
+                    'data' => [],
+                    'options' => [
+                        'id' => 'order-id',
+                        'placeholder' => 'Не назначено',
+                        'disabled' => $actionID === 'edit',
+                    ],
+                ]); ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Предприятие получатель -->
             <div class="form-col col-4">
                 <div hidden>
                     <?= $form->field($model, 'company_own_id')->textInput([
@@ -102,13 +142,24 @@ $actionID = Yii::$app->controller->action->id;
                 ]); ?>
             </div>
 
-            <!-- Склад -->
+            <!-- Склад получатель -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'stock_id')->widget(Select2::class, [
                     'data' => Stock::getList(),
                     'options' => [
                         'id' => 'stock-id',
                         'placeholder' => 'Не назначено',
+                    ],
+                ]); ?>
+            </div>
+
+            <!-- Статус возврата -->
+            <div class="form-col col-2">
+                <?= $form->field($model, 'status_id')->widget(Select2::class, [
+                    'data' => Refund::STATUS_LIST,
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                        'id' => 'refund-status',
                     ],
                 ]); ?>
             </div>

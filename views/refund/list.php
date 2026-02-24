@@ -2,9 +2,11 @@
 
 /** @var ActiveDataProvider $dataProvider Данные */
 
-use app\models\Documents\Refund\Refund;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
+
+use app\models\Documents\Order\Order;
+use app\models\Documents\Refund\Refund;
 
 $header = 'Возвраты по заказам';
 
@@ -52,7 +54,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 'attribute' => 'type_id',
                 'enableSorting' => false,
                 'value' => function (Refund $model) {
-                    return Refund::TYPE_LIST[$model->type_id];
+                    return Order::TYPE_LIST[$model->type_id];
                 },
                 'headerOptions' => [
                     'style' => 'width: 100px; text-align: center;'
