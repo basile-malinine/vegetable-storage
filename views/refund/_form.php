@@ -63,7 +63,7 @@ $actionID = Yii::$app->controller->action->id;
             </div>
 
             <!-- Тип -->
-            <div class="form-col col-2">
+            <div class="form-col col-2" <?=  $actionID  === 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'type_id')->widget(Select2::class, [
                     'data' => Order::TYPE_LIST,
                     'options' => [
@@ -74,7 +74,7 @@ $actionID = Yii::$app->controller->action->id;
                 ]); ?>
             </div>
             <!-- Предприятие в заказе -->
-            <div class="form-col col-4">
+            <div class="form-col col-4" <?=  $actionID  === 'edit' ? 'hidden' : '' ?>>
                 <?= $form->field($model, 'order_company_own_id')->widget(Select2::class, [
                     'data' => LegalSubject::getList('is_own = true'),
                     'options' => [
@@ -86,7 +86,9 @@ $actionID = Yii::$app->controller->action->id;
             </div>
 
             <!-- Склад в заказе -->
-            <div class="form-col col-2" id="div-order-stock" <?= $model->type_id === Order::TYPE_EXECUTOR ? 'hidden' : '' ?>>
+            <div class="form-col col-2" id="div-order-stock"
+                <?= $model->type_id === Order::TYPE_EXECUTOR || $actionID  === 'edit' ? 'hidden' : '' ?>
+            >
                 <?= $form->field($model, 'order_stock_id')->widget(Select2::class, [
                     'data' => Stock::getList(),
                     'options' => [
@@ -98,7 +100,9 @@ $actionID = Yii::$app->controller->action->id;
             </div>
 
             <!-- Исполнитель в заказе -->
-            <div class="form-col col-2" id="div-order-executor"  <?= $model->type_id === Order::TYPE_STOCK ? 'hidden' : '' ?>>
+            <div class="form-col col-2" id="div-order-executor"
+                <?= $model->type_id === Order::TYPE_STOCK || $actionID  === 'edit' ? 'hidden' : '' ?>
+            >
                 <?= $form->field($model, 'order_executor_id')->widget(Select2::class, [
                     'data' => Manager::getList('is_purchasing_mng'),
                     'options' => [
@@ -110,7 +114,7 @@ $actionID = Yii::$app->controller->action->id;
             </div>
         </div>
 
-        <div class="row form-row">
+        <div class="row form-row" <?=  $actionID  === 'edit' ? 'hidden' : '' ?>>
             <!-- Заказ -->
             <div class="form-col col-8">
                 <?= $form->field($model, 'order_id')->widget(Select2::class, [

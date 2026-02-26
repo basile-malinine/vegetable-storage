@@ -10,7 +10,9 @@ use yii\helpers\ArrayHelper;
 
 use app\models\Base;
 use app\models\DistributionCenter\DistributionCenter;
+use app\models\Documents\Acceptance\Acceptance;
 use app\models\Documents\Delivery\Delivery;
+use app\models\Documents\Refund\Refund;
 use app\models\Documents\Shipment\Shipment;
 use app\models\LegalSubject\LegalSubject;
 use app\models\Manager\Manager;
@@ -42,6 +44,7 @@ use app\models\Stock\Stock;
  *
  * @property Delivery $delivery
  * @property Shipment $shipment Отгрузка
+ * @property Refund[] $refunds Возвраты
  * @property LegalSubject $buyer
  * @property DistributionCenter $distributionCenter
  * @property Stock $stock
@@ -208,6 +211,10 @@ class Order extends Base
         $this->shipped = number_format($this->shipped, 1, '.', ' ');
         $this->accepted_dist_center = array_sum(ArrayHelper::getColumn($this->items, 'accepted_dist_center'));
         $this->accepted_dist_center = number_format($this->accepted_dist_center, 1, '.', ' ');
+
+        $refundIds = ArrayHelper::getColumn($this->refunds, 'id');
+        $refundAcceptances = Acceptance::findAll(['parent_doc_id' => $refundIds]);
+        $this->returned = array_sum(ArrayHelper::getColumn($refundAcceptances, 'quantity'));
     }
 
     public function beforeSave($insert)
@@ -268,6 +275,17 @@ class Order extends Base
     {
         return $this->hasOne(Shipment::class, ['parent_doc_id' => 'id'])
             ->andWhere(['type_id' => Shipment::TYPE_ORDER]);
+    }
+
+    /**
+     * ------------------------------------------- Возвраты
+     * Gets query for [[Shipment]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRefunds()
+    {
+        return $this->hasMany(Refund::class, ['order_id' => 'id']);
     }
 
     /**
@@ -361,13 +379,16 @@ class Order extends Base
             : 'Нет состава';
 
         $stockExecutorName = ($this->type_id == self::TYPE_STOCK) ? $this->stock->name : $this->executor->name;
+        $returned = $this->returned;
+        $returned = $returned ? 'Возвраты: ' . $returned : '';
 
         return '№' . $this->id
             . ' ' . $this->date
             . ', ' . $this->buyer->name
             . ' (' . $this->distributionCenter->name . ')'
             . ', ' . $stockExecutorName
-            . ', ' . $assortment;
+            . ', ' . $assortment
+            . ', ' . $returned;
     }
 
     // ------------------------------------------- Short Label
@@ -421,7 +442,7 @@ class Order extends Base
         $orderList = [];
         foreach ($ids as $id) {
             $model = self::findOne($id);
-            if ($model && $model->shipped > 0) {
+            if ($model && $model->shipped > $model->returned) {
                 $orderList[$id] = $model->label;
             }
         }

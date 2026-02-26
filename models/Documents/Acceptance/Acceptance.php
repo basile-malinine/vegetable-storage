@@ -48,6 +48,8 @@ use app\models\Stock\Stock;
  */
 class Acceptance extends Base
 {
+    public float|int $quantity = .0; // Количество ($this->items[0]->quantity
+
     // Типы Приёмки -------------------------------------------------------------
     const TYPE_DELIVERY = 1;
     const TYPE_REFUND = 2;
@@ -144,8 +146,8 @@ class Acceptance extends Base
     {
         parent::afterFind();
 
-        $this->date = $this->date
-            ? date('d.m.Y', strtotime($this->date)) : null;
+        $this->date = $this->date ? date('d.m.Y', strtotime($this->date)) : null;
+        $this->quantity = $this->items ? $this->items[0]->quantity : .0;
     }
 
     public function beforeSave($insert)

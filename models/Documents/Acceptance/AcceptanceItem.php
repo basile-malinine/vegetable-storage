@@ -2,13 +2,13 @@
 
 namespace app\models\Documents\Acceptance;
 
+use Yii;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
-use app\models\Documents\Remainder\Remainder;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\PalletType\PalletType;
 use app\models\Quality\Quality;
-use Yii;
 
 /**
  * This is the model class for table "acceptance_item".
@@ -97,6 +97,17 @@ class AcceptanceItem extends Base
         }
         if ($qnt < $qntShipment) {
             $this->addError($attribute, 'Минимум ' . $qntShipment);
+        }
+
+        $session = Yii::$app->session;
+        $typeId = $this->acceptance->type_id;
+        if ($typeId == Acceptance::TYPE_REFUND) {
+            if ($attribute == 'quantity') {
+                $freeQnt = $session->get('refund.free')['quantity'];
+                if ($qnt > $freeQnt) {
+                    $this->addError($attribute, 'Максимум ' . $freeQnt);
+                }
+            }
         }
     }
 

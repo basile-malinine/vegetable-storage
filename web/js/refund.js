@@ -33,12 +33,15 @@ $(() => {
                 'executor_id': $orderExecutor.val(),
             },
             (data) => {
+                // Тип Заказа == Склад
                 if (+$orderType.val() === 1) {
                     $divExecutor.hide();
                     $divStock.show();
+                    // Тип Заказа == Исполнитель
                 } else if (+$orderType.val() === 2) {
                     $divStock.hide();
                     $divExecutor.show();
+                    // Тип Заказа не указан
                 } else {
                     $divStock.hide();
                     $divExecutor.hide();
