@@ -442,7 +442,8 @@ class Order extends Base
         $orderList = [];
         foreach ($ids as $id) {
             $model = self::findOne($id);
-            if ($model && $model->shipped > $model->returned) {
+            $shipped = (float)str_replace(' ', '', $model->shipped);
+            if ($model && $shipped > $model->returned) {
                 $orderList[$id] = $model->label;
             }
         }

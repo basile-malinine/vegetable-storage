@@ -102,7 +102,7 @@ class AcceptanceItem extends Base
         $session = Yii::$app->session;
         $typeId = $this->acceptance->type_id;
         if ($typeId == Acceptance::TYPE_REFUND) {
-            if ($attribute == 'quantity') {
+            if ($attribute == 'quantity' && $session->has('refund.free')) {
                 $freeQnt = $session->get('refund.free')['quantity'];
                 if ($qnt > $freeQnt) {
                     $this->addError($attribute, 'Максимум ' . $freeQnt);

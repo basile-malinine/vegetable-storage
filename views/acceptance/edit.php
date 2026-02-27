@@ -26,6 +26,9 @@ switch ($model->type_id) {
     case Acceptance::TYPE_REFUND:
         $refund = Refund::findOne($model->parent_doc_id);
         $docLabel .= ' по Возврату ' . $refund->label;
+        if (Yii::$app->session->has('refund.free')) {
+            Yii::$app->session->remove('refund.free');
+        }
         break;
     case Acceptance::TYPE_MOVING:
         $moving = Moving::findOne($model->parent_doc_id);
