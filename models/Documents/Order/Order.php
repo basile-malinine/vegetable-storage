@@ -221,7 +221,7 @@ class Order extends Base
     {
         $this->date = $this->date ? date('Y-m-d', strtotime($this->date)) : null;
 
-        $now = (new DateTime('now'))->format('Y-m-d');
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
         if ($insert) {
             $this->created_by = Yii::$app->user->id;
             $this->created_at = $now;

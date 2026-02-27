@@ -176,7 +176,7 @@ class Packing extends Base
         $this->date = $this->date
             ? date('Y-m-d H:i', strtotime($this->date)) : null;
 
-        $now = (new DateTime('now'))->format('Y-m-d H:i');
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
         if ($insert) {
             $this->created_by = Yii::$app->user->id;
             $this->created_at = $now;

@@ -72,7 +72,7 @@ class Employee extends Base
 
     public function beforeSave($insert)
     {
-        $now = (new DateTime('now'))->format('Y-m-d');
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
         if ($insert) {
             $this->created_by = Yii::$app->user->id;
             $this->created_at = $now;

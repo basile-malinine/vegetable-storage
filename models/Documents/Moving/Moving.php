@@ -149,7 +149,7 @@ class Moving extends Base
         $this->date = $this->date ? date('Y-m-d H:i', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
 
-        $now = (new DateTime('now'))->format('Y-m-d');
+        $now = (new DateTime('now'))->format('Y-m-d H:i:s');
         if ($insert) {
             $this->created_by = Yii::$app->user->id;
             $this->created_at = $now;
