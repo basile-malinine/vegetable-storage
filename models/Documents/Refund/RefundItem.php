@@ -2,8 +2,11 @@
 
 namespace app\models\Documents\Refund;
 
+use Yii;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
+use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\PalletType\PalletType;
 use app\models\Quality\Quality;
 
@@ -65,7 +68,29 @@ class RefundItem extends Base
             [['refund_id', 'assortment_id'], 'unique', 'targetAttribute' => ['refund_id', 'assortment_id']],
             [['assortment_id'], 'exist', 'skipOnError' => true, 'targetClass' => Assortment::class, 'targetAttribute' => ['assortment_id' => 'id']],
             [['refund_id'], 'exist', 'skipOnError' => true, 'targetClass' => Refund::class, 'targetAttribute' => ['refund_id' => 'id']],
+
+            [['quantity'], 'testQuantity', 'skipOnEmpty' => true],
         ];
+    }
+
+    public function testQuantity($attribute, $params)
+    {
+        $acceptance = $this->refund->acceptance;
+        $qntShipment = $acceptance
+            ? ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, $attribute)
+            : .0;
+        $qnt = $this->quantity;
+        if ($qnt < $qntShipment) {
+            $this->addError($attribute, 'Минимум ' . $qntShipment);
+        }
+
+        $session = Yii::$app->session;
+        if ($session->has('refund.free')) {
+            $freeQnt = $session->get('refund.free')['quantity'];
+            if ($qnt > $freeQnt) {
+                $this->addError($attribute, 'Максимум ' . $freeQnt);
+            }
+        }
     }
 
     /**
@@ -103,6 +128,7 @@ class RefundItem extends Base
     {
         return $this->hasOne(Refund::class, ['id' => 'refund_id']);
     }
+
     public function getLabel()
     {
         return $this->assortment->name

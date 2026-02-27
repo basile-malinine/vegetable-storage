@@ -3,7 +3,6 @@
 use yii\data\ActiveDataProvider;
 use yii\web\View;
 
-use app\models\Documents\Order\Order;
 use app\models\Documents\Refund\Refund;
 
 /** @var View $this */
@@ -16,7 +15,12 @@ $this->registerJsFile('@web/js/refund.js');
 
 $header = 'Возврат №' . $model->id;
 $docLabel = '';
-$order = Order::findOne($model->order_id);
+$order = $model->order;
 $docLabel = 'по Заказу ' . $order->label;
+
+if (Yii::$app->session->has('refund.free')) {
+    // Удаляем прежнее значение свободного количества, если есть
+    Yii::$app->session->remove('refund.free');
+}
 
 echo $this->render('_form', compact(['model', 'dataProviderItem', 'header', 'docLabel']));
