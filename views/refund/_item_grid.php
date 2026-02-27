@@ -8,7 +8,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 
 use app\models\Documents\Acceptance\Acceptance;
-
+use app\models\PalletType\PalletType;
 ?>
 
 <?php Pjax::begin(['id' => 'delivery-items']) ?>
@@ -58,6 +58,45 @@ use app\models\Documents\Acceptance\Acceptance;
                         '.', ' ')
                     . ' (' . $model->assortment->unit->name . ')';
             },
+            'contentOptions' => [
+                'style' => 'text-align: right;'
+            ],
+            'headerOptions' => [
+                'style' => 'width: 100px;'
+            ],
+        ],
+
+        // Тип паллет
+        [
+            'format' => 'raw',
+            'attribute' => 'pallet_type_id',
+            'enableSorting' => false,
+            'value' => function ($model) {
+                return $model->pallet_type_id ? PalletType::findOne($model->pallet_type_id)->name : null;
+            },
+            'headerOptions' => [
+                'style' => 'width: 100px;'
+            ],
+        ],
+
+        // Количество паллет
+        [
+            'format' => 'raw',
+            'attribute' => 'quantity_pallet',
+            'enableSorting' => false,
+            'contentOptions' => [
+                'style' => 'text-align: right;'
+            ],
+            'headerOptions' => [
+                'style' => 'width: 100px;'
+            ],
+        ],
+
+        // Количество тары
+        [
+            'format' => 'raw',
+            'attribute' => 'quantity_paks',
+            'enableSorting' => false,
             'contentOptions' => [
                 'style' => 'text-align: right;'
             ],

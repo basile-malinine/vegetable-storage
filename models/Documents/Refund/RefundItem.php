@@ -4,17 +4,25 @@ namespace app\models\Documents\Refund;
 
 use app\models\Assortment\Assortment;
 use app\models\Base;
+use app\models\PalletType\PalletType;
+use app\models\Quality\Quality;
 
 /**
  * This is the model class for table "refund_item".
  *
  * @property int $refund_id Возврат
  * @property int $assortment_id Номенклатура
+ * @property int $quality_id Качество
+ * @property int $pallet_type_id Тип паллета
  * @property float $quantity Количество
+ * @property int $quantity_pallet Количество паллет
+ * @property int $quantity_paks Количество тары
  * @property string|null $comment Комментарий
  *
  * @property Assortment $assortment
  * @property Refund $refund
+ * @property Quality $quality
+ * @property PalletType $palletType
  * @property string $label
  */
 class RefundItem extends Base
@@ -43,7 +51,11 @@ class RefundItem extends Base
 
             [[
                 'refund_id',
-                'assortment_id'], 'integer'
+                'assortment_id',
+                'quality_id',
+                'pallet_type_id',
+                'quantity_pallet',
+                'quantity_paks'], 'integer'
             ],
 
             [['comment'], 'string'],
@@ -64,7 +76,10 @@ class RefundItem extends Base
         return [
             'refund_id' => 'ID',
             'assortment_id' => 'Номенклатура',
+            'pallet_type_id' => 'Тип паллет',
             'quantity' => 'Количество',
+            'quantity_pallet' => 'Кол-во паллет',
+            'quantity_paks' => 'Кол-во тары',
             'comment' => 'Комментарий',
         ];
     }
@@ -93,5 +108,15 @@ class RefundItem extends Base
         return $this->assortment->name
             . ' ' . $this->quantity
             . ' (' . $this->assortment->unit->name . ')';
+    }
+
+    public function getQuality()
+    {
+        return $this->hasOne(Quality::class, ['id' => 'quality_id']);
+    }
+
+    public function getPalletType()
+    {
+        return $this->hasOne(PalletType::class, ['id' => 'pallet_type_id']);
     }
 }

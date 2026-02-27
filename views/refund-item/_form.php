@@ -6,10 +6,12 @@
 
 /** @var string $header */
 
+use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 use app\models\Documents\Refund\RefundItem;
+use app\models\PalletType\PalletType;
 ?>
 
 <div class="page-top-panel">
@@ -35,6 +37,35 @@ use app\models\Documents\Refund\RefundItem;
             <!-- Количество -->
             <div class="form-col col-3">
                 <?= $form->field($model, 'quantity')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+
+            <!-- Тип паллет -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'pallet_type_id')->widget(Select2::class, [
+                    'data' => PalletType::getList(),
+                    'options' => [
+                        'placeholder' => 'Не назначен',
+                    ],
+                    'pluginOptions' => [
+                        'allowClear' => true,
+                    ],
+                ]) ?>
+            </div>
+
+            <!-- Кол-во паллет -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'quantity_pallet')->textInput([
+                    'maxlength' => true,
+                    'class' => 'form-control form-control-sm text-end',
+                ]) ?>
+            </div>
+
+            <!-- Кол-во тары -->
+            <div class="form-col col-3">
+                <?= $form->field($model, 'quantity_paks')->textInput([
                     'maxlength' => true,
                     'class' => 'form-control form-control-sm text-end',
                 ]) ?>
