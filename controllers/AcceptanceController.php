@@ -57,6 +57,8 @@ class AcceptanceController extends BaseCrudController
             if ($this->postRequestAnalysis($model)) {
                 $this->redirect(['index']);
             }
+        } else {
+            $model->validate();
         }
 
         return $this->render('edit', compact('model', 'dataProviderItem'));

@@ -30,6 +30,8 @@ use app\models\Quality\Quality;
  */
 class AcceptanceItem extends Base
 {
+    public string $error_is_void = '';
+
     /**
      * {@inheritdoc}
      */
@@ -63,7 +65,7 @@ class AcceptanceItem extends Base
 
             [['quantity'], 'number', 'numberPattern' => '/^\d+(\.\d{1})?$/'],
 
-            [['comment'], 'string'],
+            [['comment', 'error_is_void'], 'string'],
 
             [[
                 'acceptance_id',
@@ -82,6 +84,10 @@ class AcceptanceItem extends Base
 
     public function testQuantity($attribute, $params)
     {
+        // При создании Приёмки позицию не проверяем
+        if (Yii::$app->controller->action->id === 'create') {
+            return true;
+        }
         $qntShipment = ShipmentAcceptance::getQuantityByAcceptance($this->acceptance_id, $attribute);
         $qnt = 0;
         switch ($attribute) {
@@ -97,6 +103,11 @@ class AcceptanceItem extends Base
         }
         if ($qnt < $qntShipment) {
             $this->addError($attribute, 'Минимум ' . $qntShipment);
+        } elseif ($this->isVoid()) {
+            $this->addError('quantity', '');
+            $this->addError('quantity_pallet', '');
+            $this->addError('quantity_paks', '');
+            $this->addError('error_is_void', 'Все поля Кол-во не могут быть пустыми.');
         }
 
         $session = Yii::$app->session;
@@ -129,7 +140,12 @@ class AcceptanceItem extends Base
 
     public function beforeSave($insert)
     {
-        if ($this->acceptance->type_id === Acceptance::TYPE_DELIVERY) {
+        $typeId = $this->acceptance->type_id;
+        if (
+            $typeId === Acceptance::TYPE_DELIVERY
+            || $typeId === Acceptance::TYPE_REFUND
+            || $typeId === Acceptance::TYPE_MOVING
+        ) {
             $session = Yii::$app->session;
             if ($session->has('acceptance.old_values')) {
                 $session->remove('acceptance.old_values');
@@ -196,5 +212,11 @@ class AcceptanceItem extends Base
     public function isChanges(): bool
     {
         return Yii::$app->session->has('acceptance.old_values');
+    }
+
+    // Возвращает true, если Приёмка пустая.
+    public function isVoid(): bool
+    {
+        return !+$this->quantity && !$this->quantity_pallet && !$this->quantity_paks;
     }
 }

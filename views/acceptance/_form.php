@@ -118,6 +118,11 @@ $actionID = Yii::$app->controller->action->id;
             <div class="form-col col-10">
                 <?= isset($dataProviderItem) ? $this->render('_item_grid', compact(['model', 'dataProviderItem'])) : '' ?>
             </div>
+            <div class="form-col col-10" style="margin-top: -15px">
+                <?= $form->field($model, 'error_items')->input('text', [
+                    'style' => 'display: none;',
+                ])->label(false) ?>
+            </div>
         </div>
 
         <!-- Комментарий -->
@@ -133,10 +138,10 @@ $actionID = Yii::$app->controller->action->id;
                 <?= Html::submitButton('Сохранить', [
                     'class' => 'btn btn-light btn-outline-primary btn-sm me-2'
                 ]) ?>
-            <?php elseif (!$model->date_close || $model->items[0]->isChanges() && $model->items[0]->quantity > 0): ?>
+            <?php elseif (!$model->date_close || $model->items[0]->isChanges()): ?>
                 <?= Html::a('Провести', '/acceptance/apply', [
                     'id' => 'btn-change-close',
-                    'class' => 'btn btn-light btn-outline-secondary btn-sm',
+                    'class' => 'btn btn-light btn-outline-secondary btn-sm ' . ($model->items[0]->isVoid() ? 'disabled' : ''),
                     'data' => [
                         'method' => 'post',
                         'params' => [

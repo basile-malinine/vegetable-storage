@@ -49,6 +49,7 @@ use app\models\Stock\Stock;
 class Acceptance extends Base
 {
     public float|int $quantity = .0; // Количество ($this->items[0]->quantity
+    public string $error_items = '';
 
     // Типы Приёмки -------------------------------------------------------------
     const TYPE_DELIVERY = 1;
@@ -118,7 +119,16 @@ class Acceptance extends Base
 
             [['company_own_id'], 'exist', 'skipOnError' => true, 'targetClass' => LegalSubject::class, 'targetAttribute' => ['company_own_id' => 'id']],
             [['stock_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stock::class, 'targetAttribute' => ['stock_id' => 'id']],
+
+            [['date'], 'testItem'],
         ];
+    }
+
+    public function testItem($attribute)
+    {
+        if ($this->items && $this->items[0]->isVoid()) {
+            $this->addError('error_items', 'Приёмка пустая. Чтобы провести, необходимо указать количество.');
+        }
     }
 
     /**

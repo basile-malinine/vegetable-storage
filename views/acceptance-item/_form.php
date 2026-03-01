@@ -85,6 +85,14 @@ if ($actionId == 'add') {
             </div>
         </div>
 
+        <div class="row form-row">
+            <div class="form-col col-10" style="margin-top: -6px">
+                <?= $form->field($model, 'error_is_void')->input('text', [
+                    'style' => 'display: none;',
+                ])->label(false) ?>
+            </div>
+        </div>
+
         <div class="row form-last-row">
             <!-- Комментарий -->
             <div class="form-col col-12">
