@@ -55,6 +55,7 @@ use app\models\Stock\Stock;
  * @property Stock $stock_executor Склад / Исполнитель
  * @property array $items Состав Заказа
  * @property string $label
+ * @property string shortLabel
  *
  */
 class Order extends Base
@@ -380,7 +381,7 @@ class Order extends Base
 
         $stockExecutorName = ($this->type_id == self::TYPE_STOCK) ? $this->stock->name : $this->executor->name;
         $returned = $this->returned;
-        $returned = $returned ? 'Возвраты: ' . $returned : '';
+        $returned = $returned ? ', Возвраты: ' . $returned : '';
 
         return '№' . $this->id
             . ' ' . $this->date
@@ -388,7 +389,7 @@ class Order extends Base
             . ' (' . $this->distributionCenter->name . ')'
             . ', ' . $stockExecutorName
             . ', ' . $assortment
-            . ', ' . $returned;
+            . $returned;
     }
 
     // ------------------------------------------- Short Label

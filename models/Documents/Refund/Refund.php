@@ -38,6 +38,7 @@ use app\models\Stock\Stock;
  * @property RefundItem[] $items
  * @property Stock $stock
  * @property string $label
+ * @property string $shortLabel
  * @property Acceptance $acceptance
  */
 class Refund extends Base
@@ -143,6 +144,21 @@ class Refund extends Base
 
     public function beforeSave($insert)
     {
+        // Проверка наличия Возврата без Приёмки по данному Заказу
+        if ($insert) {
+            $order = $this->order;
+            $refundWithoutAcceptance = self::getRefundWithoutAcceptance($order->id);
+            if ($refundWithoutAcceptance) {
+                $href = '/refund/edit/' . $refundWithoutAcceptance->id;
+                Yii::$app->session->setFlash('error',
+                    'Сохранение не возможно.'
+                    . ' По Заказу ' . $order->shortLabel
+                    . ' есть Возврат ' . $refundWithoutAcceptance->shortLabel . ' без Приёмки '
+                    . '<a class="btn btn-light btn-outline-secondary btn-sm ms-2 mb-1 fw-bold" href='. $href .'>Перейти...</a>');
+                return false;
+            }
+        }
+
         $this->date = $this->date ? date('Y-m-d H:i', strtotime($this->date)) : null;
         $this->date_close = $this->date_close ? date('Y-m-d H:i', strtotime($this->date_close)) : null;
 
@@ -175,7 +191,8 @@ class Refund extends Base
         }
     }
 
-    public function beforeDelete() {
+    public function beforeDelete()
+    {
         if ($this->acceptance) {
             if ($this->acceptance->date_close) {
                 Yii::$app->session->setFlash('error', 'Удаление не возможно. По Возврату закрыта Приёмка.');
@@ -283,5 +300,20 @@ class Refund extends Base
         }
 
         return $notAcceptedList;
+    }
+
+    public static function getRefundWithoutAcceptance(int $orderId): Refund|null
+    {
+        // Отыскиваем Возвраты по Заказу (orderId)
+        $refunds = Refund::find()->where(['order_id' => $orderId])->all();
+        // Проверяем все на отсутствие Приёмки
+        $refundWithoutAcceptance = null;
+        foreach ($refunds as $refund) {
+            if (!$refund->acceptance) {
+                $refundWithoutAcceptance = $refund;
+            }
+        }
+
+        return $refundWithoutAcceptance;
     }
 }
