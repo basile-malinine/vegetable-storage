@@ -42,8 +42,10 @@ use app\models\User\User;
 class Increase extends Base
 {
     const TYPE_INVENTORY = 1;
+    const TYPE_CORRECTION = 2;
     const TYPE_LIST = [
         self::TYPE_INVENTORY => 'Инвентарка',
+        self::TYPE_CORRECTION => 'Коррекция (не на остатке)',
     ];
 
     /**
@@ -127,46 +129,41 @@ class Increase extends Base
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            // Отыскиваем Приёмку на остатке
-            $remainder = Remainder::findOne(['acceptance_id' => $this->acceptance_id]);
+            // Отыскиваем Приёмку
+            $acceptance = $this->acceptance;
             // В Оприходовании создаём позицию
             $increaseItem = new IncreaseItem();
             $increaseItem->increase_id = $this->id;
-            $increaseItem->assortment_id = $remainder->assortment_id;
-            $increaseItem->quality_id = $remainder->acceptance->items[0]->quality_id;
-            $increaseItem->pallet_type_id = $remainder->pallet_type_id;
+            $increaseItem->assortment_id = $acceptance->items[0]->assortment_id;
+            $increaseItem->quality_id = $acceptance->items[0]->quality_id;
+            $increaseItem->pallet_type_id = $acceptance->items[0]->pallet_type_id;
             $increaseItem->quantity = .0;
             $increaseItem->quantity_pallet = 0;
             $increaseItem->quantity_paks = 0;
-        } else {
-            $increaseItem = $this->items[0];
-        }
-        $increaseItem->save();
 
-        // Отыскиваем Приёмку по Оприходованию
-        $newAcceptance = $this->newAcceptance;
-        // Если ещё не создана
-        if (!$newAcceptance) {
             // Создаём Приёмку с типом Оприходование
             $newAcceptance = new Acceptance();
+            $newAcceptance->acceptance_remainder_id = $this->acceptance_id;
             $newAcceptance->type_id = Acceptance::TYPE_INCREASE;
             $newAcceptance->parent_doc_id = $this->id;
             $newAcceptance->company_own_id = $this->company_own_id;
             $newAcceptance->stock_id = $this->stock_id;
             $newAcceptance->date = $this->date;
-            $newAcceptance->date_close = null;
-            $newAcceptance->comment = 'Created automatically';
+            $newAcceptance->comment = 'Created automatically, TYPE_INCREASE';
             $newAcceptance->save();
 
             // В Приёмке создаём позицию
             $newAcceptanceItem = new AcceptanceItem();
             $newAcceptanceItem->acceptance_id = $newAcceptance->id;
             $newAcceptanceItem->assortment_id = $increaseItem->assortment_id;
-            $newAcceptanceItem->quality_id = $this->items[0]->quality_id;
+            $newAcceptanceItem->quality_id = $increaseItem->quality_id;
             $newAcceptanceItem->pallet_type_id = $increaseItem->pallet_type_id;
         } else {
-            $newAcceptanceItem = $newAcceptance->items[0];
+            $increaseItem = $this->items[0];
+            $newAcceptanceItem = $this->newAcceptance->items[0];
         }
+        $increaseItem->save();
+
         $newAcceptanceItem->quantity = $increaseItem->quantity;
         $newAcceptanceItem->quantity_pallet = $increaseItem->quantity_pallet;
         $newAcceptanceItem->quantity_paks = $increaseItem->quantity_paks;
@@ -178,7 +175,7 @@ class Increase extends Base
         if ($this->date_close) {
             return false;
         }
-        $this->newAcceptance->delete();
+        $this->newAcceptance?->delete();
 
         return true;
     }
@@ -186,13 +183,8 @@ class Increase extends Base
     // Закрытие Приёмки по Оприходованию (Провести)
     public function apply()
     {
-        $newAcceptance = $this->newAcceptance;
-        if (!$newAcceptance) {
-            return false;
-        }
-
-        if ($newAcceptance->applayIncrease()) {
-            $this->date_close = $newAcceptance->date_close;
+        if ($this->newAcceptance->applay()) {
+            $this->date_close = (new DateTime('now'))->format('Y-m-d H:i');
             $this->save();
             return true;
         }
@@ -203,16 +195,13 @@ class Increase extends Base
     // Снять с остатка
     public function cancel()
     {
-        $newAcceptance = $this->newAcceptance;
-        if (!$newAcceptance) {
-            return false;
+        if ($this->newAcceptance->cancel()) {
+            $this->date_close = null;
+            $this->save();
+            return true;
         }
 
-        $newAcceptance->cancelIncrease();
-        $this->date_close = null;
-        $this->save();
-
-        return true;
+        return false;
     }
 
     /**

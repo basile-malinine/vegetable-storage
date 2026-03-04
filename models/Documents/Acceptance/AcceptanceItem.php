@@ -197,6 +197,25 @@ class AcceptanceItem extends Base
         return $this->hasOne(PalletType::class, ['id' => 'pallet_type_id']);
     }
 
+    public static function getQuantityByAcceptance($acceptance_id, $attr, $isClosed = true)
+    {
+        $qnt = .0;
+        if ($isClosed) {
+            $sql = self::find()
+                ->joinWith('acceptance')
+                ->where(['acceptance_id' => $acceptance_id])
+                ->orWhere(['acceptance.acceptance_remainder_id' => $acceptance_id])
+                ->andWhere('acceptance.date_close');
+            $qnt = $sql->sum($attr);
+        } else {
+            $qnt = self::find()
+                ->where(['acceptance_id' => $acceptance_id])
+                ->sum($attr);
+        }
+
+        return $qnt ?? 0;
+    }
+
     public function getLabel()
     {
         $quantity = (bool)$this->assortment->unit->is_weight

@@ -197,7 +197,7 @@ class Merging extends Base
                 $newAcceptance->company_own_id = $this->company_own_id;
                 $newAcceptance->stock_id = $this->stock_id;
                 $newAcceptance->date = $this->date;
-                $newAcceptance->comment = 'Created automatically';
+                $newAcceptance->comment = 'Created automatically, TYPE_MERGING';
                 $newAcceptance->save();
                 // Создаём позицию по Приёмке
                 $acceptanceItem = new AcceptanceItem();

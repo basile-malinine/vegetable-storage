@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Documents\Remainder\Remainder;
 use Yii;
 use yii\web\Response;
 
@@ -59,6 +60,24 @@ class IncreaseController extends BaseCrudController
         $dataProviderItem = $searchModel->search($this->request->queryParams);
 
         return $this->render('edit', compact('model', 'dataProviderItem'));
+    }
+
+    public function actionChangeType()
+    {
+        $type_id = \Yii::$app->request->post('type_id');
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $data = [];
+        switch ($type_id) {
+            case Increase::TYPE_INVENTORY:
+                $data = Remainder::getListAcceptance();
+                break;
+            case Increase::TYPE_CORRECTION:
+                $data = Acceptance::getListWithoutRemainder();
+                break;
+        }
+
+        return $data;
     }
 
     // При выборе Приёмки

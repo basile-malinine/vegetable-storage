@@ -75,6 +75,7 @@ if (!$model->acceptance) {
                     'data' => Increase::TYPE_LIST,
                     'options' => [
                         'id' => 'type-id',
+                        'placeholder' => 'Не назначен',
                         'disabled' => !$allowBtnSave,
                     ],
                 ]); ?>
@@ -88,7 +89,7 @@ if (!$model->acceptance) {
             </div>
             <div class="form-col col-6" <?= $actionID === 'edit' ? "hidden" : "" ?>>
                 <?= $form->field($model, 'acceptance_id')->widget(Select2::class, [
-                    'data' => Remainder::getListAcceptance(),
+                    'data' => [],
                     'options' => [
                         'id' => 'acceptance-id',
                         'placeholder' => 'Не назначена',

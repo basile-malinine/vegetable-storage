@@ -23,6 +23,7 @@ use app\models\Stock\Stock;
  * This is the model class for table "acceptance".
  *
  * @property int $id
+ * @property int $acceptance_remainder_id Приёмка на остатке (на ней меняется остаток при проводке текущей Приёмки)
  * @property int $type_id Тип приёмки
  * @property int $delivery_id Поставка
  * @property int $parent_doc_id Старший документ
@@ -100,6 +101,7 @@ class Acceptance extends Base
             ],
 
             [[
+                'acceptance_remainder_id',
                 'type_id',
                 'delivery_id',
                 'parent_doc_id',
@@ -334,8 +336,7 @@ class Acceptance extends Base
             ? $this->items[0]->label
             : 'Нет состава';
 
-        return '№' . $this->id
-            . ' ' . $this->date
+        return $this->shortLabel
             . ', ' . $this->companyOwn->name
             . ', ' . $this->stock->name
             . ', ' . $assortment;
@@ -352,38 +353,30 @@ class Acceptance extends Base
         return $position->assortment->name . ($position->quality ? $position->quality->labelSuffix : '');
     }
 
-    // Закрытие Оприходования
-    public function applayIncrease()
+    public function applay()
     {
-        // Отыскиваем исходную Приёмку на остатке
-        $parentDoc = $this->parentDoc;
-        $remainder = $parentDoc->sourceAcceptance;
+        if (Remainder::changeAcceptance($this)) {
+            $this->date_close = $this->date_close ? $this->date_close : (new DateTime('now'))->format('Y-m-d H:i');
+            $this->save();
+            $session = Yii::$app->session;
+            if ($session->has('acceptance.old_values')) {
+                $session->remove('acceptance.old_values');
+            }
+            return true;
+        }
 
-        // Проводим Оприходование
-        $remainder->applayIncrease($this->items[0]);
-
-        // Закрываем Оприходование
-        $this->date_close = (new DateTime('now'))->format('Y-m-d H:i');
-        $this->save();
-
-        return true;
+        return false;
     }
 
-    // Отмена Оприходования
-    public function cancelIncrease()
+    public function cancel()
     {
-        // Отыскиваем исходную Приёмку на остатке
-        $parentDoc = $this->parentDoc;
-        $remainder = Remainder::findOne(['acceptance_id' => $parentDoc->sourceAcceptance->acceptance_id]);
+        if (Remainder::removeAcceptance($this)) {
+            $this->date_close = null;
+            $this->save();
+            return true;
+        }
 
-        // Отменяем Оприходование
-        $remainder->cancelIncrease($this->items[0]);
-
-        // Открываем Оприходование
-        $this->date_close = null;
-        $this->save();
-
-        return true;
+        return false;
     }
 
     // Закрытие Переборки
@@ -422,5 +415,23 @@ class Acceptance extends Base
     public function cancelMerging()
     {
         return $this->cancelSorting();
+    }
+
+    public static function getListWithoutRemainder()
+    {
+        // IDs Приёмок на остатке
+        $remainderIds = array_keys(Remainder::getListAcceptance());
+        $listIds = Acceptance::find()
+            ->select('id')
+            ->where(['NOT IN', 'id', $remainderIds])
+            ->andWhere('date_close')
+            ->andWhere('acceptance_remainder_id IS NULL')
+            ->column();
+        $list = [];
+        foreach ($listIds as $id) {
+            $list[$id] = Acceptance::findOne($id)->label;
+        }
+
+        return $list;
     }
 }

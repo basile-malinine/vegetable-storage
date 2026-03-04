@@ -158,7 +158,7 @@ class Decrease extends Base
             $shipment->stock_id = $this->stock_id;
             $shipment->date = $this->date;
             $shipment->date_close = null;
-            $shipment->comment = 'Created automatically';
+            $shipment->comment = 'Created automatically, TYPE_DECREASE';
             $shipment->save();
 
             // В отгрузке создаём позицию

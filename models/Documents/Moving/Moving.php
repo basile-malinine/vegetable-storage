@@ -190,7 +190,7 @@ class Moving extends Base
             $shipment->stock_id = $this->stock_sender_id;
             $shipment->date = $this->date;
             $shipment->date_close = null;
-            $shipment->comment = 'Created automatically';
+            $shipment->comment = 'Created automatically, TYPE_MOVING';
             $shipment->save();
 
             // В отгрузке создаём позицию

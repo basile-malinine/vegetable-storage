@@ -195,7 +195,7 @@ class PackingItem extends Base
             $newShipment->company_own_id = $this->packing->company_own_id;
             $newShipment->stock_id = $this->packing->stock_id;
             $newShipment->date = $this->packing->date;
-            $newShipment->comment = 'Created automatically';
+            $newShipment->comment = 'Created automatically, TYPE_PACKING';
             $newShipment->save();
             $this->updateAttributes(['shipment_id' => $newShipment->id]);
             // Добавляем позицию для новой Отгрузки

@@ -152,6 +152,19 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ],
             ],
 
+            // На Приёмку
+            [
+                'attribute' => 'acceptance_id',
+                'enableSorting' => false,
+                'label' => 'На Приёмку',
+                'value' => function (Increase $model) {
+                    return $model->acceptance->shortLabel;
+                },
+                'headerOptions' => [
+                    'style' => 'width: 140px;'
+                ],
+            ],
+
             // Комментарий
             [
                 'attribute' => 'comment',

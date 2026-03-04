@@ -142,11 +142,12 @@ class ShipmentAcceptance extends Base
      */
     public static function getQuantityByAcceptance(int $acceptance_id, string $attr, bool $isClosed = false)
     {
+        $qnt = .0;
         if ($isClosed) {
             $qnt = self::find()
-                ->joinWith('acceptance')
+                ->joinWith('shipment')
                 ->where(['acceptance_id' => $acceptance_id])
-                ->andWhere('acceptance.date_close')
+                ->andWhere('shipment.date_close')
                 ->sum($attr);
         } else {
             $qnt = self::find()

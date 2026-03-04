@@ -196,7 +196,7 @@ class Packing extends Base
             $newAcceptance->company_own_id = $this->company_own_id;
             $newAcceptance->stock_id = $this->stock_id;
             $newAcceptance->date = $this->date;
-            $newAcceptance->comment = 'Created automatically';
+            $newAcceptance->comment = 'Created automatically, TYPE_PACKING';
             $newAcceptance->save();
             // Создаём новую позицию по Приёмке
             $newAcceptanceItem = new AcceptanceItem();

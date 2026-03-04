@@ -2,6 +2,9 @@
 
 namespace app\models\Documents\Remainder;
 
+use Yii;
+use yii\db\Exception;
+
 use app\models\Assortment\Assortment;
 use app\models\Base;
 use app\models\Documents\Acceptance\Acceptance;
@@ -10,9 +13,7 @@ use app\models\Documents\Shipment\Shipment;
 use app\models\Documents\Shipment\ShipmentAcceptance;
 use app\models\LegalSubject\LegalSubject;
 use app\models\PalletType\PalletType;
-use app\models\ShipmentType\ShipmentType;
 use app\models\Stock\Stock;
-use yii\db\Exception;
 
 /**
  * This is the model class for table "remainder".
@@ -153,24 +154,41 @@ class Remainder extends Base
     // Создать / изменить Приёмку на остатке.
     public static function changeAcceptance(Acceptance $acceptance): bool
     {
-        $acceptanceItem = $acceptance->items[0];
-        $remainder = self::findOne(['acceptance_id' => $acceptance->id]);
+        $acceptanceRemainder = $acceptance->acceptance_remainder_id
+            ? Acceptance::findOne($acceptance->acceptance_remainder_id)
+            : $acceptance;
+
+        $acceptanceRemainderItem = $acceptanceRemainder->items[0];
+        $remainder = self::findOne(['acceptance_id' => $acceptanceRemainder->id]);
         if (!$remainder) {
             $remainder = new Remainder();
-            $remainder->acceptance_id = $acceptance->id;
-            $remainder->company_own_id = $acceptance->company_own_id;
-            $remainder->stock_id = $acceptance->stock_id;
-            $remainder->assortment_id = $acceptanceItem->assortment_id;
-            $remainder->pallet_type_id = $acceptanceItem->pallet_type_id;
-            $remainder->comment = $acceptanceItem->comment;
+            $remainder->acceptance_id = $acceptanceRemainder->id;
+            $remainder->company_own_id = $acceptanceRemainder->company_own_id;
+            $remainder->stock_id = $acceptanceRemainder->stock_id;
+            $remainder->assortment_id = $acceptanceRemainderItem->assortment_id;
+            $remainder->pallet_type_id = $acceptanceRemainderItem->pallet_type_id;
+            $remainder->comment = $acceptanceRemainderItem->comment;
         }
 
-        $remainder->quantity = $acceptanceItem->quantity -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity', true);
-        $remainder->quantity_pallet = $acceptanceItem->quantity_pallet -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_pallet', true);
-        $remainder->quantity_paks = $acceptanceItem->quantity_paks -
-            ShipmentAcceptance::getQuantityByAcceptance($acceptance->id, 'quantity_paks', true);
+        $newQnt = AcceptanceItem::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity');
+        $newQntPallet = AcceptanceItem::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity_pallet');
+        $newQntPaks = AcceptanceItem::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity_paks');
+        if ($acceptanceRemainder !== $acceptance) {
+            $newQnt += $acceptance->items[0]->quantity;
+            $newQntPallet += $acceptance->items[0]->quantity_pallet;
+            $newQntPaks += $acceptance->items[0]->quantity_paks;
+        } elseif (!$acceptanceRemainder->date_close) {
+            $newQnt += $acceptanceRemainder->items[0]->quantity;
+            $newQntPallet += $acceptanceRemainder->items[0]->quantity_pallet;
+            $newQntPaks += $acceptanceRemainder->items[0]->quantity_paks;
+        }
+        $newQnt -= ShipmentAcceptance::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity', true);
+        $newQntPallet -= ShipmentAcceptance::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity_pallet', true);
+        $newQntPaks -= ShipmentAcceptance::getQuantityByAcceptance($acceptanceRemainder->id, 'quantity_paks', true);
+
+        $remainder->quantity = $newQnt;
+        $remainder->quantity_pallet = $newQntPallet;
+        $remainder->quantity_paks = $newQntPaks;
 
         try {
             $remainder->save();
@@ -187,9 +205,45 @@ class Remainder extends Base
     // Снять Приёмку с остатка.
     public static function removeAcceptance(Acceptance $acceptance): bool
     {
+        $acceptanceRemainder = $acceptance->acceptance_remainder_id
+            ? Acceptance::findOne($acceptance->acceptance_remainder_id)
+            : $acceptance;
+
+        // Если коррекция (например, Приёмка по Оприходование)
+        if ($acceptanceRemainder !== $acceptance) {
+            $acceptanceItem = $acceptance->items[0];
+            $remainder = Remainder::findOne(['acceptance_id' => $acceptanceRemainder->id]);
+            if ($remainder
+                && self::getFreeByAcceptance($acceptanceRemainder->id, 'quantity') >= $acceptanceItem->quantity
+                && self::getFreeByAcceptance($acceptanceRemainder->id, 'quantity_pallet') >= $acceptanceItem->quantity_pallet
+                && self::getFreeByAcceptance($acceptanceRemainder->id, 'quantity_paks') >= $acceptanceItem->quantity_paks
+            ) {
+                $remainder->quantity -= $acceptanceItem->quantity;
+                $remainder->quantity_pallet -= $acceptanceItem->quantity_pallet;
+                $remainder->quantity_paks -= $acceptanceItem->quantity_paks;
+                $remainder->save();
+                $remainder->removeEmptyRow();
+
+                    Yii::$app->session->setFlash('success', 'Приёмка снята с остатка.');
+                    return true;
+            }
+            if ($remainder) {
+                Yii::$app->session->setFlash('error', 'Недостаточно свободного количества. Снять с остатка не возможно.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Приёмка на остатке не найдена. Снять с остатка не возможно.');
+            }
+            return false;
+        }
+
         if ($acceptance->shipments) {
-            \Yii::$app->session->setFlash('error',
+            Yii::$app->session->setFlash('error',
                 'По Приёмке есть Отгрузки. Снять с остатка не возможно.');
+            return false;
+        }
+        $qntCorrections = Acceptance::find()->where(['acceptance_remainder_id' => $acceptance->id])->count();
+        if ($qntCorrections > 0) {
+            Yii::$app->session->setFlash('error', 'По Приёмке есть Оприходования ('
+                . $qntCorrections . ' шт). Снять с остатка не возможно.' );
             return false;
         }
 
@@ -223,7 +277,7 @@ class Remainder extends Base
         int|array $assortment_ids = null,
         array     $exceptIds = [],
         bool      $isFree = false,
-        Base $itemModel = null
+        Base      $itemModel = null
     ): array
     {
         $query = self::find()
@@ -347,24 +401,6 @@ class Remainder extends Base
         $remainder->save();
 
         return true;
-    }
-
-    // Оприходование
-    public function applayIncrease(AcceptanceItem $item)
-    {
-        $this->quantity += $item->quantity;
-        $this->quantity_pallet += $item->quantity_pallet;
-        $this->quantity_paks += $item->quantity_paks;
-        $this->save();
-    }
-
-    // Отмена Оприходования
-    public function cancelIncrease(AcceptanceItem $item)
-    {
-        $this->quantity -= $item->quantity;
-        $this->quantity_pallet -= $item->quantity_pallet;
-        $this->quantity_paks -= $item->quantity_paks;
-        $this->save();
     }
 
     // Описание Приёмки на остатке, $addToFree добавляет значение к свободному количеству

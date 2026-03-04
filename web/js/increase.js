@@ -1,6 +1,27 @@
 $(() => {
     const $acceptance = $('#acceptance-id');
     $acceptance.on('change', changeAcceptance);
+    const $type = $('#type-id');
+    $type.on('change', changeType);
+
+    function changeType() {
+        $.post(
+            '/increase/change-type',
+            {
+                'type_id': $type.val()
+            },
+            (data) => {
+                const val = $acceptance.val() ? +$acceptance.val() : 0;
+                $acceptance.children("option").remove();
+                $.each(data, function (key, value) {
+                    $acceptance.append($("<option>", {'value': key, 'text': value}));
+                });
+                $acceptance.off('change', changeAcceptance);
+                $acceptance.val(val).trigger('change');
+                $acceptance.on('change', changeAcceptance);
+            }
+        )
+    }
 
     function changeAcceptance() {
         $.post(

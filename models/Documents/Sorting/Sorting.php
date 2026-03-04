@@ -152,7 +152,7 @@ class Sorting extends Base
             $shipment->stock_id = $this->acceptance->stock_id;
             $shipment->date = $this->date;
             $shipment->date_close = null;
-            $shipment->comment = 'Created automatically';
+            $shipment->comment = 'Created automatically, TYPE_SORTING';
             $shipment->save();
 
             // В Отгрузке создаём позицию
@@ -180,7 +180,7 @@ class Sorting extends Base
             $newAcceptance->stock_id = $this->acceptance->stock_id;
             $newAcceptance->date = $this->date;
             $newAcceptance->date_close = null;
-            $newAcceptance->comment = 'Created automatically';
+            $newAcceptance->comment = 'Created automatically, TYPE_SORTING';
             $newAcceptance->save();
 
             // В Приёмке создаём позицию

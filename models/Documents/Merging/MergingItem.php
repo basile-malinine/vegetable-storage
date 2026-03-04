@@ -161,7 +161,7 @@ class MergingItem extends Base
             $newShipment->company_own_id = $this->merging->company_own_id;
             $newShipment->stock_id = $this->merging->stock_id;
             $newShipment->date = $this->merging->date;
-            $newShipment->comment = 'Created automatically';
+            $newShipment->comment = 'Created automatically, TYPE_MERGING';
             $newShipment->save();
             // Добавляем позицию для новой Отгрузки
             $shipmentAcceptance = new ShipmentAcceptance();
