@@ -65,6 +65,7 @@ class OrderController extends BaseCrudController
             'type_id' => Order::TYPE_EXECUTOR,
             'company_own_id' => $model->company_own_id,
             'executor_id' => $model->executor_id,
+            'delivery_id' => $id,
         ];
         $searchModel = new OrderSearch();
         $dataProvider = $searchModel->search($params);

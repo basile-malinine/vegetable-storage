@@ -17,11 +17,13 @@ class OrderSearch extends Order
     {
         $query = Order::find();
         if ($params) {
-            $query->andWhere([
-                'type_id' => $params['type_id'],
-                'company_own_id' => $params['company_own_id'],
-                'executor_id' => $params['executor_id'],
-            ]);
+            $query
+                ->andWhere([
+                    'type_id' => $params['type_id'],
+                    'company_own_id' => $params['company_own_id'],
+                    'executor_id' => $params['executor_id'],
+                ])
+            ->andWhere(['OR', ['delivery_id' => $params['delivery_id']], ['delivery_id' => null]]);
         }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
