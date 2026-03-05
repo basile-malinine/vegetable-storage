@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\LegalSubject\LegalSubject;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -99,11 +100,21 @@ class CountryController extends BaseController
     public function actionGetInnName()
     {
         $id = \Yii::$app->request->post('id');
-        $isLegal = \Yii::$app->request->post('isLegal');
+        $typeId = \Yii::$app->request->post('typeId');
         \Yii::$app->response->format = Response::FORMAT_JSON;
         $model = $this->findModel($id);
+        $data = '';
+        switch ($typeId) {
+            case LegalSubject::TYPE_COMPANY:
+                $data = $model->inn_legal_name;
+                break;
+            case LegalSubject::TYPE_BUSINESSMAN:
+            case LegalSubject::TYPE_PERSON:
+                $data = $model->inn_name;
+                break;
+        }
 
-        return $isLegal ? $model->inn_legal_name : $model->inn_name;
+        return $data;
     }
 
     public function actionGetAlfa2()

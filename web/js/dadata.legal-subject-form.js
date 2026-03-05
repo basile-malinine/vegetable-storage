@@ -10,7 +10,7 @@ const $fullName = $('#legalsubject-full_name');
 const $inn = $('#legalsubject-inn');
 const $director = $('#legalsubject-director');
 const $address = $('#legalsubject-address');
-const $isLegal = $('#legalsubject-is_legal');
+const $isLegal = $('#legalsubject-type_id');
 let sgsPlugin = null;
 
 function setInnSuggestions() {
@@ -51,8 +51,8 @@ function parseParty(sgs) {
     // Если требуется изменяем Тип ЮФЛ
     if (d.type === 'LEGAL' && $isLegal.val() != 1) {
         $isLegal.val(1).trigger('change');
-    } else if (d.type === 'INDIVIDUAL' && $isLegal.val() != 0) {
-        $isLegal.val(0).trigger('change');
+    } else if (d.type === 'INDIVIDUAL' && $isLegal.val() != 2) {
+        $isLegal.val(2).trigger('change');
     }
 
     let shortName = '';

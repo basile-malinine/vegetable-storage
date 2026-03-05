@@ -20,10 +20,10 @@ $this->registerJsFile('https://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/d
 
 $alfa2 = '';
 $innName = 'ИНН';
-$isLegal = true;
-if (isset($model->is_legal) && isset($model->country)) {
-    $innName = $model->is_legal ? $model->country->inn_legal_name : $model->country->inn_name;
-    $isLegal = (bool)$model->is_legal;
+$isTypeCompany = true;
+if (isset($model->type_id) && isset($model->country)) {
+    $innName = $model->type_id === LegalSubject::TYPE_COMPANY ? $model->country->inn_legal_name : $model->country->inn_name;
+    $isTypeCompany = $model->type_id === LegalSubject::TYPE_COMPANY;
     $alfa2 = $model->country->alfa2;
 }
 
@@ -58,11 +58,14 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
                     'data' => Country::getList(),
                     'options' => [
                         'onchange' => '
-                            let isLegalField = $("#legalsubject-is_legal");
+                            let typeIdField = $("#legalsubject-type_id");
                             let labelInnField = $(".field-legalsubject-inn > .col-form-label")[0];
                             $.post(
                                 "/country/get-inn-name", 
-                                {id: $(this).val(), isLegal: isLegalField.val()}, 
+                                {
+                                    id: $(this).val(), 
+                                    typeId: typeIdField.val()
+                                }, 
                                 (data) => {
                                     labelInnField.innerText = data;
                                 }
@@ -82,8 +85,8 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
 
             <!-- Тип -->
             <div class="form-col col-2">
-                <?= $form->field($model, 'is_legal')->widget(Select2::class, [
-                    'data' => [0 => 'ИП', 1 => 'Юридическое лицо'],
+                <?= $form->field($model, 'type_id')->widget(Select2::class, [
+                    'data' => LegalSubject::TYPE_LIST,
                     'hideSearch' => true,
                     'options' => [
                         'onchange' => '
@@ -91,12 +94,13 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
                             let labelInnField = $(".field-legalsubject-inn > .col-form-label")[0];
                             let labelNameField = $(".field-legalsubject-name > .col-form-label")[0];
                             let labelFullNameField = $(".field-legalsubject-full_name > .col-form-label")[0];
+                            let opfIdField = $("#legalsubject-opf_id");
                             
                             $.post(
                                 "/country/get-inn-name", 
                                 {
                                     id: countryIdField.val(),
-                                    isLegal: $(this).val()
+                                    typeId: $(this).val()
                                 }, 
                                 (data) => {
                                     labelInnField.innerText = data;
@@ -107,10 +111,18 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
                                 $(".form-row-legal").removeClass("d-none");
                                 labelNameField.innerText = "Название организации";
                                 labelFullNameField.innerText = "Полное название организации";
-                            } else {
+                                opfIdField.removeAttr("disabled");
+                            } else if ($(this).val() == 2) {
                                 $(".form-row-legal").addClass("d-none");
                                 labelNameField.innerText = "ФИО";
                                 labelFullNameField.innerText = "ФИО (полностью)";
+                                opfIdField.removeAttr("disabled");
+                            } else if ($(this).val() == 3) {
+                                $(".form-row-legal").addClass("d-none");
+                                labelNameField.innerText = "ФИО";
+                                labelFullNameField.innerText = "ФИО (полностью)";
+                                opfIdField.val(0).trigger("change");
+                                opfIdField.attr("disabled", "disabled");
                             }',
                     ],
                 ])->label('Тип'); ?>
@@ -141,17 +153,17 @@ $this->registerJsFile('@web/js/dadata.legal-subject-form.js', ['position' => Vie
             <!-- Название или ФИО -->
             <div class="form-col col-2">
                 <?= $form->field($model, 'name')->textInput(['maxlength' => true])
-                    ->label($model->is_legal ? 'Название организации' : 'ФИО') ?>
+                    ->label($model->type_id === LegalSubject::TYPE_COMPANY ? 'Название организации' : 'ФИО') ?>
             </div>
 
             <!-- Полное название или ФИО -->
             <div class="form-col col-6">
                 <?= $form->field($model, 'full_name')->textInput(['maxlength' => true])
-                    ->label($model->is_legal ? 'Полное название организации' : 'ФИО (полностью)') ?>
+                    ->label($model->type_id === LegalSubject::TYPE_COMPANY ? 'Полное название организации' : 'ФИО (полностью)') ?>
             </div>
         </div>
 
-        <div class="row form-row form-row-legal <?= !$isLegal ? 'd-none' : '' ?>">
+        <div class="row form-row form-row-legal <?= !$isTypeCompany ? 'd-none' : '' ?>">
             <!-- Директор -->
             <div class="form-col col-4">
                 <?= $form->field($model, 'director')->textInput(['maxlength' => true]) ?>

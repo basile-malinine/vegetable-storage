@@ -1,6 +1,8 @@
 <?php
 
 use yii\grid\GridView;
+
+use app\models\LegalSubject\LegalSubject;
 use app\models\LegalSubject\LegalSubjectSearch;
 
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -41,7 +43,7 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
             [
                 'format' => 'raw',
                 'value' => function ($model) {
-                    return !$model->is_legal ? '<i class="fas fa-user"></i>' : '';
+                    return $model->type_id != LegalSubject::TYPE_COMPANY ? '<i class="fas fa-user"></i>' : '';
                 },
                 'contentOptions' => [
                     'style' => 'color: #0077ff; text-align: center',
