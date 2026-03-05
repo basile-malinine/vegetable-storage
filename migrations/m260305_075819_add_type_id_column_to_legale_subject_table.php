@@ -16,7 +16,7 @@ class m260305_075819_add_type_id_column_to_legale_subject_table extends Migratio
         $this->update('legal_subject', ['type_id' => 2], ['is_legal' => 0]);
 
         $this->alterColumn('legal_subject', 'type_id',
-            $this->integer()->notNull()->comment('Тип контрагента'));
+            $this->integer()->notNull()->comment('Тип'));
         $this->createIndex('idx-legal_subject-type_id', 'legal_subject', 'type_id');
 
         $this->dropColumn('legal_subject', 'is_legal');

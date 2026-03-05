@@ -10,7 +10,7 @@ use app\models\LegalSubject\LegalSubjectSearch;
 /** @var yii\web\View $this */
 /** @var LegalSubjectSearch $searchModel */
 
-$header = 'Контрагенты';
+$header = 'Юридические и Физические лица (ЮФЛ)';
 
 $actionId = yii::$app->controller->action->id;
 if ($actionId === 'index') $actionId = 'all';

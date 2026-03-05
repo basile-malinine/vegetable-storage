@@ -6,6 +6,6 @@ use app\models\LegalSubject\LegalSubject;
 /** @var View $this */
 /** @var LegalSubject $model */
 
-$header = 'Контрагент (новый)';
+$header = 'Юр. / Физ. лицо (новое)';
 
 echo $this->render('_form', compact('model', 'header'));

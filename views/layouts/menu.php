@@ -39,7 +39,7 @@ echo Nav::widget([
                     'label' => 'Предприятия и сотрудники',
                     'items' => [
                         [
-                            'label' => 'Контрагенты',
+                            'label' => 'Юр. / Физ. лица (ЮФЛ)',
                             'url' => ['/legal-subject'],
                         ],
 

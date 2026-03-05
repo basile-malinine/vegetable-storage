@@ -251,28 +251,28 @@ class RbacController extends Controller
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
-        // Разрешения для справочника Контрагенты ------------------------------------
+        // Разрешения для справочника ЮФЛ --------------------------------------------
 
         $permission = $authManager->createPermission('legal_subject.list');      // Просмотр списка
-        $permission->description = 'Справочники :: Контрагенты :: Просмотр списка';
+        $permission->description = 'Справочники :: ЮФЛ :: Просмотр списка';
         $authManager->add($permission);
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
         $permission = $authManager->createPermission('legal_subject.create');    // Добавление
-        $permission->description = 'Справочники :: Контрагенты :: Добавление';
+        $permission->description = 'Справочники :: ЮФЛ :: Добавление';
         $authManager->add($permission);
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
         $permission = $authManager->createPermission('legal_subject.edit');      // Редактирование
-        $permission->description = 'Справочники :: Контрагенты :: Редактирование';
+        $permission->description = 'Справочники :: ЮФЛ :: Редактирование';
         $authManager->add($permission);
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
 
         $permission = $authManager->createPermission('legal_subject.delete');    // Удаление
-        $permission->description = 'Справочники :: Контрагенты :: Удаление';
+        $permission->description = 'Справочники :: ЮФЛ :: Удаление';
         $authManager->add($permission);
         // Разрешаем Администратору
         $authManager->addChild($admin, $permission);
