@@ -6,6 +6,8 @@
 
 /** @var string $header */
 
+use app\models\LegalSubject\LegalSubject;
+use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
@@ -33,8 +35,28 @@ use app\models\Manager\Manager;
             ],
         ]); ?>
 
-        <!-- Имя -->
         <div class="row form-row">
+            <!-- ЮФЛ -->
+            <div class="form-col col-4">
+                <?= $form->field($model, 'legal_subject_id')->widget(Select2::class,
+                    [
+                        'data' => LegalSubject::getList(['IN', 'type_id',
+                            [LegalSubject::TYPE_BUSINESSMAN, LegalSubject::TYPE_PERSON]]),
+                        'options' => [
+                            'placeholder' => 'Не назначено',
+                            'onchange' => '
+                                const name = $("#manager-name");
+                                console.log($("#manager-legal_subject_id option:selected").text());
+                                name.val($("#manager-legal_subject_id option:selected").text());
+                            ',
+                        ],
+                    ]
+                ) ?>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <!-- Имя -->
             <div class="form-col col-4">
                 <?= $form->field($model, 'name')->textInput(
                     [
@@ -43,7 +65,6 @@ use app\models\Manager\Manager;
                 ) ?>
             </div>
         </div>
-
 
         <div class="row form-row">
             <div class="form-col col-4">

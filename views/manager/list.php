@@ -47,7 +47,20 @@ $this->registerJsFile('@web/js/contextmenu-list.js');
                 ]
             ],
 
-            // Название
+            // ЮФЛ
+            [
+                'attribute' => 'legal_subject_id',
+                'enableSorting' => false,
+                'value' => 'legalSubject.name',
+                'headerOptions' => [
+                    'style' => 'width: 200px;'
+                ],
+                'filterInputOptions' => [
+                    'class' => 'form-control form-control-sm',
+                ],
+            ],
+
+            // Имя
             [
                 'attribute' => 'name',
                 'enableSorting' => false,

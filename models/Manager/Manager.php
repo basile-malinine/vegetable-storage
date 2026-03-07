@@ -3,12 +3,13 @@
 namespace app\models\Manager;
 
 use app\models\Base;
-use app\models\Documents\Delivery\Delivery;
+use app\models\LegalSubject\LegalSubject;
 
 /**
  * This is the model class for table "manager".
  *
  * @property int $id
+ * @property int $legal_subject_id ИП / Физ. лицо
  * @property string $name Имя
  * @property int $is_purchasing_mng Менеджер по закупкам
  * @property int $is_sales_mng Менеджер по реализации
@@ -17,11 +18,11 @@ use app\models\Documents\Delivery\Delivery;
  * @property int $is_sales_agent Агент по реализации
  * @property string|null $comment Комментарий
  *
- * @property string|null $error Комментарий
+ * @property LegalSubject $legalSubject ЮФЛ
  */
 class Manager extends Base
 {
-    public $error = '';
+    public string $error = '';
     /**
      * {@inheritdoc}
      */
@@ -40,6 +41,7 @@ class Manager extends Base
             [['name'], 'string', 'max' => 30],
             [['name'], 'unique'],
             [[
+                'legal_subject_id',
                 'is_purchasing_mng',
                 'is_sales_mng',
                 'is_support',
@@ -73,6 +75,7 @@ class Manager extends Base
     {
         return [
             'id' => 'ID',
+            'legal_subject_id' => 'ИП / Физ. лицо',
             'name' => 'Имя',
             'is_purchasing_mng' => 'Менеджер по закупкам',
             'is_sales_mng' => 'Менеджер по реализации',
@@ -83,10 +86,10 @@ class Manager extends Base
         ];
     }
 
-    // Получить Доставки
-    public function getDeliveries()
+    // Получить ЮФЛ
+    public function getLegalSubject()
     {
-        return $this->hasMany(Delivery::class, ['manager_id' => 'id']);
+        return $this->hasOne(LegalSubject::class, ['id' => 'legal_subject_id']);
     }
 
     public function getTypes(): array
